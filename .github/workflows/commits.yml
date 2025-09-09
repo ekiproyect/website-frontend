@@ -1,0 +1,44 @@
+name: Auto Commit
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write  # Necesario para poder pushear cambios
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        run: npm ci
+
+      # 👉 Aquí puedes poner tus scripts automáticos
+      - name: Run formatter
+        run: npx prettier --write .
+
+      # Solo commitea si hubo cambios
+      - name: Commit changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "chore: auto commit by GitHub Actions"
+            git push
+          else
+            echo "No changes to commit"
+          fi
