@@ -19,6 +19,12 @@ export const ZoomHero = () => {
   const philosophyRef = useRef<HTMLDivElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
+  const quoteRef = useRef<HTMLDivElement>(null);
+  
+  // Refs para el fondo vivo
+  const backgroundRef = useRef<HTMLDivElement>(null);
+  const grainRef = useRef<HTMLDivElement>(null);
+  const lightSweepRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // ============================================
@@ -51,17 +57,60 @@ export const ZoomHero = () => {
       gsap.set([servicesRef.current, projectsRef.current], {
         opacity: 0,
       });
+      
+      // Establecer estado inicial de Cotización
+      gsap.set(quoteRef.current, {
+        opacity: 0,
+        scale: 0.95,
+        y: 50,
+      });
 
       // Timeline principal - TODAS las animaciones coordinadas
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=22000', // Extendido para 3 secciones adicionales
+          end: '+=26000', // Extendido para incluir sección de cotización
           scrub: 2.5, // Scrub alto = muy suave
           pin: true,
           markers: false, // Cambiar a true para debug
         },
+      });
+      
+      // ============================================
+      // ANIMACIÓN DEL FONDO VIVO (paralela a todo)
+      // Hue shift por escena + light sweep
+      // ============================================
+      
+      // Azul frío inicial → Púrpura neón (Filosofía) → Rosa cálido (Servicios) → Azul profundo (Proyectos)
+      tl.to(backgroundRef.current, {
+        filter: 'hue-rotate(0deg) saturate(1)',
+        duration: 10,
+        ease: 'none',
+      }, 0)
+      .to(backgroundRef.current, {
+        filter: 'hue-rotate(30deg) saturate(1.3)', // Púrpura más saturado
+        duration: 4,
+        ease: 'power1.inOut',
+      }, 12)
+      .to(backgroundRef.current, {
+        filter: 'hue-rotate(60deg) saturate(1.5)', // Rosa intenso
+        duration: 4,
+        ease: 'power1.inOut',
+      }, 16)
+      .to(backgroundRef.current, {
+        filter: 'hue-rotate(90deg) saturate(1.2)', // Azul profundo
+        duration: 4,
+        ease: 'power1.inOut',
+      }, 20);
+      
+      // Light sweep cada 6 segundos
+      gsap.to(lightSweepRef.current, {
+        x: '100vw',
+        duration: 3,
+        ease: 'power2.inOut',
+        repeat: -1,
+        repeatDelay: 3,
       });
 
       // ============================================
@@ -222,10 +271,61 @@ export const ZoomHero = () => {
         opacity: 1,
         duration: 2.5,
         ease: 'power2.out',
-      }, 20);
+      }, 20)
+      
+      // ============================================
+      // FASE 13: PROYECTOS DESAPARECE (190-200%)
+      // Transición hacia cotización
+      // ============================================
+      .to(projectsRef.current, {
+        opacity: 0,
+        y: -50,
+        scale: 0.95,
+        duration: 2,
+        ease: 'power2.in',
+      }, 22.5)
+      
+      // ============================================
+      // FASE 14: COTIZACIÓN APARECE (200-220%) - FINAL
+      // Sección de cotización con formulario
+      // ============================================
+      .to(quoteRef.current, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 3,
+        ease: 'power3.out',
+      }, 24.5);
     }, containerRef);
+    
+    // ============================================
+    // MOTION REFINEMENT: Parallax en fondo
+    // ============================================
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      const moveX = (clientX - centerX) / centerX;
+      const moveY = (clientY - centerY) / centerY;
+      
+      // Parallax suave en el fondo
+      if (backgroundRef.current) {
+        gsap.to(backgroundRef.current, {
+          x: moveX * 10,
+          y: moveY * 10,
+          duration: 0.5,
+          ease: 'power2.out',
+        });
+      }
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
   return (
@@ -247,16 +347,87 @@ export const ZoomHero = () => {
             opacity: 1;
           }
         }
-      `}</style>
-      {/* Partículas de fondo (fijas) */}
-      <div className="absolute inset-0 z-0">
-        {/* Partículas animadas */}
-        <div className="absolute top-20 left-20 w-2 h-2 bg-blue-500/20 rounded-full animate-pulse" />
-        <div className="absolute top-40 right-32 w-3 h-3 bg-purple-500/20 rounded-full animate-pulse delay-300" />
-        <div className="absolute bottom-32 left-40 w-2 h-2 bg-pink-500/20 rounded-full animate-pulse delay-700" />
-        <div className="absolute bottom-20 right-20 w-4 h-4 bg-cyan-500/15 rounded-full animate-pulse delay-500" />
         
-        {/* Grid pattern */}
+        @keyframes grain {
+          0%, 100% { transform: translate(0, 0); }
+          10% { transform: translate(-5%, -5%); }
+          20% { transform: translate(-10%, 5%); }
+          30% { transform: translate(5%, -10%); }
+          40% { transform: translate(-5%, 15%); }
+          50% { transform: translate(-10%, 5%); }
+          60% { transform: translate(15%, 0); }
+          70% { transform: translate(0, 10%); }
+          80% { transform: translate(-15%, 0); }
+          90% { transform: translate(10%, 5%); }
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          33% { transform: translateY(-20px) translateX(10px); }
+          66% { transform: translateY(-10px) translateX(-10px); }
+        }
+        
+        @keyframes float-organic {
+          0% { transform: translate(0, 0) scale(1); }
+          25% { transform: translate(15px, -15px) scale(1.1); }
+          50% { transform: translate(-10px, -25px) scale(0.9); }
+          75% { transform: translate(-20px, -10px) scale(1.05); }
+          100% { transform: translate(0, 0) scale(1); }
+        }
+        
+        @keyframes orbital {
+          from { transform: rotate(0deg) translateX(100px) rotate(0deg); }
+          to { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+        }
+      `}</style>
+      
+      {/* FONDO VIVO - Sistema completo con hue shift, grain, light sweep y partículas */}
+      <div 
+        ref={backgroundRef}
+        className="absolute inset-0 z-0 transition-all duration-1000"
+        style={{
+          background: 'radial-gradient(ellipse at top, #1e1b4b 0%, #0f172a 50%, #000000 100%), linear-gradient(135deg, #1e3a8a 0%, #312e81 50%, #1e1b4b 100%)',
+          filter: 'hue-rotate(0deg) saturate(1)',
+        }}
+      >
+        {/* Capa de grain cinematográfico animado */}
+        <div 
+          ref={grainRef}
+          className="absolute inset-0 opacity-[0.15] mix-blend-overlay pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")`,
+            animation: 'grain 8s steps(10) infinite',
+          }}
+        />
+        
+        {/* Light sweep - barrido de luz cada 6 segundos */}
+        <div 
+          ref={lightSweepRef}
+          className="absolute top-0 left-0 w-32 h-full opacity-20 pointer-events-none"
+          style={{
+            background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent)',
+            filter: 'blur(50px)',
+            transform: 'translateX(-100%)',
+          }}
+        />
+        
+        {/* Sistema de 3 capas de partículas */}
+        
+        {/* CAPA 1: Partículas flotantes (float) */}
+        <div className="absolute top-20 left-20 w-2 h-2 bg-blue-500/30 rounded-full" style={{ animation: 'float 6s ease-in-out infinite' }} />
+        <div className="absolute top-40 right-32 w-3 h-3 bg-purple-500/25 rounded-full" style={{ animation: 'float 8s ease-in-out infinite 1s' }} />
+        <div className="absolute bottom-32 left-40 w-2 h-2 bg-pink-500/30 rounded-full" style={{ animation: 'float 7s ease-in-out infinite 2s' }} />
+        
+        {/* CAPA 2: Partículas orgánicas (blobs) */}
+        <div className="absolute top-1/4 left-1/3 w-24 h-24 bg-purple-600/10 rounded-full blur-3xl" style={{ animation: 'float-organic 12s ease-in-out infinite' }} />
+        <div className="absolute top-2/3 right-1/4 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl" style={{ animation: 'float-organic 10s ease-in-out infinite 3s' }} />
+        <div className="absolute bottom-1/4 left-1/4 w-20 h-20 bg-pink-600/10 rounded-full blur-3xl" style={{ animation: 'float-organic 15s ease-in-out infinite 5s' }} />
+        
+        {/* CAPA 3: Partículas orbitales */}
+        <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-cyan-400/40 rounded-full" style={{ animation: 'orbital 25s linear infinite' }} />
+        <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-purple-400/40 rounded-full" style={{ animation: 'orbital 20s linear infinite reverse' }} />
+        
+        {/* Grid pattern sutil */}
         <div 
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -334,7 +505,7 @@ export const ZoomHero = () => {
         <Link to="/services">
           <Button
             size="lg"
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white group"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white group transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300"
           >
             Explorar Servicios
             <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -344,7 +515,7 @@ export const ZoomHero = () => {
           <Button
             size="lg"
             variant="outline"
-            className="border-purple-500/50 text-purple-300 hover:bg-purple-950/30"
+            className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300"
           >
             Ver Proyectos
           </Button>
@@ -485,7 +656,7 @@ export const ZoomHero = () => {
           {/* Showcase de Proyectos - Diseño tipo carrusel estático */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
             {/* Proyecto 1 */}
-            <div className="group relative overflow-hidden rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all duration-500">
+            <div className="group relative overflow-hidden rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/30" style={{ transformStyle: 'preserve-3d' }}>
               {/* Imagen placeholder con gradiente */}
               <div className="aspect-video bg-gradient-to-br from-purple-600 to-pink-600 relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
@@ -504,13 +675,13 @@ export const ZoomHero = () => {
                   Plataforma completa de comercio electrónico con +10K usuarios activos
                 </p>
                 <div className="flex gap-2 mt-3 flex-wrap">
-                  <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-all cursor-pointer">
                     React
                   </span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30">
+                  <span className="text-xs px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30 transition-all cursor-pointer">
                     Node.js
                   </span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                  <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition-all cursor-pointer">
                     MongoDB
                   </span>
                 </div>
@@ -518,7 +689,7 @@ export const ZoomHero = () => {
             </div>
             
             {/* Proyecto 2 */}
-            <div className="group relative overflow-hidden rounded-2xl border border-blue-500/30 hover:border-blue-500/60 transition-all duration-500">
+            <div className="group relative overflow-hidden rounded-2xl border border-blue-500/30 hover:border-blue-500/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/30" style={{ transformStyle: 'preserve-3d' }}>
               {/* Imagen placeholder con gradiente */}
               <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-600 relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
@@ -537,13 +708,13 @@ export const ZoomHero = () => {
                   Dashboard analítico para gestión financiera en tiempo real
                 </p>
                 <div className="flex gap-2 mt-3 flex-wrap">
-                  <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                  <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition-all cursor-pointer">
                     Next.js
                   </span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-all cursor-pointer">
                     TypeScript
                   </span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30">
+                  <span className="text-xs px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30 transition-all cursor-pointer">
                     TailwindCSS
                   </span>
                 </div>
@@ -553,10 +724,214 @@ export const ZoomHero = () => {
           
           {/* CTA Ver más proyectos */}
           <div className="mt-10">
-            <div className="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/40 backdrop-blur-sm">
-              <span className="text-purple-300 font-semibold">
+            <div className="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/40 backdrop-blur-sm hover:bg-gradient-to-r hover:from-purple-600/30 hover:to-pink-600/30 hover:border-purple-500/60 transition-all duration-300 hover:scale-105 cursor-pointer group">
+              <span className="text-purple-300 font-semibold group-hover:text-purple-200 transition-colors">
                 Ver todos los proyectos →
               </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SECCIÓN COTIZACIÓN - FINAL DEL SCROLL (z-26) */}
+      <div
+        ref={quoteRef}
+        className="absolute inset-0 flex flex-col items-center justify-center z-[26] px-6"
+        style={{ opacity: 0 }}
+      >
+        <div className="max-w-4xl w-full py-4">
+          {/* Header de la sección */}
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 backdrop-blur-md mb-3">
+              <span className="text-green-400 text-xs font-medium">
+                ✨ Última Sección
+              </span>
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-black mb-3 bg-gradient-to-r from-green-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+              Cotiza tu Proyecto
+            </h2>
+            
+            <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto">
+              Cuéntanos tu idea y te responderemos en menos de 24 horas
+            </p>
+          </div>
+
+          {/* Formulario de Contacto */}
+          <div className="bg-gradient-to-br from-green-950/30 via-emerald-950/20 to-cyan-950/30 backdrop-blur-xl rounded-2xl border border-green-500/30 p-6 shadow-2xl shadow-green-500/20">
+            <form className="space-y-4">
+              {/* Grid de campos principales */}
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Nombre */}
+                <div>
+                  <label htmlFor="name" className="block text-xs font-medium text-green-300 mb-1.5">
+                    Nombre completo *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    required
+                    placeholder="Juan Pérez"
+                    className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label htmlFor="email" className="block text-xs font-medium text-green-300 mb-1.5">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    required
+                    placeholder="juan@ejemplo.com"
+                    className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Tipo de proyecto */}
+              <div>
+                <label htmlFor="project-type" className="block text-xs font-medium text-green-300 mb-1.5">
+                  Tipo de proyecto *
+                </label>
+                <select
+                  id="project-type"
+                  required
+                  className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                >
+                  <option value="">Selecciona una opción</option>
+                  <option value="web">Sitio Web / Landing Page</option>
+                  <option value="ecommerce">E-commerce</option>
+                  <option value="app">Aplicación Web</option>
+                  <option value="mobile">App Móvil</option>
+                  <option value="custom">Desarrollo a medida</option>
+                </select>
+              </div>
+
+              {/* Descripción */}
+              <div>
+                <label htmlFor="description" className="block text-xs font-medium text-green-300 mb-1.5">
+                  Cuéntanos sobre tu proyecto *
+                </label>
+                <textarea
+                  id="description"
+                  required
+                  rows={3}
+                  placeholder="Describe brevemente tu idea..."
+                  className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all resize-none"
+                />
+              </div>
+
+              {/* Presupuesto */}
+              <div>
+                <label htmlFor="budget" className="block text-xs font-medium text-green-300 mb-1.5">
+                  Presupuesto estimado (opcional)
+                </label>
+                <select
+                  id="budget"
+                  className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                >
+                  <option value="">Prefiero no especificar</option>
+                  <option value="small">Menos de $5,000</option>
+                  <option value="medium">$5,000 - $15,000</option>
+                  <option value="large">$15,000 - $30,000</option>
+                  <option value="enterprise">Más de $30,000</option>
+                </select>
+              </div>
+
+              {/* Botón de envío */}
+              <Button
+                type="submit"
+                className="w-full py-4 text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-lg shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 group"
+              >
+                Enviar Cotización
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
+              </Button>
+            </form>
+
+            {/* Información de contacto alternativa */}
+            <div className="mt-6 pt-6 border-t border-green-500/20">
+              <p className="text-center text-gray-400 text-xs mb-3">
+                ¿Prefieres contactarnos directamente?
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <a
+                  href="mailto:contacto@ekiproyect.com"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-300 text-xs transition-all"
+                >
+                  📧 contacto@ekiproyect.com
+                </a>
+                <a
+                  href="https://wa.me/1234567890"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-300 text-xs transition-all"
+                >
+                  💬 WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer integrado (sin ser footer tradicional) */}
+          <div className="mt-8 space-y-6">
+            {/* Links rápidos */}
+            <div className="flex flex-wrap justify-center gap-4 text-xs">
+              <Link to="/about" className="text-gray-400 hover:text-green-400 transition-colors">
+                Sobre Nosotros
+              </Link>
+              <Link to="/services" className="text-gray-400 hover:text-green-400 transition-colors">
+                Servicios
+              </Link>
+              <Link to="/projects" className="text-gray-400 hover:text-green-400 transition-colors">
+                Proyectos
+              </Link>
+              <Link to="/technologies" className="text-gray-400 hover:text-green-400 transition-colors">
+                Tecnologías
+              </Link>
+              <Link to="/team" className="text-gray-400 hover:text-green-400 transition-colors">
+                Equipo
+              </Link>
+            </div>
+
+            {/* Redes sociales */}
+            <div className="flex justify-center gap-3">
+              <a
+                href="https://github.com/ekiproyect"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 transition-all hover:scale-110"
+              >
+                <span className="text-base">🐙</span>
+              </a>
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 transition-all hover:scale-110"
+              >
+                <span className="text-base">💼</span>
+              </a>
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 transition-all hover:scale-110"
+              >
+                <span className="text-base">🐦</span>
+              </a>
+            </div>
+
+            {/* Copyright */}
+            <div className="text-center space-y-1">
+              <p className="text-gray-500 text-xs">
+                © 2025 Eki Proyect. Todos los derechos reservados.
+              </p>
+              <p className="text-gray-600 text-xs">
+                Hecho con 💚 y tecnología de vanguardia
+              </p>
             </div>
           </div>
         </div>
