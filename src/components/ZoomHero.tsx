@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,6 @@ export const ZoomHero = () => {
   const backgroundTextRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
   
   // Refs para las nuevas secciones
   const philosophyRef = useRef<HTMLDivElement>(null);
@@ -26,11 +25,34 @@ export const ZoomHero = () => {
   const grainRef = useRef<HTMLDivElement>(null);
   const lightSweepRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  // Estado para detección de dispositivo (para usar en JSX)
+  const [deviceInfo, setDeviceInfo] = useState({
+    isMobile: false,
+    isTouch: false,
+  });  useEffect(() => {
     // ============================================
     // RESETEAR SCROLL AL INICIO
     // ============================================
     window.scrollTo(0, 0);
+    
+    // ============================================
+    // DETECCIÓN DE DISPOSITIVO
+    // ============================================
+    const isMobile = window.innerWidth < 768;
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    // Guardar en estado para usar en JSX
+    setDeviceInfo({ isMobile, isTouch });
+    
+    // Scroll distance optimizado para mobile (-42% en mobile)
+    const scrollDistance = isMobile ? 15000 : 26000;
+    
+    console.log('🎯 Device Detection:', {
+      isMobile,
+      isTouch,
+      scrollDistance,
+      viewport: `${window.innerWidth}x${window.innerHeight}`
+    });
     
     const ctx = gsap.context(() => {
       // ============================================
@@ -42,10 +64,10 @@ export const ZoomHero = () => {
         scale: 1,
       });
       
-      // Establecer estados iniciales de tagline, subtítulo y CTAs
-      gsap.set([taglineRef.current, subtitleRef.current, ctaRef.current], {
+      // Establecer estados iniciales de tagline y subtítulo
+      gsap.set([taglineRef.current, subtitleRef.current], {
         opacity: 0,
-        y: 40,
+        y: 30,
       });
       
       // Establecer estado inicial de Filosofía
@@ -70,7 +92,7 @@ export const ZoomHero = () => {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=26000', // Extendido para incluir sección de cotización
+          end: `+=${scrollDistance}`, // Dinámico: 15000px mobile, 26000px desktop
           scrub: 2.5, // Scrub alto = muy suave
           pin: true,
           markers: false, // Cambiar a true para debug
@@ -80,7 +102,13 @@ export const ZoomHero = () => {
       // ============================================
       // ANIMACIÓN DEL FONDO VIVO (paralela a todo)
       // Hue shift por escena + light sweep
+      // OPTIMIZADO: Intensidad reducida en mobile para mejor performance
       // ============================================
+      
+      // Factores de optimización para mobile
+      const hueIntensity = isMobile ? 0.5 : 1; // 50% menos rotación en mobile
+      const saturationBase = isMobile ? 1 : 1; // Sin saturación extra en mobile
+      const saturationMax = isMobile ? 1.1 : 1.5; // Max 1.1x en mobile vs 1.5x desktop
       
       // Azul frío inicial → Púrpura neón (Filosofía) → Rosa cálido (Servicios) → Azul profundo (Proyectos)
       tl.to(backgroundRef.current, {
@@ -89,29 +117,34 @@ export const ZoomHero = () => {
         ease: 'none',
       }, 0)
       .to(backgroundRef.current, {
-        filter: 'hue-rotate(30deg) saturate(1.3)', // Púrpura más saturado
+        filter: `hue-rotate(${30 * hueIntensity}deg) saturate(${1 + (0.3 * (saturationMax - 1))})`, // 15deg/1.15 mobile vs 30deg/1.3 desktop
         duration: 4,
         ease: 'power1.inOut',
       }, 12)
       .to(backgroundRef.current, {
-        filter: 'hue-rotate(60deg) saturate(1.5)', // Rosa intenso
+        filter: `hue-rotate(${60 * hueIntensity}deg) saturate(${saturationMax})`, // 30deg/1.1 mobile vs 60deg/1.5 desktop
         duration: 4,
         ease: 'power1.inOut',
       }, 16)
       .to(backgroundRef.current, {
-        filter: 'hue-rotate(90deg) saturate(1.2)', // Azul profundo
+        filter: `hue-rotate(${90 * hueIntensity}deg) saturate(${1 + (0.2 * (saturationMax - 1))})`, // 45deg/1.08 mobile vs 90deg/1.2 desktop
         duration: 4,
         ease: 'power1.inOut',
       }, 20);
       
-      // Light sweep cada 6 segundos
-      gsap.to(lightSweepRef.current, {
-        x: '100vw',
-        duration: 3,
-        ease: 'power2.inOut',
-        repeat: -1,
-        repeatDelay: 3,
-      });
+      // Light sweep: Desactivado en mobile para ahorrar GPU
+      if (!isMobile) {
+        gsap.to(lightSweepRef.current, {
+          x: '100vw',
+          duration: 3,
+          ease: 'power2.inOut',
+          repeat: -1,
+          repeatDelay: 3,
+        });
+        console.log('✅ Light sweep activado (desktop)');
+      } else {
+        console.log('⚠️ Light sweep desactivado (mobile performance)');
+      }
 
       // ============================================
       // FASE 1: ZOOM IN de EKI (0-30%)
@@ -174,62 +207,50 @@ export const ZoomHero = () => {
       }, 3.5) // AL MISMO TIEMPO que EKI desaparece
       
       // ============================================
-      // FASE 4.5: "EKI PROJECT" SUBE MÁS y TAGLINE APARECE (100-120%)
+      // FASE 4.5: "EKI PROJECT" SUBE y TAGLINE APARECE
       // ============================================
       .to(backgroundTextRef.current, {
-        y: -120, // Sube más arriba
-        scale: 1.2, // Ligeramente más pequeño
-        duration: 2, // Más tiempo para subir
+        y: -80,
+        scale: 1.1,
+        duration: 2,
         ease: 'power2.inOut',
-      }, 5.5) // Después de centrarse
+      }, 5.5)
       
       .to(taglineRef.current, {
-        opacity: 1, // Aparece
-        y: 0, // Posición final
-        duration: 2, // Más tiempo para aparecer
+        opacity: 1,
+        y: 0,
+        duration: 1.5,
         ease: 'power2.out',
-      }, 6) // Aparece cuando ya subió un poco
+      }, 6)
       
       // ============================================
-      // FASE 5: SUBTÍTULO APARECE (80-95%)
+      // FASE 5: SUBTÍTULO APARECE
       // ============================================
       .to(subtitleRef.current, {
-        opacity: 1, // Aparece
-        y: 0, // Posición final
-        duration: 2,
-        ease: 'power2.out',
-      }, 7.5) // Más tarde para que haya tiempo de leer tagline
-      
-      // ============================================
-      // FASE 6: CTAs FINALES (90-100%)
-      // ============================================
-      .to(ctaRef.current, {
-        opacity: 1, // Aparece
-        y: 0, // Posición final
+        opacity: 1,
+        y: 0,
         duration: 1.5,
-        ease: 'back.out(1.2)',
-      }, 9) // Último elemento
+        ease: 'power2.out',
+      }, 7)
       
       // ============================================
-      // FASE 7: FADE OUT DE TODO (100-110%)
-      // TODO desaparece para dar paso a nueva sección
+      // FASE 6: FADE OUT de EKI PROJECT, TAGLINE y SUBTÍTULO
       // ============================================
-      .to([backgroundTextRef.current, taglineRef.current, subtitleRef.current, ctaRef.current], {
+      .to([backgroundTextRef.current, taglineRef.current, subtitleRef.current], {
         opacity: 0,
-        y: -30, // Suben un poco al desaparecer
+        y: -30,
         duration: 2,
         ease: 'power2.inOut',
-      }, 10.5) // Después de que todo esté visible
+      }, 9)
       
       // ============================================
-      // FASE 8: FILOSOFÍA APARECE (110-120%)
-      // Nueva sección entra
+      // FASE 7: FILOSOFÍA APARECE
       // ============================================
       .to(philosophyRef.current, {
         opacity: 1,
         duration: 2.5,
         ease: 'power2.out',
-      }, 12) // Después del fade out
+      }, 11)
       
       // ============================================
       // FASE 9: FILOSOFÍA DESAPARECE (130-140%)
@@ -299,7 +320,7 @@ export const ZoomHero = () => {
     }, containerRef);
     
     // ============================================
-    // MOTION REFINEMENT: Parallax en fondo
+    // MOTION REFINEMENT: Parallax en fondo (SOLO EN DISPOSITIVOS NO-TOUCH)
     // ============================================
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
@@ -320,11 +341,20 @@ export const ZoomHero = () => {
       }
     };
     
-    window.addEventListener('mousemove', handleMouseMove);
+    // Solo activar parallax en dispositivos no-touch (desktop)
+    if (!isTouch) {
+      window.addEventListener('mousemove', handleMouseMove);
+      console.log('✅ Parallax activado (desktop)');
+    } else {
+      console.log('⚠️ Parallax desactivado (touch device)');
+    }
 
     return () => {
       ctx.revert();
-      window.removeEventListener('mousemove', handleMouseMove);
+      // Solo remover listener si fue añadido
+      if (!isTouch) {
+        window.removeEventListener('mousemove', handleMouseMove);
+      }
     };
   }, []);
 
@@ -406,24 +436,29 @@ export const ZoomHero = () => {
           className="absolute top-0 left-0 w-32 h-full opacity-20 pointer-events-none"
           style={{
             background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent)',
-            filter: 'blur(50px)',
+            filter: deviceInfo.isMobile ? 'none' : 'blur(50px)', // Sin blur en mobile
             transform: 'translateX(-100%)',
+            display: deviceInfo.isMobile ? 'none' : 'block', // Ocultado completamente en mobile
           }}
         />
         
         {/* Sistema de 3 capas de partículas */}
         
-        {/* CAPA 1: Partículas flotantes (float) */}
+        {/* CAPA 1: Partículas flotantes (float) - Ligeras, siempre visibles */}
         <div className="absolute top-20 left-20 w-2 h-2 bg-blue-500/30 rounded-full" style={{ animation: 'float 6s ease-in-out infinite' }} />
         <div className="absolute top-40 right-32 w-3 h-3 bg-purple-500/25 rounded-full" style={{ animation: 'float 8s ease-in-out infinite 1s' }} />
         <div className="absolute bottom-32 left-40 w-2 h-2 bg-pink-500/30 rounded-full" style={{ animation: 'float 7s ease-in-out infinite 2s' }} />
         
-        {/* CAPA 2: Partículas orgánicas (blobs) */}
-        <div className="absolute top-1/4 left-1/3 w-24 h-24 bg-purple-600/10 rounded-full blur-3xl" style={{ animation: 'float-organic 12s ease-in-out infinite' }} />
-        <div className="absolute top-2/3 right-1/4 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl" style={{ animation: 'float-organic 10s ease-in-out infinite 3s' }} />
-        <div className="absolute bottom-1/4 left-1/4 w-20 h-20 bg-pink-600/10 rounded-full blur-3xl" style={{ animation: 'float-organic 15s ease-in-out infinite 5s' }} />
+        {/* CAPA 2: Partículas orgánicas (blobs) - Solo desktop por blur pesado */}
+        {!deviceInfo.isMobile && (
+          <>
+            <div className="absolute top-1/4 left-1/3 w-24 h-24 bg-purple-600/10 rounded-full blur-3xl" style={{ animation: 'float-organic 12s ease-in-out infinite' }} />
+            <div className="absolute top-2/3 right-1/4 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl" style={{ animation: 'float-organic 10s ease-in-out infinite 3s' }} />
+            <div className="absolute bottom-1/4 left-1/4 w-20 h-20 bg-pink-600/10 rounded-full blur-3xl" style={{ animation: 'float-organic 15s ease-in-out infinite 5s' }} />
+          </>
+        )}
         
-        {/* CAPA 3: Partículas orbitales */}
+        {/* CAPA 3: Partículas orbitales - Ligeras, siempre visibles */}
         <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-cyan-400/40 rounded-full" style={{ animation: 'orbital 25s linear infinite' }} />
         <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-purple-400/40 rounded-full" style={{ animation: 'orbital 20s linear infinite reverse' }} />
         
@@ -446,22 +481,22 @@ export const ZoomHero = () => {
         className="absolute inset-0 flex flex-col items-center justify-center z-[5] pointer-events-none"
         style={{ opacity: 0 }}
       >
-        <div className="text-center space-y-6">
-          <h2 className="text-6xl md:text-8xl font-black tracking-normal">
+        <div className="text-center space-y-3 md:space-y-6 px-4">
+          <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight md:tracking-normal">
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
               EKI PROJECT
             </span>
           </h2>
           
-          <div className="h-1 w-64 mx-auto bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50" />
+          <div className="h-0.5 w-32 md:h-1 md:w-64 mx-auto bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50" />
         </div>
       </div>
 
       {/* TAGLINE (aparece después de "EKI PROJECT") - z-6 */}
       <p
         ref={taglineRef}
-        className="absolute left-1/2 -translate-x-1/2 z-[6] text-2xl md:text-4xl font-light tracking-wide text-center px-6 max-w-4xl"
-        style={{ top: '58%', opacity: 0 }}
+        className="absolute left-1/2 -translate-x-1/2 z-[6] text-sm sm:text-base md:text-xl lg:text-2xl font-light tracking-wide text-center px-4 sm:px-6 max-w-3xl"
+        style={{ top: '68%', opacity: 0 }}
       >
         <span className="text-gray-300">
           Transformación digital,{' '}
@@ -474,7 +509,7 @@ export const ZoomHero = () => {
       {/* EKI GIGANTE (hace zoom) - z-10 */}
       <div
         ref={titleRef}
-        className="relative z-10 text-[20vw] md:text-[25vw] font-black tracking-tighter"
+        className="relative z-10 text-[25vw] sm:text-[22vw] md:text-[25vw] font-black tracking-tighter"
         style={{ 
           willChange: 'transform, opacity, filter',
           transformOrigin: 'center center'
@@ -487,83 +522,58 @@ export const ZoomHero = () => {
         </h1>
       </div>
 
-      {/* SUBTÍTULO (aparece después) */}
+      {/* SUBTÍTULO (aparece después) - z-15 con posición más baja */}
       <p
         ref={subtitleRef}
-        className="absolute left-1/2 -translate-x-1/2 bottom-[30%] z-20 text-xl md:text-3xl text-gray-300 text-center px-6 max-w-3xl"
+        className="absolute left-1/2 -translate-x-1/2 bottom-[18%] z-15 text-xs sm:text-sm md:text-base lg:text-xl text-gray-300 text-center px-4 sm:px-6 max-w-2xl leading-relaxed"
         style={{ opacity: 0 }}
       >
         Transformamos <span className="text-purple-400 font-bold">ideas</span> en{' '}
         <span className="text-pink-400 font-bold">experiencias digitales</span> extraordinarias
       </p>
 
-      {/* CTAs FINALES */}
-      <div
-        ref={ctaRef}
-        className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex gap-4 opacity-0"
-      >
-        <Link to="/services">
-          <Button
-            size="lg"
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white group transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300"
-          >
-            Explorar Servicios
-            <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
-        </Link>
-        <Link to="/projects">
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300"
-          >
-            Ver Proyectos
-          </Button>
-        </Link>
-      </div>
-
       {/* SECCIÓN FILOSOFÍA (aparece después) - z-25 */}
       <div
         ref={philosophyRef}
-        className="absolute inset-0 flex flex-col items-center justify-center z-[25] pointer-events-none px-6"
+        className="absolute inset-0 flex flex-col items-center justify-center z-[25] pointer-events-none px-4 sm:px-6"
         style={{ opacity: 0 }}
       >
-        <div className="max-w-4xl text-center space-y-8">
+        <div className="max-w-4xl text-center space-y-4 sm:space-y-6 md:space-y-8">
           {/* Título Filosofía */}
-          <h2 className="text-5xl md:text-7xl font-black tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight">
             <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Nuestra Filosofía
             </span>
           </h2>
           
           {/* Línea decorativa */}
-          <div className="h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-60" />
+          <div className="h-0.5 w-20 md:h-1 md:w-32 mx-auto bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-60" />
           
           {/* Texto principal */}
-          <p className="text-xl md:text-2xl text-gray-300 leading-relaxed font-light">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed font-light">
             Creemos en el poder de la{' '}
             <span className="text-purple-400 font-semibold">tecnología</span>{' '}
             para transformar ideas en realidades impactantes.
           </p>
           
-          <p className="text-lg md:text-xl text-gray-400 leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-400 leading-relaxed">
             Cada proyecto es una oportunidad para innovar, crear valor y superar expectativas.
             Trabajamos con pasión, dedicación y un compromiso inquebrantable con la excelencia.
           </p>
           
           {/* Elementos decorativos */}
-          <div className="flex justify-center gap-8 mt-8">
+          <div className="flex justify-center gap-4 sm:gap-6 md:gap-8 mt-6 md:mt-8">
             <div className="text-center">
-              <div className="text-4xl font-black text-purple-400">100%</div>
-              <div className="text-sm text-gray-500 mt-1">Dedicación</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-purple-400">100%</div>
+              <div className="text-xs sm:text-sm text-gray-500 mt-1">Dedicación</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-black text-pink-400">∞</div>
-              <div className="text-sm text-gray-500 mt-1">Innovación</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-pink-400">∞</div>
+              <div className="text-xs sm:text-sm text-gray-500 mt-1">Innovación</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-black text-blue-400">1</div>
-              <div className="text-sm text-gray-500 mt-1">Objetivo</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black text-blue-400">1</div>
+              <div className="text-xs sm:text-sm text-gray-500 mt-1">Objetivo</div>
             </div>
           </div>
         </div>
@@ -572,60 +582,60 @@ export const ZoomHero = () => {
       {/* SECCIÓN SERVICIOS (aparece después de Filosofía) - z-[25] */}
       <div
         ref={servicesRef}
-        className="absolute inset-0 flex flex-col items-center justify-center z-[25] pointer-events-none px-6"
+        className="absolute inset-0 flex flex-col items-center justify-center z-[25] pointer-events-none px-4 sm:px-6"
         style={{ opacity: 0 }}
       >
-        <div className="max-w-6xl w-full text-center space-y-12">
+        <div className="max-w-6xl w-full text-center space-y-6 sm:space-y-8 md:space-y-12">
           {/* Título Servicios */}
-          <div className="space-y-4">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tight">
+          <div className="space-y-3 md:space-y-4">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight">
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 Nuestros Servicios
               </span>
             </h2>
-            <div className="h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-60" />
-            <p className="text-lg md:text-xl text-gray-400">
+            <div className="h-0.5 w-20 md:h-1 md:w-32 mx-auto bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-60" />
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-400">
               Soluciones completas para tu transformación digital
             </p>
           </div>
           
           {/* Grid de Servicios */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-8 md:mt-12">
             {/* Servicio 1: Desarrollo Web */}
-            <div className="group bg-gradient-to-br from-purple-950/30 to-pink-950/20 backdrop-blur-sm border border-purple-500/20 rounded-2xl p-8 hover:border-purple-500/40 transition-all duration-300">
-              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
+            <div className="group bg-gradient-to-br from-purple-950/30 to-pink-950/20 backdrop-blur-sm border border-purple-500/20 rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 hover:border-purple-500/40 transition-all duration-300">
+              <div className="text-3xl sm:text-4xl md:text-5xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">
                 🌐
               </div>
-              <h3 className="text-2xl font-bold text-purple-300 mb-3">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-purple-300 mb-2 md:mb-3">
                 Desarrollo Web
               </h3>
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
                 Sitios y aplicaciones web modernas, rápidas y escalables con las últimas tecnologías.
               </p>
             </div>
             
             {/* Servicio 2: Diseño UX/UI */}
-            <div className="group bg-gradient-to-br from-pink-950/30 to-blue-950/20 backdrop-blur-sm border border-pink-500/20 rounded-2xl p-8 hover:border-pink-500/40 transition-all duration-300">
-              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
+            <div className="group bg-gradient-to-br from-pink-950/30 to-blue-950/20 backdrop-blur-sm border border-pink-500/20 rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 hover:border-pink-500/40 transition-all duration-300">
+              <div className="text-3xl sm:text-4xl md:text-5xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">
                 🎨
               </div>
-              <h3 className="text-2xl font-bold text-pink-300 mb-3">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-pink-300 mb-2 md:mb-3">
                 Diseño UX/UI
               </h3>
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
                 Experiencias de usuario intuitivas y diseños visuales que cautivan y convierten.
               </p>
             </div>
             
             {/* Servicio 3: Consultoría */}
-            <div className="group bg-gradient-to-br from-blue-950/30 to-purple-950/20 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8 hover:border-blue-500/40 transition-all duration-300">
-              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
+            <div className="group bg-gradient-to-br from-blue-950/30 to-purple-950/20 backdrop-blur-sm border border-blue-500/20 rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 hover:border-blue-500/40 transition-all duration-300">
+              <div className="text-3xl sm:text-4xl md:text-5xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">
                 💡
               </div>
-              <h3 className="text-2xl font-bold text-blue-300 mb-3">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-300 mb-2 md:mb-3">
                 Consultoría Tech
               </h3>
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
                 Estrategia digital, arquitectura de software y asesoría tecnológica especializada.
               </p>
             </div>
@@ -636,52 +646,52 @@ export const ZoomHero = () => {
       {/* SECCIÓN PROYECTOS (showcase visual) - z-[25] */}
       <div
         ref={projectsRef}
-        className="absolute inset-0 flex flex-col items-center justify-center z-[25] pointer-events-none px-6"
+        className="absolute inset-0 flex flex-col items-center justify-center z-[25] pointer-events-none px-4 sm:px-6"
         style={{ opacity: 0 }}
       >
-        <div className="max-w-6xl w-full text-center space-y-12">
+        <div className="max-w-6xl w-full text-center space-y-6 sm:space-y-8 md:space-y-12">
           {/* Título Proyectos */}
-          <div className="space-y-4">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tight">
+          <div className="space-y-3 md:space-y-4">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight">
               <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Proyectos Destacados
               </span>
             </h2>
-            <div className="h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-60" />
-            <p className="text-lg md:text-xl text-gray-400">
+            <div className="h-0.5 w-20 md:h-1 md:w-32 mx-auto bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-60" />
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-400">
               Casos de éxito que transformaron negocios
             </p>
           </div>
           
           {/* Showcase de Proyectos - Diseño tipo carrusel estático */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mt-8 md:mt-12">
             {/* Proyecto 1 */}
-            <div className="group relative overflow-hidden rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/30" style={{ transformStyle: 'preserve-3d' }}>
+            <div className="group relative overflow-hidden rounded-xl md:rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/30" style={{ transformStyle: 'preserve-3d' }}>
               {/* Imagen placeholder con gradiente */}
               <div className="aspect-video bg-gradient-to-br from-purple-600 to-pink-600 relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-8xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
+                  <div className="text-5xl sm:text-6xl md:text-8xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
                     🚀
                   </div>
                 </div>
               </div>
               {/* Info del proyecto */}
-              <div className="p-6 bg-gradient-to-br from-purple-950/50 to-pink-950/30 backdrop-blur-sm">
-                <h3 className="text-2xl font-bold text-purple-300 mb-2 group-hover:text-purple-200 transition-colors">
+              <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br from-purple-950/50 to-pink-950/30 backdrop-blur-sm">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-purple-300 mb-1 sm:mb-2 group-hover:text-purple-200 transition-colors">
                   E-Commerce Platform
                 </h3>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 text-xs sm:text-sm">
                   Plataforma completa de comercio electrónico con +10K usuarios activos
                 </p>
-                <div className="flex gap-2 mt-3 flex-wrap">
-                  <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-all cursor-pointer">
+                <div className="flex gap-2 mt-2 sm:mt-3 flex-wrap">
+                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-all cursor-pointer">
                     React
                   </span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30 transition-all cursor-pointer">
+                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30 transition-all cursor-pointer">
                     Node.js
                   </span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition-all cursor-pointer">
+                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition-all cursor-pointer">
                     MongoDB
                   </span>
                 </div>
@@ -689,32 +699,32 @@ export const ZoomHero = () => {
             </div>
             
             {/* Proyecto 2 */}
-            <div className="group relative overflow-hidden rounded-2xl border border-blue-500/30 hover:border-blue-500/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/30" style={{ transformStyle: 'preserve-3d' }}>
+            <div className="group relative overflow-hidden rounded-xl md:rounded-2xl border border-blue-500/30 hover:border-blue-500/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/30" style={{ transformStyle: 'preserve-3d' }}>
               {/* Imagen placeholder con gradiente */}
               <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-600 relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-8xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
+                  <div className="text-5xl sm:text-6xl md:text-8xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
                     📱
                   </div>
                 </div>
               </div>
               {/* Info del proyecto */}
-              <div className="p-6 bg-gradient-to-br from-blue-950/50 to-purple-950/30 backdrop-blur-sm">
-                <h3 className="text-2xl font-bold text-blue-300 mb-2 group-hover:text-blue-200 transition-colors">
+              <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br from-blue-950/50 to-purple-950/30 backdrop-blur-sm">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-300 mb-1 sm:mb-2 group-hover:text-blue-200 transition-colors">
                   FinTech Dashboard
                 </h3>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 text-xs sm:text-sm">
                   Dashboard analítico para gestión financiera en tiempo real
                 </p>
-                <div className="flex gap-2 mt-3 flex-wrap">
-                  <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition-all cursor-pointer">
+                <div className="flex gap-2 mt-2 sm:mt-3 flex-wrap">
+                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition-all cursor-pointer">
                     Next.js
                   </span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-all cursor-pointer">
+                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-all cursor-pointer">
                     TypeScript
                   </span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30 transition-all cursor-pointer">
+                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30 transition-all cursor-pointer">
                     TailwindCSS
                   </span>
                 </div>
@@ -723,9 +733,9 @@ export const ZoomHero = () => {
           </div>
           
           {/* CTA Ver más proyectos */}
-          <div className="mt-10">
-            <div className="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/40 backdrop-blur-sm hover:bg-gradient-to-r hover:from-purple-600/30 hover:to-pink-600/30 hover:border-purple-500/60 transition-all duration-300 hover:scale-105 cursor-pointer group">
-              <span className="text-purple-300 font-semibold group-hover:text-purple-200 transition-colors">
+          <div className="mt-6 sm:mt-8 md:mt-10">
+            <div className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/40 backdrop-blur-sm hover:bg-gradient-to-r hover:from-purple-600/30 hover:to-pink-600/30 hover:border-purple-500/60 transition-all duration-300 hover:scale-105 cursor-pointer group">
+              <span className="text-sm sm:text-base text-purple-300 font-semibold group-hover:text-purple-200 transition-colors">
                 Ver todos los proyectos →
               </span>
             </div>
@@ -736,32 +746,32 @@ export const ZoomHero = () => {
       {/* SECCIÓN COTIZACIÓN - FINAL DEL SCROLL (z-26) */}
       <div
         ref={quoteRef}
-        className="absolute inset-0 flex flex-col items-center justify-center z-[26] px-6"
+        className="absolute inset-0 flex flex-col items-center justify-center z-[26] px-4 sm:px-6"
         style={{ opacity: 0 }}
       >
         <div className="max-w-4xl w-full py-4">
           {/* Header de la sección */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 backdrop-blur-md mb-3">
+          <div className="text-center mb-4 sm:mb-6">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 backdrop-blur-md mb-2 sm:mb-3">
               <span className="text-green-400 text-xs font-medium">
                 ✨ Última Sección
               </span>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-black mb-3 bg-gradient-to-r from-green-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-2 sm:mb-3 bg-gradient-to-r from-green-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
               Cotiza tu Proyecto
             </h2>
             
-            <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base md:text-lg text-gray-400 max-w-2xl mx-auto px-2">
               Cuéntanos tu idea y te responderemos en menos de 24 horas
             </p>
           </div>
 
           {/* Formulario de Contacto */}
-          <div className="bg-gradient-to-br from-green-950/30 via-emerald-950/20 to-cyan-950/30 backdrop-blur-xl rounded-2xl border border-green-500/30 p-6 shadow-2xl shadow-green-500/20">
-            <form className="space-y-4">
+          <div className="bg-gradient-to-br from-green-950/30 via-emerald-950/20 to-cyan-950/30 backdrop-blur-xl rounded-xl md:rounded-2xl border border-green-500/30 p-4 sm:p-5 md:p-6 shadow-2xl shadow-green-500/20">
+            <form className="space-y-3 sm:space-y-4">
               {/* Grid de campos principales */}
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-3 sm:gap-4">
                 {/* Nombre */}
                 <div>
                   <label htmlFor="name" className="block text-xs font-medium text-green-300 mb-1.5">
@@ -772,7 +782,7 @@ export const ZoomHero = () => {
                     id="name"
                     required
                     placeholder="Juan Pérez"
-                    className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                    className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
                   />
                 </div>
 
@@ -786,7 +796,7 @@ export const ZoomHero = () => {
                     id="email"
                     required
                     placeholder="juan@ejemplo.com"
-                    className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                    className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
                   />
                 </div>
               </div>
@@ -799,7 +809,7 @@ export const ZoomHero = () => {
                 <select
                   id="project-type"
                   required
-                  className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                  className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
                 >
                   <option value="">Selecciona una opción</option>
                   <option value="web">Sitio Web / Landing Page</option>
@@ -820,7 +830,7 @@ export const ZoomHero = () => {
                   required
                   rows={3}
                   placeholder="Describe brevemente tu idea..."
-                  className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all resize-none"
+                  className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all resize-none"
                 />
               </div>
 
@@ -831,7 +841,7 @@ export const ZoomHero = () => {
                 </label>
                 <select
                   id="budget"
-                  className="w-full px-3 py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                  className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
                 >
                   <option value="">Prefiero no especificar</option>
                   <option value="small">Menos de $5,000</option>
@@ -844,7 +854,7 @@ export const ZoomHero = () => {
               {/* Botón de envío */}
               <Button
                 type="submit"
-                className="w-full py-4 text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-lg shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 group"
+                className="w-full py-3 sm:py-4 text-sm sm:text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-lg shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 group"
               >
                 Enviar Cotización
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
