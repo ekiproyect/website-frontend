@@ -38,6 +38,24 @@
   </head>
 
   <body>
+    <!-- Script inline para forzar scroll al inicio INMEDIATAMENTE -->
+    <script>
+      // Prevenir que el navegador restaure la posición de scroll
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      // Forzar scroll al inicio
+      window.scrollTo(0, 0);
+      // También al cargar el DOM
+      document.addEventListener('DOMContentLoaded', function() {
+        window.scrollTo(0, 0);
+      });
+      // Y cuando la página esté completamente cargada
+      window.addEventListener('load', function() {
+        window.scrollTo(0, 0);
+      });
+    </script>
+    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

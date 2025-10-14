@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -29,11 +30,261 @@ export const ZoomHero = () => {
   const [deviceInfo, setDeviceInfo] = useState({
     isMobile: false,
     isTouch: false,
-  });  useEffect(() => {
+  });
+
+  // Estado para el carrusel de proyectos
+  const [isCarouselMode, setIsCarouselMode] = useState(false);
+  const carouselContainerRef = useRef<HTMLDivElement>(null);
+  const backButtonRef = useRef<HTMLButtonElement>(null);
+  const carouselScrollRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+  const scrollPositionRef = useRef<number>(0);
+
+  // Data de proyectos
+  const projects = [
+    {
+      id: 1,
+      title: "E-Commerce Platform",
+      description: "Plataforma completa de comercio electrónico con +10K usuarios activos",
+      icon: "🚀",
+      gradient: "from-purple-600 to-pink-600",
+      borderColor: "border-purple-500/30 hover:border-purple-500/60",
+      bgGradient: "from-purple-950/50 to-pink-950/30",
+      titleColor: "text-purple-300 group-hover:text-purple-200",
+      shadowColor: "hover:shadow-purple-500/30",
+      tags: [
+        { name: "React", color: "bg-purple-500/20 text-purple-300 border-purple-500/30" },
+        { name: "Node.js", color: "bg-pink-500/20 text-pink-300 border-pink-500/30" },
+        { name: "MongoDB", color: "bg-blue-500/20 text-blue-300 border-blue-500/30" }
+      ]
+    },
+    {
+      id: 2,
+      title: "FinTech Dashboard",
+      description: "Dashboard analítico para gestión financiera en tiempo real",
+      icon: "📱",
+      gradient: "from-blue-600 to-purple-600",
+      borderColor: "border-blue-500/30 hover:border-blue-500/60",
+      bgGradient: "from-blue-950/50 to-purple-950/30",
+      titleColor: "text-blue-300 group-hover:text-blue-200",
+      shadowColor: "hover:shadow-blue-500/30",
+      tags: [
+        { name: "Next.js", color: "bg-blue-500/20 text-blue-300 border-blue-500/30" },
+        { name: "TypeScript", color: "bg-purple-500/20 text-purple-300 border-purple-500/30" },
+        { name: "TailwindCSS", color: "bg-pink-500/20 text-pink-300 border-pink-500/30" }
+      ]
+    },
+    {
+      id: 3,
+      title: "AI Content Generator",
+      description: "Generador de contenido con IA para marketing digital y redes sociales",
+      icon: "🤖",
+      gradient: "from-green-600 to-teal-600",
+      borderColor: "border-green-500/30 hover:border-green-500/60",
+      bgGradient: "from-green-950/50 to-teal-950/30",
+      titleColor: "text-green-300 group-hover:text-green-200",
+      shadowColor: "hover:shadow-green-500/30",
+      tags: [
+        { name: "Python", color: "bg-green-500/20 text-green-300 border-green-500/30" },
+        { name: "OpenAI", color: "bg-teal-500/20 text-teal-300 border-teal-500/30" },
+        { name: "FastAPI", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" }
+      ]
+    },
+    {
+      id: 4,
+      title: "Healthcare CRM",
+      description: "Sistema de gestión de pacientes con historial médico electrónico",
+      icon: "🏥",
+      gradient: "from-red-600 to-orange-600",
+      borderColor: "border-red-500/30 hover:border-red-500/60",
+      bgGradient: "from-red-950/50 to-orange-950/30",
+      titleColor: "text-red-300 group-hover:text-red-200",
+      shadowColor: "hover:shadow-red-500/30",
+      tags: [
+        { name: "Vue.js", color: "bg-red-500/20 text-red-300 border-red-500/30" },
+        { name: "Laravel", color: "bg-orange-500/20 text-orange-300 border-orange-500/30" },
+        { name: "MySQL", color: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30" }
+      ]
+    },
+    {
+      id: 5,
+      title: "Logistics Tracker",
+      description: "Sistema de rastreo en tiempo real para entregas y gestión de flotas",
+      icon: "🚚",
+      gradient: "from-indigo-600 to-cyan-600",
+      borderColor: "border-indigo-500/30 hover:border-indigo-500/60",
+      bgGradient: "from-indigo-950/50 to-cyan-950/30",
+      titleColor: "text-indigo-300 group-hover:text-indigo-200",
+      shadowColor: "hover:shadow-indigo-500/30",
+      tags: [
+        { name: "React Native", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500/30" },
+        { name: "Firebase", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30" },
+        { name: "Google Maps", color: "bg-blue-500/20 text-blue-300 border-blue-500/30" }
+      ]
+    }
+  ];
+
+  // Funciones del carrusel
+  const enterCarouselMode = () => {
+    setIsCarouselMode(true);
+    
+    // GUARDAR posición actual del scroll
+    scrollPositionRef.current = window.scrollY;
+    
+    // BLOQUEAR SCROLL VERTICAL COMPLETAMENTE
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.top = `-${scrollPositionRef.current}px`;
+    
+    // Usar requestAnimationFrame para asegurar que el DOM esté listo
+    requestAnimationFrame(() => {
+      if (!carouselContainerRef.current || !backButtonRef.current || !carouselScrollRef.current) {
+        return;
+      }
+
+      // GSAP animation
+      gsap.timeline({
+        onComplete: () => {
+          // Inicializar Lenis para scroll horizontal DESPUÉS de la animación
+          setTimeout(() => {
+            const carouselScroll = carouselScrollRef.current;
+            if (!carouselScroll) return;
+            
+            // Crear instancia de Lenis en modo horizontal
+            lenisRef.current = new Lenis({
+              wrapper: carouselScroll,
+              content: carouselScroll.querySelector('.inline-flex') as HTMLElement,
+              orientation: 'horizontal',
+              gestureOrientation: 'both', // Permite convertir scroll vertical en horizontal
+              smoothWheel: true,
+              wheelMultiplier: 1,
+              touchMultiplier: 2,
+              duration: 1.2,
+              easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+            });
+            
+            // Función de animación RAF para Lenis
+            function raf(time: number) {
+              lenisRef.current?.raf(time);
+              if (lenisRef.current) {
+                requestAnimationFrame(raf);
+              }
+            }
+            requestAnimationFrame(raf);
+            
+            // Agregar navegación con teclado
+            const handleKeyDown = (e: KeyboardEvent) => {
+              if (!carouselScroll || !lenisRef.current) return;
+        
+              const cardWidth = carouselScroll.scrollWidth / (projects.length + 1);
+        
+              if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                lenisRef.current.scrollTo(lenisRef.current.scroll - cardWidth, {
+                  duration: 0.8,
+                  easing: (t) => 1 - Math.pow(1 - t, 3)
+                });
+              } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                lenisRef.current.scrollTo(lenisRef.current.scroll + cardWidth, {
+                  duration: 0.8,
+                  easing: (t) => 1 - Math.pow(1 - t, 3)
+                });
+              } else if (e.key === 'Escape') {
+                e.preventDefault();
+                exitCarouselMode();
+              }
+            };
+      
+            window.addEventListener('keydown', handleKeyDown);
+            
+            // Guardar referencia para cleanup
+            (carouselScroll as HTMLDivElement & { _keyHandler?: (e: KeyboardEvent) => void })._keyHandler = handleKeyDown;
+          }, 100);
+        }
+      })
+        .set(carouselContainerRef.current, { display: 'flex' })
+        .fromTo(carouselContainerRef.current, 
+          { opacity: 0, scale: 0.95 },
+          { opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out' }
+        )
+        .fromTo(backButtonRef.current,
+          { opacity: 0, x: -50 },
+          { opacity: 1, x: 0, duration: 0.4, ease: 'back.out(1.7)' },
+          '-=0.2'
+        );
+    });
+  };
+
+  const exitCarouselMode = () => {
+    // Destruir instancia de Lenis
+    if (lenisRef.current) {
+      lenisRef.current.destroy();
+      lenisRef.current = null;
+    }
+    
+    // Remover keyboard listener
+    const carouselScroll = carouselScrollRef.current;
+    if (carouselScroll) {
+      const extendedScroll = carouselScroll as HTMLDivElement & { 
+        _keyHandler?: (e: KeyboardEvent) => void;
+      };
+      
+      if (extendedScroll._keyHandler) {
+        window.removeEventListener('keydown', extendedScroll._keyHandler);
+        delete extendedScroll._keyHandler;
+      }
+    }
+    
+    // RESTAURAR SCROLL VERTICAL INMEDIATAMENTE (antes de la animación)
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('position');
+    document.body.style.removeProperty('width');
+    document.body.style.removeProperty('top');
+    
+    // Restaurar posición de scroll guardada SIN animación
+    window.scrollTo(0, scrollPositionRef.current);
+    
+    // Animación de salida
+    gsap.timeline({
+      onComplete: () => {
+        setIsCarouselMode(false);
+      }
+    })
+      .to(backButtonRef.current, {
+        opacity: 0,
+        x: -50,
+        duration: 0.3,
+        ease: 'power2.in'
+      })
+      .to(carouselScrollRef.current, {
+        scrollLeft: 0, // Volver al inicio
+        duration: 0.8,
+        ease: 'power2.inOut'
+      }, '-=0.2')
+      .to(carouselContainerRef.current, {
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.4,
+        ease: 'power2.in'
+      }, '-=0.5')
+      .set(carouselContainerRef.current, { display: 'none' });
+  };
+  useEffect(() => {
     // ============================================
-    // RESETEAR SCROLL AL INICIO
+    // RESETEAR SCROLL AL INICIO (múltiples métodos)
     // ============================================
     window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    // También después de un pequeño delay para asegurar que funcione
+    const timeoutId = setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 0);
     
     // ============================================
     // DETECCIÓN DE DISPOSITIVO
@@ -44,15 +295,13 @@ export const ZoomHero = () => {
     // Guardar en estado para usar en JSX
     setDeviceInfo({ isMobile, isTouch });
     
-    // Scroll distance optimizado para mobile (-42% en mobile)
-    const scrollDistance = isMobile ? 15000 : 26000;
+    // Scroll distance MÍNIMO ABSOLUTO - Solo para las animaciones necesarias
+    // Valor extremadamente reducido para eliminar TODO espacio en blanco
+    const scrollDistance = isMobile ? 3500 : 5500;
     
-    console.log('🎯 Device Detection:', {
-      isMobile,
-      isTouch,
-      scrollDistance,
-      viewport: `${window.innerWidth}x${window.innerHeight}`
-    });
+    // Limitar la altura del documento para evitar espacio en blanco
+    document.documentElement.style.maxHeight = `${window.innerHeight + scrollDistance}px`;
+    document.body.style.maxHeight = `${window.innerHeight + scrollDistance}px`;
     
     const ctx = gsap.context(() => {
       // ============================================
@@ -77,12 +326,12 @@ export const ZoomHero = () => {
       
       // Establecer estados iniciales de Servicios y Proyectos
       gsap.set([servicesRef.current, projectsRef.current], {
-        opacity: 0,
+        autoAlpha: 0, // Usa autoAlpha para ocultar completamente y prevenir clicks
       });
       
-      // Establecer estado inicial de Cotización
+      // Establecer estado inicial de Cotización (autoAlpha = opacity + visibility)
       gsap.set(quoteRef.current, {
-        opacity: 0,
+        autoAlpha: 0, // Usa autoAlpha en lugar de opacity para manejar visibility automáticamente
         scale: 0.95,
         y: 50,
       });
@@ -141,9 +390,6 @@ export const ZoomHero = () => {
           repeat: -1,
           repeatDelay: 3,
         });
-        console.log('✅ Light sweep activado (desktop)');
-      } else {
-        console.log('⚠️ Light sweep desactivado (mobile performance)');
       }
 
       // ============================================
@@ -289,7 +535,7 @@ export const ZoomHero = () => {
       // Showcase de proyectos entra
       // ============================================
       .to(projectsRef.current, {
-        opacity: 1,
+        autoAlpha: 1, // Usa autoAlpha para hacer visible y clickeable
         duration: 2.5,
         ease: 'power2.out',
       }, 20)
@@ -299,7 +545,7 @@ export const ZoomHero = () => {
       // Transición hacia cotización
       // ============================================
       .to(projectsRef.current, {
-        opacity: 0,
+        autoAlpha: 0, // Usa autoAlpha para ocultar completamente
         y: -50,
         scale: 0.95,
         duration: 2,
@@ -311,7 +557,7 @@ export const ZoomHero = () => {
       // Sección de cotización con formulario
       // ============================================
       .to(quoteRef.current, {
-        opacity: 1,
+        autoAlpha: 1, // Usa autoAlpha para manejar visibility automáticamente
         scale: 1,
         y: 0,
         duration: 3,
@@ -344,13 +590,16 @@ export const ZoomHero = () => {
     // Solo activar parallax en dispositivos no-touch (desktop)
     if (!isTouch) {
       window.addEventListener('mousemove', handleMouseMove);
-      console.log('✅ Parallax activado (desktop)');
-    } else {
-      console.log('⚠️ Parallax desactivado (touch device)');
     }
 
     return () => {
       ctx.revert();
+      clearTimeout(timeoutId);
+      
+      // Limpiar estilos de altura máxima
+      document.documentElement.style.removeProperty('max-height');
+      document.body.style.removeProperty('max-height');
+      
       // Solo remover listener si fue añadido
       if (!isTouch) {
         window.removeEventListener('mousemove', handleMouseMove);
@@ -408,6 +657,26 @@ export const ZoomHero = () => {
         @keyframes orbital {
           from { transform: rotate(0deg) translateX(100px) rotate(0deg); }
           to { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+        }
+
+        /* Scrollbar personalizado para el carrusel */
+        .overflow-x-auto::-webkit-scrollbar {
+          height: 8px;
+        }
+        
+        .overflow-x-auto::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 10px;
+        }
+        
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+          background: rgba(139, 92, 246, 0.4);
+          border-radius: 10px;
+          transition: background 0.3s;
+        }
+        
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+          background: rgba(139, 92, 246, 0.6);
         }
       `}</style>
       
@@ -647,11 +916,10 @@ export const ZoomHero = () => {
       <div
         ref={projectsRef}
         className="absolute inset-0 flex flex-col items-center justify-center z-[25] pointer-events-none px-4 sm:px-6"
-        style={{ opacity: 0 }}
       >
-        <div className="max-w-6xl w-full text-center space-y-6 sm:space-y-8 md:space-y-12">
+        <div className="max-w-4xl w-full text-center space-y-6 sm:space-y-8 md:space-y-12 pointer-events-auto">
           {/* Título Proyectos */}
-          <div className="space-y-3 md:space-y-4">
+          <div className="space-y-3 md:space-y-4 pointer-events-none">
             <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight">
               <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                 Proyectos Destacados
@@ -663,82 +931,56 @@ export const ZoomHero = () => {
             </p>
           </div>
           
-          {/* Showcase de Proyectos - Diseño tipo carrusel estático */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mt-8 md:mt-12">
-            {/* Proyecto 1 */}
-            <div className="group relative overflow-hidden rounded-xl md:rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/30" style={{ transformStyle: 'preserve-3d' }}>
+          {/* Proyecto destacado único */}
+          <div className="mt-8 md:mt-12 flex justify-center pointer-events-none">
+            <div className={`group relative overflow-hidden rounded-xl md:rounded-2xl border ${projects[0].borderColor} transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl ${projects[0].shadowColor} max-w-2xl w-full`} style={{ transformStyle: 'preserve-3d' }}>
               {/* Imagen placeholder con gradiente */}
-              <div className="aspect-video bg-gradient-to-br from-purple-600 to-pink-600 relative overflow-hidden">
+              <div className={`aspect-video bg-gradient-to-br ${projects[0].gradient} relative overflow-hidden`}>
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-5xl sm:text-6xl md:text-8xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
-                    🚀
+                  <div className="text-6xl sm:text-7xl md:text-9xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
+                    {projects[0].icon}
                   </div>
+                </div>
+                {/* Badge "Featured" */}
+                <div className="absolute top-4 right-4 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                  <span className="text-xs font-semibold text-white">✨ Destacado</span>
                 </div>
               </div>
               {/* Info del proyecto */}
-              <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br from-purple-950/50 to-pink-950/30 backdrop-blur-sm">
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-purple-300 mb-1 sm:mb-2 group-hover:text-purple-200 transition-colors">
-                  E-Commerce Platform
+              <div className={`p-5 sm:p-6 md:p-8 bg-gradient-to-br ${projects[0].bgGradient} backdrop-blur-sm`}>
+                <h3 className={`text-xl sm:text-2xl md:text-3xl font-bold ${projects[0].titleColor} mb-2 sm:mb-3 transition-colors`}>
+                  {projects[0].title}
                 </h3>
-                <p className="text-gray-400 text-xs sm:text-sm">
-                  Plataforma completa de comercio electrónico con +10K usuarios activos
+                <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
+                  {projects[0].description}
                 </p>
-                <div className="flex gap-2 mt-2 sm:mt-3 flex-wrap">
-                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-all cursor-pointer">
-                    React
-                  </span>
-                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30 transition-all cursor-pointer">
-                    Node.js
-                  </span>
-                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition-all cursor-pointer">
-                    MongoDB
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Proyecto 2 */}
-            <div className="group relative overflow-hidden rounded-xl md:rounded-2xl border border-blue-500/30 hover:border-blue-500/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/30" style={{ transformStyle: 'preserve-3d' }}>
-              {/* Imagen placeholder con gradiente */}
-              <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-600 relative overflow-hidden">
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-5xl sm:text-6xl md:text-8xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
-                    📱
-                  </div>
-                </div>
-              </div>
-              {/* Info del proyecto */}
-              <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br from-blue-950/50 to-purple-950/30 backdrop-blur-sm">
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-300 mb-1 sm:mb-2 group-hover:text-blue-200 transition-colors">
-                  FinTech Dashboard
-                </h3>
-                <p className="text-gray-400 text-xs sm:text-sm">
-                  Dashboard analítico para gestión financiera en tiempo real
-                </p>
-                <div className="flex gap-2 mt-2 sm:mt-3 flex-wrap">
-                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30 transition-all cursor-pointer">
-                    Next.js
-                  </span>
-                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-all cursor-pointer">
-                    TypeScript
-                  </span>
-                  <span className="text-xs px-2 sm:px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:bg-pink-500/30 transition-all cursor-pointer">
-                    TailwindCSS
-                  </span>
+                <div className="flex gap-2 mt-3 sm:mt-4 flex-wrap">
+                  {projects[0].tags.map((tag) => (
+                    <span key={tag.name} className={`text-xs px-3 py-1 rounded-full ${tag.color} border hover:bg-opacity-40 transition-all cursor-pointer`}>
+                      {tag.name}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
           
-          {/* CTA Ver más proyectos */}
-          <div className="mt-6 sm:mt-8 md:mt-10">
-            <div className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/40 backdrop-blur-sm hover:bg-gradient-to-r hover:from-purple-600/30 hover:to-pink-600/30 hover:border-purple-500/60 transition-all duration-300 hover:scale-105 cursor-pointer group">
-              <span className="text-sm sm:text-base text-purple-300 font-semibold group-hover:text-purple-200 transition-colors">
-                Ver todos los proyectos →
-              </span>
-            </div>
+          {/* Botón Explorar Proyectos */}
+          <div className="mt-8 md:mt-10">
+            <Button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                enterCarouselMode();
+              }}
+              size="lg"
+              className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 hover:from-pink-700 hover:via-purple-700 hover:to-blue-700 text-white font-bold shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 group"
+            >
+              Explorar Todos los Proyectos
+              <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
           </div>
         </div>
       </div>
@@ -747,7 +989,6 @@ export const ZoomHero = () => {
       <div
         ref={quoteRef}
         className="absolute inset-0 flex flex-col items-center justify-center z-[26] px-4 sm:px-6"
-        style={{ opacity: 0 }}
       >
         <div className="max-w-4xl w-full py-4">
           {/* Header de la sección */}
@@ -947,8 +1188,160 @@ export const ZoomHero = () => {
         </div>
       </div>
 
-      {/* Vignette effect */}
-      <div className="absolute inset-0 pointer-events-none z-30 bg-gradient-radial from-transparent via-transparent to-black/80" />
+      {/* CARRUSEL MODAL HORIZONTAL - z-[100] (por encima de todo) */}
+      {/* Siempre renderizado, pero oculto con display:none hasta que se active */}
+      <div
+        ref={carouselContainerRef}
+        className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center"
+        style={{ display: 'none' }}
+      >
+          {/* Botón Atrás (fixed top-left) */}
+          <button
+            ref={backButtonRef}
+            onClick={exitCarouselMode}
+            className="fixed top-6 left-6 z-[101] px-6 py-3 bg-purple-600/20 hover:bg-purple-600/30 backdrop-blur-md rounded-xl border border-purple-500/40 hover:border-purple-500/60 transition-all duration-300 hover:scale-105 group shadow-2xl shadow-purple-500/20"
+            style={{ opacity: 0 }}
+          >
+            <div className="flex items-center gap-2">
+              <ArrowRight className="w-5 h-5 text-purple-300 rotate-180 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-purple-300 font-semibold">Atrás</span>
+            </div>
+          </button>
+
+          {/* Container del carrusel con scroll horizontal */}
+          <div
+            ref={carouselScrollRef}
+            className="w-full h-full overflow-x-auto overflow-y-hidden"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'rgba(139, 92, 246, 0.3) transparent'
+            }}
+          >
+            {/* Track horizontal de proyectos */}
+            <div className="inline-flex h-full items-center px-8 gap-8">
+              {projects.map((project, index) => (
+                <div
+                  key={project.id}
+                  className="flex-shrink-0 w-[85vw] sm:w-[75vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] h-auto my-auto"
+                >
+                  {/* Card del proyecto */}
+                  <div className={`group relative overflow-hidden rounded-2xl border ${project.borderColor} transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl ${project.shadowColor} bg-black/40 backdrop-blur-sm`} style={{ transformStyle: 'preserve-3d' }}>
+                    {/* Imagen placeholder con gradiente */}
+                    <div className={`aspect-video bg-gradient-to-br ${project.gradient} relative overflow-hidden`}>
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-8xl md:text-9xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
+                          {project.icon}
+                        </div>
+                      </div>
+                      {/* Badge de número */}
+                      <div className="absolute top-4 right-4 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center">
+                        <span className="text-lg font-bold text-white">{index + 1}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Info del proyecto */}
+                    <div className={`p-6 md:p-8 bg-gradient-to-br ${project.bgGradient} backdrop-blur-sm`}>
+                      <h3 className={`text-2xl md:text-3xl font-bold ${project.titleColor} mb-3 transition-colors`}>
+                        {project.title}
+                      </h3>
+                      <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-4">
+                        {project.description}
+                      </p>
+                      
+                      {/* Tags */}
+                      <div className="flex gap-2 flex-wrap mb-6">
+                        {project.tags.map((tag) => (
+                          <span key={tag.name} className={`text-xs px-3 py-1.5 rounded-full ${tag.color} border hover:bg-opacity-40 transition-all cursor-pointer`}>
+                            {tag.name}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* CTA ficticio (puede linkearse luego) */}
+                      <Button
+                        variant="outline"
+                        className="w-full border-purple-500/50 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400 transition-all group"
+                      >
+                        Ver Detalles
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Indicador de scroll (solo visible si no es el último) */}
+                  {index < projects.length - 1 && (
+                    <div className="absolute -right-4 top-1/2 -translate-y-1/2 animate-pulse">
+                      <ArrowRight className="w-8 h-8 text-purple-400/50" />
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Card final: CTA de contacto */}
+              <div className="flex-shrink-0 w-[85vw] sm:w-[75vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] h-auto my-auto">
+                <div className="relative overflow-hidden rounded-2xl border border-green-500/30 bg-gradient-to-br from-green-950/30 to-emerald-950/20 backdrop-blur-xl p-8 md:p-12 text-center shadow-2xl shadow-green-500/20">
+                  {/* Decoración de fondo */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-600/5 to-emerald-600/5" />
+                  
+                  {/* Contenido */}
+                  <div className="relative z-10 space-y-6">
+                    <div className="text-6xl mb-4">💡</div>
+                    <h3 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                      ¿Tienes un proyecto en mente?
+                    </h3>
+                    <p className="text-gray-400 text-base md:text-lg leading-relaxed max-w-md mx-auto">
+                      Trabajemos juntos para transformar tu idea en realidad. Nuestro equipo está listo para ayudarte.
+                    </p>
+                    <Button
+                      onClick={exitCarouselMode}
+                      size="lg"
+                      className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-2xl shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 hover:scale-105 mt-6"
+                    >
+                      Solicitar Cotización
+                      <ArrowRight className="ml-2" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Indicadores de progreso (dots en la parte inferior) */}
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[101] flex gap-2">
+            {projects.map((project, index) => (
+              <button
+                key={project.id}
+                onClick={() => {
+                  const scrollContainer = carouselScrollRef.current;
+                  if (scrollContainer) {
+                    const cardWidth = scrollContainer.scrollWidth / (projects.length + 1);
+                    scrollContainer.scrollTo({
+                      left: cardWidth * index,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className="w-2 h-2 rounded-full bg-purple-500/30 hover:bg-purple-500/60 transition-all duration-300 hover:scale-125"
+                aria-label={`Ir a proyecto ${index + 1}`}
+              />
+            ))}
+            {/* Dot final para el CTA */}
+            <button
+              onClick={() => {
+                const scrollContainer = carouselScrollRef.current;
+                if (scrollContainer) {
+                  scrollContainer.scrollTo({
+                    left: scrollContainer.scrollWidth,
+                    behavior: 'smooth'
+                  });
+                }
+              }}
+              className="w-2 h-2 rounded-full bg-green-500/30 hover:bg-green-500/60 transition-all duration-300 hover:scale-125"
+              aria-label="Ir a contacto"
+            />
+          </div>
+        </div>
     </div>
   );
 };

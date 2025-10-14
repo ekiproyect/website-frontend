@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { HamburgerMenu } from "./components/HamburgerMenu";
-import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Team from "./pages/Team";
@@ -49,7 +48,6 @@ const App = () => {
                 <Route path="/technologies" element={<Technologies />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-              <Footer />
             </BrowserRouter>
           </TooltipProvider>
         </QueryClientProvider>
