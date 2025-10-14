@@ -18,6 +18,7 @@ export const ZoomHero = () => {
   // Refs para las nuevas secciones
   const philosophyRef = useRef<HTMLDivElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
+  const technologiesRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
   
@@ -47,15 +48,12 @@ export const ZoomHero = () => {
       title: "E-Commerce Platform",
       description: "Plataforma completa de comercio electrónico con +10K usuarios activos",
       icon: "🚀",
+      image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=800&q=80",
       gradient: "from-purple-600 to-pink-600",
-      borderColor: "border-purple-500/30 hover:border-purple-500/60",
-      bgGradient: "from-purple-950/50 to-pink-950/30",
-      titleColor: "text-purple-300 group-hover:text-purple-200",
-      shadowColor: "hover:shadow-purple-500/30",
       tags: [
-        { name: "React", color: "bg-purple-500/20 text-purple-300 border-purple-500/30" },
-        { name: "Node.js", color: "bg-pink-500/20 text-pink-300 border-pink-500/30" },
-        { name: "MongoDB", color: "bg-blue-500/20 text-blue-300 border-blue-500/30" }
+        { name: "React" },
+        { name: "Node.js" },
+        { name: "MongoDB" }
       ]
     },
     {
@@ -63,15 +61,12 @@ export const ZoomHero = () => {
       title: "FinTech Dashboard",
       description: "Dashboard analítico para gestión financiera en tiempo real",
       icon: "📱",
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
       gradient: "from-blue-600 to-purple-600",
-      borderColor: "border-blue-500/30 hover:border-blue-500/60",
-      bgGradient: "from-blue-950/50 to-purple-950/30",
-      titleColor: "text-blue-300 group-hover:text-blue-200",
-      shadowColor: "hover:shadow-blue-500/30",
       tags: [
-        { name: "Next.js", color: "bg-blue-500/20 text-blue-300 border-blue-500/30" },
-        { name: "TypeScript", color: "bg-purple-500/20 text-purple-300 border-purple-500/30" },
-        { name: "TailwindCSS", color: "bg-pink-500/20 text-pink-300 border-pink-500/30" }
+        { name: "Next.js" },
+        { name: "TypeScript" },
+        { name: "TailwindCSS" }
       ]
     },
     {
@@ -79,15 +74,12 @@ export const ZoomHero = () => {
       title: "AI Content Generator",
       description: "Generador de contenido con IA para marketing digital y redes sociales",
       icon: "🤖",
+      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
       gradient: "from-green-600 to-teal-600",
-      borderColor: "border-green-500/30 hover:border-green-500/60",
-      bgGradient: "from-green-950/50 to-teal-950/30",
-      titleColor: "text-green-300 group-hover:text-green-200",
-      shadowColor: "hover:shadow-green-500/30",
       tags: [
-        { name: "Python", color: "bg-green-500/20 text-green-300 border-green-500/30" },
-        { name: "OpenAI", color: "bg-teal-500/20 text-teal-300 border-teal-500/30" },
-        { name: "FastAPI", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" }
+        { name: "Python" },
+        { name: "OpenAI" },
+        { name: "FastAPI" }
       ]
     },
     {
@@ -95,15 +87,12 @@ export const ZoomHero = () => {
       title: "Healthcare CRM",
       description: "Sistema de gestión de pacientes con historial médico electrónico",
       icon: "🏥",
+      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
       gradient: "from-red-600 to-orange-600",
-      borderColor: "border-red-500/30 hover:border-red-500/60",
-      bgGradient: "from-red-950/50 to-orange-950/30",
-      titleColor: "text-red-300 group-hover:text-red-200",
-      shadowColor: "hover:shadow-red-500/30",
       tags: [
-        { name: "Vue.js", color: "bg-red-500/20 text-red-300 border-red-500/30" },
-        { name: "Laravel", color: "bg-orange-500/20 text-orange-300 border-orange-500/30" },
-        { name: "MySQL", color: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30" }
+        { name: "Vue.js" },
+        { name: "Laravel" },
+        { name: "MySQL" }
       ]
     },
     {
@@ -111,15 +100,12 @@ export const ZoomHero = () => {
       title: "Logistics Tracker",
       description: "Sistema de rastreo en tiempo real para entregas y gestión de flotas",
       icon: "🚚",
+      image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
       gradient: "from-indigo-600 to-cyan-600",
-      borderColor: "border-indigo-500/30 hover:border-indigo-500/60",
-      bgGradient: "from-indigo-950/50 to-cyan-950/30",
-      titleColor: "text-indigo-300 group-hover:text-indigo-200",
-      shadowColor: "hover:shadow-indigo-500/30",
       tags: [
-        { name: "React Native", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500/30" },
-        { name: "Firebase", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30" },
-        { name: "Google Maps", color: "bg-blue-500/20 text-blue-300 border-blue-500/30" }
+        { name: "React Native" },
+        { name: "Firebase" },
+        { name: "Google Maps" }
       ]
     }
   ];
@@ -295,9 +281,9 @@ export const ZoomHero = () => {
     // Guardar en estado para usar en JSX
     setDeviceInfo({ isMobile, isTouch });
     
-    // Scroll distance MÍNIMO ABSOLUTO - Solo para las animaciones necesarias
-    // Valor extremadamente reducido para eliminar TODO espacio en blanco
-    const scrollDistance = isMobile ? 3500 : 5500;
+    // Scroll distance aumentado para acomodar las nuevas secciones (Servicios + Tecnologías)
+    // Aumentado ~50% desde 3500/5500 para dar espacio a las 2 secciones adicionales
+    const scrollDistance = isMobile ? 5500 : 8500;
     
     // Limitar la altura del documento para evitar espacio en blanco
     document.documentElement.style.maxHeight = `${window.innerHeight + scrollDistance}px`;
@@ -324,8 +310,8 @@ export const ZoomHero = () => {
         opacity: 0,
       });
       
-      // Establecer estados iniciales de Servicios y Proyectos
-      gsap.set([servicesRef.current, projectsRef.current], {
+      // Establecer estados iniciales de Servicios, Tecnologías y Proyectos
+      gsap.set([servicesRef.current, technologiesRef.current, projectsRef.current], {
         autoAlpha: 0, // Usa autoAlpha para ocultar completamente y prevenir clicks
       });
       
@@ -514,34 +500,55 @@ export const ZoomHero = () => {
       // Sección de servicios entra
       // ============================================
       .to(servicesRef.current, {
-        opacity: 1,
+        autoAlpha: 1,
         duration: 2.5,
         ease: 'power2.out',
       }, 16)
       
       // ============================================
       // FASE 11: SERVICIOS DESAPARECE (160-170%)
-      // Preparando sección de proyectos
+      // Preparando sección de tecnologías
       // ============================================
       .to(servicesRef.current, {
-        opacity: 0,
+        autoAlpha: 0,
         y: -30,
         duration: 2,
         ease: 'power2.inOut',
       }, 18.5)
       
       // ============================================
-      // FASE 12: PROYECTOS APARECE (170-180%)
+      // FASE 11.5: TECNOLOGÍAS APARECE (170-180%)
+      // Stack tecnológico entra
+      // ============================================
+      .to(technologiesRef.current, {
+        autoAlpha: 1,
+        duration: 2.5,
+        ease: 'power2.out',
+      }, 20)
+      
+      // ============================================
+      // FASE 11.8: TECNOLOGÍAS DESAPARECE (185-195%)
+      // Preparando sección de proyectos
+      // ============================================
+      .to(technologiesRef.current, {
+        autoAlpha: 0,
+        y: -30,
+        duration: 2,
+        ease: 'power2.inOut',
+      }, 22.5)
+      
+      // ============================================
+      // FASE 12: PROYECTOS APARECE (195-205%)
       // Showcase de proyectos entra
       // ============================================
       .to(projectsRef.current, {
         autoAlpha: 1, // Usa autoAlpha para hacer visible y clickeable
         duration: 2.5,
         ease: 'power2.out',
-      }, 20)
+      }, 24)
       
       // ============================================
-      // FASE 13: PROYECTOS DESAPARECE (190-200%)
+      // FASE 13: PROYECTOS DESAPARECE (215-225%)
       // Transición hacia cotización
       // ============================================
       .to(projectsRef.current, {
@@ -550,10 +557,10 @@ export const ZoomHero = () => {
         scale: 0.95,
         duration: 2,
         ease: 'power2.in',
-      }, 22.5)
+      }, 26.5)
       
       // ============================================
-      // FASE 14: COTIZACIÓN APARECE (200-220%) - FINAL
+      // FASE 14: COTIZACIÓN APARECE (230-250%) - FINAL
       // Sección de cotización con formulario
       // ============================================
       .to(quoteRef.current, {
@@ -562,7 +569,7 @@ export const ZoomHero = () => {
         y: 0,
         duration: 3,
         ease: 'power3.out',
-      }, 24.5);
+      }, 28.5);
     }, containerRef);
     
     // ============================================
@@ -661,22 +668,22 @@ export const ZoomHero = () => {
 
         /* Scrollbar personalizado para el carrusel */
         .overflow-x-auto::-webkit-scrollbar {
-          height: 8px;
+          height: 6px;
         }
         
         .overflow-x-auto::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.2);
+          background: rgba(255, 255, 255, 0.05);
           border-radius: 10px;
         }
         
         .overflow-x-auto::-webkit-scrollbar-thumb {
-          background: rgba(139, 92, 246, 0.4);
+          background: rgba(255, 255, 255, 0.2);
           border-radius: 10px;
           transition: background 0.3s;
         }
         
         .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-          background: rgba(139, 92, 246, 0.6);
+          background: rgba(255, 255, 255, 0.4);
         }
       `}</style>
       
@@ -852,7 +859,6 @@ export const ZoomHero = () => {
       <div
         ref={servicesRef}
         className="absolute inset-0 flex flex-col items-center justify-center z-[25] pointer-events-none px-4 sm:px-6"
-        style={{ opacity: 0 }}
       >
         <div className="max-w-6xl w-full text-center space-y-6 sm:space-y-8 md:space-y-12">
           {/* Título Servicios */}
@@ -912,6 +918,78 @@ export const ZoomHero = () => {
         </div>
       </div>
 
+      {/* SECCIÓN TECNOLOGÍAS (aparece después de Servicios) - z-[25] */}
+      <div
+        ref={technologiesRef}
+        className="absolute inset-0 flex flex-col items-center justify-center z-[25] pointer-events-none px-4 sm:px-6"
+      >
+        <div className="max-w-6xl w-full text-center space-y-6 sm:space-y-8 md:space-y-12">
+          {/* Título Tecnologías */}
+          <div className="space-y-3 md:space-y-4">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight">
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Stack Tecnológico
+              </span>
+            </h2>
+            <div className="h-0.5 w-20 md:h-1 md:w-32 mx-auto bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-60" />
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-400">
+              Las herramientas más modernas para construir el futuro
+            </p>
+          </div>
+          
+          {/* Grid de Tecnologías - 2 filas */}
+          <div className="space-y-6 mt-8 md:mt-12">
+            {/* Fila 1: Frontend */}
+            <div>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-cyan-300 mb-4">
+                Frontend
+              </h3>
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-cyan-950/40 to-blue-950/30 backdrop-blur-sm border border-cyan-500/30 rounded-xl hover:border-cyan-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-cyan-300">React</span>
+                </div>
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-blue-950/40 to-purple-950/30 backdrop-blur-sm border border-blue-500/30 rounded-xl hover:border-blue-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-blue-300">Next.js</span>
+                </div>
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-purple-950/40 to-pink-950/30 backdrop-blur-sm border border-purple-500/30 rounded-xl hover:border-purple-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-purple-300">TypeScript</span>
+                </div>
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-cyan-950/40 to-teal-950/30 backdrop-blur-sm border border-cyan-500/30 rounded-xl hover:border-cyan-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-cyan-300">Tailwind CSS</span>
+                </div>
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-blue-950/40 to-cyan-950/30 backdrop-blur-sm border border-blue-500/30 rounded-xl hover:border-blue-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-blue-300">Vue.js</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Fila 2: Backend & Cloud */}
+            <div>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-300 mb-4">
+                Backend & Cloud
+              </h3>
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-green-950/40 to-emerald-950/30 backdrop-blur-sm border border-green-500/30 rounded-xl hover:border-green-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-green-300">Node.js</span>
+                </div>
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-red-950/40 to-orange-950/30 backdrop-blur-sm border border-red-500/30 rounded-xl hover:border-red-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-red-300">Laravel</span>
+                </div>
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-blue-950/40 to-indigo-950/30 backdrop-blur-sm border border-blue-500/30 rounded-xl hover:border-blue-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-blue-300">Python</span>
+                </div>
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-yellow-950/40 to-orange-950/30 backdrop-blur-sm border border-yellow-500/30 rounded-xl hover:border-yellow-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-yellow-300">Firebase</span>
+                </div>
+                <div className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-orange-950/40 to-red-950/30 backdrop-blur-sm border border-orange-500/30 rounded-xl hover:border-orange-400/50 hover:scale-105 transition-all duration-300">
+                  <span className="text-sm sm:text-base font-semibold text-orange-300">AWS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* SECCIÓN PROYECTOS (showcase visual) - z-[25] */}
       <div
         ref={projectsRef}
@@ -933,9 +1011,14 @@ export const ZoomHero = () => {
           
           {/* Proyecto destacado único */}
           <div className="mt-8 md:mt-12 flex justify-center pointer-events-none">
-            <div className={`group relative overflow-hidden rounded-xl md:rounded-2xl border ${projects[0].borderColor} transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl ${projects[0].shadowColor} max-w-2xl w-full`} style={{ transformStyle: 'preserve-3d' }}>
+            <div className="group relative overflow-hidden rounded-xl md:rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/30 max-w-2xl w-full">
               {/* Imagen placeholder con gradiente */}
               <div className={`aspect-video bg-gradient-to-br ${projects[0].gradient} relative overflow-hidden`}>
+                <img 
+                  src={projects[0].image} 
+                  alt={projects[0].title}
+                  className="w-full h-full object-cover opacity-80"
+                />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-6xl sm:text-7xl md:text-9xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
@@ -948,8 +1031,8 @@ export const ZoomHero = () => {
                 </div>
               </div>
               {/* Info del proyecto */}
-              <div className={`p-5 sm:p-6 md:p-8 bg-gradient-to-br ${projects[0].bgGradient} backdrop-blur-sm`}>
-                <h3 className={`text-xl sm:text-2xl md:text-3xl font-bold ${projects[0].titleColor} mb-2 sm:mb-3 transition-colors`}>
+              <div className="p-5 sm:p-6 md:p-8 bg-gradient-to-br from-purple-950/50 to-pink-950/30 backdrop-blur-sm">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-purple-300 group-hover:text-purple-200 mb-2 sm:mb-3 transition-colors">
                   {projects[0].title}
                 </h3>
                 <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
@@ -957,7 +1040,7 @@ export const ZoomHero = () => {
                 </p>
                 <div className="flex gap-2 mt-3 sm:mt-4 flex-wrap">
                   {projects[0].tags.map((tag) => (
-                    <span key={tag.name} className={`text-xs px-3 py-1 rounded-full ${tag.color} border hover:bg-opacity-40 transition-all cursor-pointer`}>
+                    <span key={tag.name} className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-opacity-40 transition-all cursor-pointer">
                       {tag.name}
                     </span>
                   ))}
@@ -1192,115 +1275,146 @@ export const ZoomHero = () => {
       {/* Siempre renderizado, pero oculto con display:none hasta que se active */}
       <div
         ref={carouselContainerRef}
-        className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center"
-        style={{ display: 'none' }}
+        className="fixed inset-0 z-[100] backdrop-blur-3xl flex items-center justify-center"
+        style={{ 
+          display: 'none',
+          backgroundColor: 'rgba(0, 0, 0, 0.6)'
+        }}
       >
           {/* Botón Atrás (fixed top-left) */}
           <button
             ref={backButtonRef}
             onClick={exitCarouselMode}
-            className="fixed top-6 left-6 z-[101] px-6 py-3 bg-purple-600/20 hover:bg-purple-600/30 backdrop-blur-md rounded-xl border border-purple-500/40 hover:border-purple-500/60 transition-all duration-300 hover:scale-105 group shadow-2xl shadow-purple-500/20"
+            className="fixed top-8 left-8 z-[101] px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-xl rounded-2xl border border-white/20 hover:border-white/30 transition-all duration-300 hover:scale-105 group shadow-2xl"
             style={{ opacity: 0 }}
           >
-            <div className="flex items-center gap-2">
-              <ArrowRight className="w-5 h-5 text-purple-300 rotate-180 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-purple-300 font-semibold">Atrás</span>
+            <div className="flex items-center gap-3">
+              <ArrowRight className="w-5 h-5 text-white rotate-180 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-white font-semibold">Volver</span>
             </div>
           </button>
 
           {/* Container del carrusel con scroll horizontal */}
           <div
             ref={carouselScrollRef}
-            className="w-full h-full overflow-x-auto overflow-y-hidden"
+            className="w-full h-full overflow-x-auto overflow-y-hidden py-20"
             style={{
               scrollbarWidth: 'thin',
-              scrollbarColor: 'rgba(139, 92, 246, 0.3) transparent'
+              scrollbarColor: 'rgba(255, 255, 255, 0.3) transparent'
             }}
           >
             {/* Track horizontal de proyectos */}
-            <div className="inline-flex h-full items-center px-8 gap-8">
+            <div className="inline-flex h-full items-center px-12 gap-12">
               {projects.map((project, index) => (
                 <div
                   key={project.id}
-                  className="flex-shrink-0 w-[85vw] sm:w-[75vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] h-auto my-auto"
+                  className="flex-shrink-0 w-[80vw] sm:w-[70vw] md:w-[55vw] lg:w-[45vw] xl:w-[35vw] h-auto my-auto"
                 >
-                  {/* Card del proyecto */}
-                  <div className={`group relative overflow-hidden rounded-2xl border ${project.borderColor} transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl ${project.shadowColor} bg-black/40 backdrop-blur-sm`} style={{ transformStyle: 'preserve-3d' }}>
-                    {/* Imagen placeholder con gradiente */}
-                    <div className={`aspect-video bg-gradient-to-br ${project.gradient} relative overflow-hidden`}>
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-8xl md:text-9xl opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500">
+                  {/* Card del proyecto - Split design: Imagen | Contenido */}
+                  <div className="group relative overflow-hidden rounded-3xl transition-all duration-500 hover:scale-[1.02]" style={{ transformStyle: 'preserve-3d' }}>
+                    {/* Glassmorphism background */}
+                    <div className="absolute inset-0 bg-white/5 backdrop-blur-2xl border border-white/10" />
+                    
+                    {/* Gradient glow animado en hover */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-2xl`} />
+                    
+                    {/* Content wrapper - Grid 2 columnas */}
+                    <div className="relative z-10 grid grid-cols-2 h-full">
+                      {/* IZQUIERDA: Imagen del proyecto */}
+                      <div className="relative overflow-hidden">
+                        <img 
+                          src={project.image} 
+                          alt={project.title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        {/* Overlay gradient sutil */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
+                        
+                        {/* Badge de número flotante */}
+                        <div className="absolute top-6 left-6 w-12 h-12 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex items-center justify-center shadow-2xl">
+                          <span className="text-lg font-black text-white">#{String(index + 1).padStart(2, '0')}</span>
+                        </div>
+                        
+                        {/* Icon flotante en la esquina inferior */}
+                        <div className="absolute bottom-6 right-6 text-5xl opacity-80 drop-shadow-2xl">
                           {project.icon}
                         </div>
                       </div>
-                      {/* Badge de número */}
-                      <div className="absolute top-4 right-4 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center">
-                        <span className="text-lg font-bold text-white">{index + 1}</span>
-                      </div>
-                    </div>
-                    
-                    {/* Info del proyecto */}
-                    <div className={`p-6 md:p-8 bg-gradient-to-br ${project.bgGradient} backdrop-blur-sm`}>
-                      <h3 className={`text-2xl md:text-3xl font-bold ${project.titleColor} mb-3 transition-colors`}>
-                        {project.title}
-                      </h3>
-                      <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-4">
-                        {project.description}
-                      </p>
-                      
-                      {/* Tags */}
-                      <div className="flex gap-2 flex-wrap mb-6">
-                        {project.tags.map((tag) => (
-                          <span key={tag.name} className={`text-xs px-3 py-1.5 rounded-full ${tag.color} border hover:bg-opacity-40 transition-all cursor-pointer`}>
-                            {tag.name}
-                          </span>
-                        ))}
-                      </div>
 
-                      {/* CTA ficticio (puede linkearse luego) */}
-                      <Button
-                        variant="outline"
-                        className="w-full border-purple-500/50 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400 transition-all group"
-                      >
-                        Ver Detalles
-                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </Button>
+                      {/* DERECHA: Información del proyecto */}
+                      <div className="flex flex-col justify-between p-8 space-y-6">
+                        {/* Header */}
+                        <div className="space-y-4">
+                          <h3 className="text-2xl md:text-3xl font-black text-white leading-tight">
+                            {project.title}
+                          </h3>
+                          <p className="text-gray-300 text-sm md:text-base leading-relaxed line-clamp-3">
+                            {project.description}
+                          </p>
+                        </div>
+                        
+                        {/* Tags */}
+                        <div className="flex gap-2 flex-wrap">
+                          {project.tags.map((tag) => (
+                            <span 
+                              key={tag.name} 
+                              className="text-xs px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-white border border-white/20 font-medium"
+                            >
+                              {tag.name}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* CTA: Solo flecha circular */}
+                        <div className="flex justify-end">
+                          <button
+                            className="w-14 h-14 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 hover:border-white/30 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 group/btn shadow-xl"
+                            aria-label="Ver proyecto completo"
+                          >
+                            <ArrowRight className="w-6 h-6 text-white group-hover/btn:translate-x-1 transition-transform" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   {/* Indicador de scroll (solo visible si no es el último) */}
                   {index < projects.length - 1 && (
-                    <div className="absolute -right-4 top-1/2 -translate-y-1/2 animate-pulse">
-                      <ArrowRight className="w-8 h-8 text-purple-400/50" />
+                    <div className="absolute -right-6 top-1/2 -translate-y-1/2 animate-pulse opacity-50">
+                      <ArrowRight className="w-10 h-10 text-white drop-shadow-2xl" />
                     </div>
                   )}
                 </div>
               ))}
 
               {/* Card final: CTA de contacto */}
-              <div className="flex-shrink-0 w-[85vw] sm:w-[75vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] h-auto my-auto">
-                <div className="relative overflow-hidden rounded-2xl border border-green-500/30 bg-gradient-to-br from-green-950/30 to-emerald-950/20 backdrop-blur-xl p-8 md:p-12 text-center shadow-2xl shadow-green-500/20">
-                  {/* Decoración de fondo */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-600/5 to-emerald-600/5" />
+              <div className="flex-shrink-0 w-[80vw] sm:w-[70vw] md:w-[55vw] lg:w-[45vw] xl:w-[35vw] h-auto my-auto">
+                <div className="relative overflow-hidden rounded-3xl bg-white/5 backdrop-blur-2xl border border-white/10 p-12 md:p-16 text-center shadow-2xl hover:scale-[1.02] transition-all duration-500">
+                  {/* Gradient glow animado */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 via-emerald-500/20 to-teal-500/20 blur-3xl opacity-50" />
                   
                   {/* Contenido */}
-                  <div className="relative z-10 space-y-6">
-                    <div className="text-6xl mb-4">💡</div>
-                    <h3 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                      ¿Tienes un proyecto en mente?
+                  <div className="relative z-10 space-y-8">
+                    <div className="text-7xl mb-6 animate-bounce">💡</div>
+                    <h3 className="text-4xl md:text-5xl font-black text-white leading-tight">
+                      ¿Tienes un proyecto
+                      <span className="block bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mt-2">
+                        en mente?
+                      </span>
                     </h3>
-                    <p className="text-gray-400 text-base md:text-lg leading-relaxed max-w-md mx-auto">
-                      Trabajemos juntos para transformar tu idea en realidad. Nuestro equipo está listo para ayudarte.
+                    <p className="text-gray-300 text-lg md:text-xl leading-relaxed max-w-md mx-auto">
+                      Trabajemos juntos para transformar tu visión en una solución digital innovadora
                     </p>
-                    <Button
-                      onClick={exitCarouselMode}
-                      size="lg"
-                      className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-2xl shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 hover:scale-105 mt-6"
-                    >
-                      Solicitar Cotización
-                      <ArrowRight className="ml-2" />
-                    </Button>
+                    <div className="pt-4">
+                      <Button
+                        onClick={exitCarouselMode}
+                        size="lg"
+                        className="bg-white/10 hover:bg-white/20 backdrop-blur-md border-2 border-white/30 hover:border-white/50 text-white font-bold text-lg px-10 py-7 rounded-2xl shadow-2xl hover:scale-105 transition-all duration-300"
+                      >
+                        Solicitar Cotización
+                        <ArrowRight className="ml-3 w-6 h-6" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1308,21 +1422,21 @@ export const ZoomHero = () => {
           </div>
 
           {/* Indicadores de progreso (dots en la parte inferior) */}
-          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[101] flex gap-2">
+          <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[101] flex gap-3 bg-white/10 backdrop-blur-xl px-6 py-3 rounded-full border border-white/20">
             {projects.map((project, index) => (
               <button
                 key={project.id}
                 onClick={() => {
                   const scrollContainer = carouselScrollRef.current;
-                  if (scrollContainer) {
+                  if (scrollContainer && lenisRef.current) {
                     const cardWidth = scrollContainer.scrollWidth / (projects.length + 1);
-                    scrollContainer.scrollTo({
-                      left: cardWidth * index,
-                      behavior: 'smooth'
+                    lenisRef.current.scrollTo(cardWidth * index, {
+                      duration: 1,
+                      easing: (t) => 1 - Math.pow(1 - t, 3)
                     });
                   }
                 }}
-                className="w-2 h-2 rounded-full bg-purple-500/30 hover:bg-purple-500/60 transition-all duration-300 hover:scale-125"
+                className="w-2.5 h-2.5 rounded-full bg-white/30 hover:bg-white/70 transition-all duration-300 hover:scale-125"
                 aria-label={`Ir a proyecto ${index + 1}`}
               />
             ))}
@@ -1330,14 +1444,14 @@ export const ZoomHero = () => {
             <button
               onClick={() => {
                 const scrollContainer = carouselScrollRef.current;
-                if (scrollContainer) {
-                  scrollContainer.scrollTo({
-                    left: scrollContainer.scrollWidth,
-                    behavior: 'smooth'
+                if (scrollContainer && lenisRef.current) {
+                  lenisRef.current.scrollTo(scrollContainer.scrollWidth, {
+                    duration: 1,
+                    easing: (t) => 1 - Math.pow(1 - t, 3)
                   });
                 }
               }}
-              className="w-2 h-2 rounded-full bg-green-500/30 hover:bg-green-500/60 transition-all duration-300 hover:scale-125"
+              className="w-2.5 h-2.5 rounded-full bg-green-400/50 hover:bg-green-400 transition-all duration-300 hover:scale-125"
               aria-label="Ir a contacto"
             />
           </div>

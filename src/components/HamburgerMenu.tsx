@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { X } from 'lucide-react';
 
@@ -8,15 +8,56 @@ export const HamburgerMenu = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
-    { path: '/', label: 'Inicio' },
-    { path: '/about', label: 'Nosotros' },
-    { path: '/services', label: 'Servicios' },
-    { path: '/projects', label: 'Proyectos' },
-    { path: '/technologies', label: 'Tecnologías' },
-    { path: '/team', label: 'Equipo' },
+    { path: '/', label: 'Inicio', type: 'route' },
+    { path: '#filosofia', label: 'Filosofía', type: 'scroll' },
+    { path: '#servicios', label: 'Servicios', type: 'scroll' },
+    { path: '#tecnologias', label: 'Tecnologías', type: 'scroll' },
+    { path: '#proyectos', label: 'Proyectos', type: 'scroll' },
+    { path: '/team', label: 'Equipo', type: 'route' },
   ];
+
+  // Función para hacer scroll suave hacia una sección
+  const scrollToSection = (sectionId: string) => {
+    // Si no estamos en la página de inicio, navegar primero
+    if (location.pathname !== '/') {
+      navigate('/');
+      // Esperar a que la navegación complete antes de hacer scroll
+      setTimeout(() => {
+        performScroll(sectionId);
+      }, 300);
+    } else {
+      performScroll(sectionId);
+    }
+    setIsOpen(false);
+  };
+
+  const performScroll = (sectionId: string) => {
+    // Mapeo de IDs a píxeles de scroll aproximados
+    // Basado en el scrollDistance de 8500px (desktop) / 5500px (mobile)
+    const isMobile = window.innerWidth < 768;
+    const totalScrollDistance = isMobile ? 5500 : 8500;
+    
+    const sectionMap: { [key: string]: number } = {
+      'filosofia': 0.40,      // ~40% del scroll total
+      'servicios': 0.55,      // ~55% del scroll total
+      'tecnologias': 0.70,    // ~70% del scroll total
+      'proyectos': 0.82,      // ~82% del scroll total
+    };
+
+    const scrollPercentage = sectionMap[sectionId];
+    if (scrollPercentage !== undefined) {
+      const targetScroll = totalScrollDistance * scrollPercentage;
+      
+      // Scroll nativo (no smooth) porque GSAP ScrollTrigger con scrub maneja el scroll
+      window.scrollTo({
+        top: targetScroll,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -143,35 +184,74 @@ export const HamburgerMenu = () => {
 
           {/* Items del menú */}
           <nav className="flex-1 flex flex-col justify-center gap-6">
-            {menuItems.map((item, index) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className="menu-item group"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-blue-400 font-mono">
-                    0{index + 1}
-                  </span>
-                  <span
-                    className={`text-3xl font-bold transition-all duration-300 ${
-                      location.pathname === item.path
-                        ? 'text-white'
-                        : 'text-gray-500 group-hover:text-white'
-                    }`}
+            {menuItems.map((item, index) => {
+              const isActive = item.type === 'route' 
+                ? location.pathname === item.path
+                : location.pathname === '/' && location.hash === item.path;
+
+              // Si es un scroll link, usar button; si es route, usar Link
+              if (item.type === 'scroll') {
+                return (
+                  <button
+                    key={item.path}
+                    onClick={() => scrollToSection(item.path.replace('#', ''))}
+                    className="menu-item group text-left"
                   >
-                    {item.label}
-                  </span>
-                </div>
-                <div
-                  className={`h-0.5 mt-2 transition-all duration-300 ${
-                    location.pathname === item.path
-                      ? 'w-full bg-gradient-to-r from-blue-500 to-purple-500'
-                      : 'w-0 bg-white group-hover:w-full'
-                  }`}
-                />
-              </Link>
-            ))}
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm text-blue-400 font-mono">
+                        0{index + 1}
+                      </span>
+                      <span
+                        className={`text-3xl font-bold transition-all duration-300 ${
+                          isActive
+                            ? 'text-white'
+                            : 'text-gray-500 group-hover:text-white'
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                    </div>
+                    <div
+                      className={`h-0.5 mt-2 transition-all duration-300 ${
+                        isActive
+                          ? 'w-full bg-gradient-to-r from-blue-500 to-purple-500'
+                          : 'w-0 bg-white group-hover:w-full'
+                      }`}
+                    />
+                  </button>
+                );
+              } else {
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="menu-item group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm text-blue-400 font-mono">
+                        0{index + 1}
+                      </span>
+                      <span
+                        className={`text-3xl font-bold transition-all duration-300 ${
+                          isActive
+                            ? 'text-white'
+                            : 'text-gray-500 group-hover:text-white'
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                    </div>
+                    <div
+                      className={`h-0.5 mt-2 transition-all duration-300 ${
+                        isActive
+                          ? 'w-full bg-gradient-to-r from-blue-500 to-purple-500'
+                          : 'w-0 bg-white group-hover:w-full'
+                      }`}
+                    />
+                  </Link>
+                );
+              }
+            })}
           </nav>
 
           {/* Footer del menú */}
