@@ -16,7 +16,7 @@ export const HamburgerMenu = () => {
     { path: '#servicios', label: 'Servicios', type: 'scroll' },
     { path: '#tecnologias', label: 'Tecnologías', type: 'scroll' },
     { path: '#proyectos', label: 'Proyectos', type: 'scroll' },
-    { path: '/team', label: 'Equipo', type: 'route' },
+    { path: '#team', label: 'Equipo', type: 'scroll' },
   ];
 
   // Función para hacer scroll suave hacia una sección
@@ -38,13 +38,14 @@ export const HamburgerMenu = () => {
     // Mapeo de IDs a píxeles de scroll aproximados
     // Basado en el scrollDistance de 8500px (desktop) / 5500px (mobile)
     const isMobile = window.innerWidth < 768;
-    const totalScrollDistance = isMobile ? 5500 : 8500;
+    const totalScrollDistance = isMobile ? 6500 : 10000; // Updated to match ZoomHero
     
     const sectionMap: { [key: string]: number } = {
-      'filosofia': 0.40,      // ~40% del scroll total
-      'servicios': 0.55,      // ~55% del scroll total
-      'tecnologias': 0.70,    // ~70% del scroll total
-      'proyectos': 0.82,      // ~82% del scroll total
+      'filosofia': 0.35,      // ~35% del scroll total
+      'servicios': 0.50,      // ~50% del scroll total
+      'tecnologias': 0.65,    // ~65% del scroll total
+      'proyectos': 0.75,      // ~75% del scroll total
+      'team': 0.85,           // ~85% del scroll total (NEW)
     };
 
     const scrollPercentage = sectionMap[sectionId];

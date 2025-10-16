@@ -5,6 +5,7 @@ import Lenis from 'lenis';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TeamMemberSection } from './TeamMemberSection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +21,12 @@ export const ZoomHero = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
   const technologiesRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
+  const teamIntroRef = useRef<HTMLDivElement>(null);
+  const teamRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
+  
+  // Ref para controlar el progreso del video de Team
+  const teamVideoProgressRef = useRef({ value: 0 });
   
   // Refs para el fondo vivo
   const backgroundRef = useRef<HTMLDivElement>(null);
@@ -109,6 +115,26 @@ export const ZoomHero = () => {
       ]
     }
   ];
+
+  // Data de Team
+  const teamMember = {
+    id: 'vicente',
+    name: 'Vicente Araya',
+    role: 'CEO & Founder | Ingeniero de Software',
+    bio: 'Apasionado por la innovación tecnológica y el desarrollo de soluciones escalables. Con más de 8 años de experiencia liderando equipos de desarrollo y arquitectando sistemas complejos que transforman negocios.',
+    skills: ['React', 'Node.js', 'AWS', 'TypeScript', 'System Design'],
+    social: {
+      linkedin: 'https://linkedin.com/in/vicente-araya',
+      github: 'https://github.com/vicentearaya',
+      twitter: 'https://twitter.com/vicentearaya',
+    },
+    frames: {
+      path: '/equipo/vicente',
+      start: 20,
+      end: 147,
+      total: 128,
+    },
+  };
 
   // Funciones del carrusel
   const enterCarouselMode = () => {
@@ -281,9 +307,9 @@ export const ZoomHero = () => {
     // Guardar en estado para usar en JSX
     setDeviceInfo({ isMobile, isTouch });
     
-    // Scroll distance aumentado para acomodar las nuevas secciones (Servicios + Tecnologías)
-    // Aumentado ~50% desde 3500/5500 para dar espacio a las 2 secciones adicionales
-    const scrollDistance = isMobile ? 5500 : 8500;
+    // Scroll distance aumentado para acomodar las nuevas secciones (Servicios, Tecnologías y Team)
+    // Aumentado para dar espacio a Filosofía, Servicios, Tecnologías, Proyectos, Team y Cotización
+    const scrollDistance = isMobile ? 6500 : 10000;
     
     // Limitar la altura del documento para evitar espacio en blanco
     document.documentElement.style.maxHeight = `${window.innerHeight + scrollDistance}px`;
@@ -313,6 +339,11 @@ export const ZoomHero = () => {
       // Establecer estados iniciales de Servicios, Tecnologías y Proyectos
       gsap.set([servicesRef.current, technologiesRef.current, projectsRef.current], {
         autoAlpha: 0, // Usa autoAlpha para ocultar completamente y prevenir clicks
+      });
+      
+      // Establecer estado inicial de Team Intro y Team
+      gsap.set([teamIntroRef.current, teamRef.current], {
+        autoAlpha: 0,
       });
       
       // Establecer estado inicial de Cotización (autoAlpha = opacity + visibility)
@@ -549,7 +580,7 @@ export const ZoomHero = () => {
       
       // ============================================
       // FASE 13: PROYECTOS DESAPARECE (215-225%)
-      // Transición hacia cotización
+      // Transición hacia sección de Team
       // ============================================
       .to(projectsRef.current, {
         autoAlpha: 0, // Usa autoAlpha para ocultar completamente
@@ -560,7 +591,53 @@ export const ZoomHero = () => {
       }, 26.5)
       
       // ============================================
-      // FASE 14: COTIZACIÓN APARECE (230-250%) - FINAL
+      // FASE 14: TEAM INTRO APARECE (225-227%)
+      // Badge/Título de introducción a Team
+      // ============================================
+      .to(teamIntroRef.current, {
+        autoAlpha: 1,
+        scale: 1,
+        y: 0,
+        duration: 1.5,
+        ease: 'power2.out',
+      }, 28.5)
+      
+      // ============================================
+      // FASE 15: TEAM INTRO DESAPARECE Y TEAM APARECE (227-232%)
+      // Transición del título al split screen
+      // ============================================
+      .to(teamIntroRef.current, {
+        autoAlpha: 0,
+        scale: 0.95,
+        duration: 1,
+        ease: 'power2.in',
+      }, 30)
+      
+      .to(teamRef.current, {
+        autoAlpha: 1,
+        duration: 2,
+        ease: 'power2.out',
+      }, 30.5)
+      
+      // Animar el progreso del video de Team (de 0 a 1) durante su visibilidad
+      .to(teamVideoProgressRef.current, {
+        value: 1,
+        duration: 2.5,
+        ease: 'none',
+      }, 30.5)
+      
+      // ============================================
+      // FASE 16: TEAM DESAPARECE (237-240%)
+      // Transición hacia cotización
+      // ============================================
+      .to(teamRef.current, {
+        autoAlpha: 0,
+        duration: 2,
+        ease: 'power2.in',
+      }, 33)
+      
+      // ============================================
+      // FASE 17: COTIZACIÓN APARECE (250-270%) - FINAL
       // Sección de cotización con formulario
       // ============================================
       .to(quoteRef.current, {
@@ -569,7 +646,7 @@ export const ZoomHero = () => {
         y: 0,
         duration: 3,
         ease: 'power3.out',
-      }, 28.5);
+      }, 35);
     }, containerRef);
     
     // ============================================
@@ -771,8 +848,8 @@ export const ZoomHero = () => {
       {/* TAGLINE (aparece después de "EKI PROJECT") - z-6 */}
       <p
         ref={taglineRef}
-        className="absolute left-1/2 -translate-x-1/2 z-[6] text-sm sm:text-base md:text-xl lg:text-2xl font-light tracking-wide text-center px-4 sm:px-6 max-w-3xl"
-        style={{ top: '68%', opacity: 0 }}
+        className="absolute left-1/2 top-[65%] -translate-x-1/2 -translate-y-1/2 z-[6] text-sm sm:text-base md:text-xl lg:text-2xl font-light tracking-wide text-center px-4 sm:px-6 max-w-3xl w-full"
+        style={{ opacity: 0 }}
       >
         <span className="text-gray-300">
           Transformación digital,{' '}
@@ -801,7 +878,7 @@ export const ZoomHero = () => {
       {/* SUBTÍTULO (aparece después) - z-15 con posición más baja */}
       <p
         ref={subtitleRef}
-        className="absolute left-1/2 -translate-x-1/2 bottom-[18%] z-15 text-xs sm:text-sm md:text-base lg:text-xl text-gray-300 text-center px-4 sm:px-6 max-w-2xl leading-relaxed"
+        className="absolute left-1/2 bottom-[20%] -translate-x-1/2 z-15 text-xs sm:text-sm md:text-base lg:text-xl text-gray-300 text-center px-4 sm:px-6 max-w-2xl w-full leading-relaxed"
         style={{ opacity: 0 }}
       >
         Transformamos <span className="text-purple-400 font-bold">ideas</span> en{' '}
@@ -1068,37 +1145,74 @@ export const ZoomHero = () => {
         </div>
       </div>
 
-      {/* SECCIÓN COTIZACIÓN - FINAL DEL SCROLL (z-26) */}
+      {/* SECCIÓN TEAM INTRO - Introducción (z-25) */}
+      <div
+        ref={teamIntroRef}
+        className="absolute inset-0 flex flex-col items-center justify-center z-[25] px-4"
+      >
+        <div className="text-center max-w-3xl">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 backdrop-blur-md mb-6 animate-pulse">
+            <span className="text-blue-400 text-sm font-medium">
+              👥 Conoce al Equipo
+            </span>
+          </div>
+          
+          {/* Título Principal */}
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Nuestro Equipo
+          </h2>
+          
+          {/* Subtítulo */}
+          <p className="text-xl md:text-2xl text-gray-400 leading-relaxed">
+            Los profesionales detrás de cada proyecto exitoso
+          </p>
+        </div>
+      </div>
+
+      {/* SECCIÓN TEAM - Split Screen con Video (z-26) */}
+      <div
+        ref={teamRef}
+        className="absolute inset-0 z-[26]"
+      >
+        <TeamMemberSection 
+          member={teamMember} 
+          embeddedMode={true}
+          scrollProgressRef={teamVideoProgressRef}
+        />
+      </div>
+
+      {/* SECCIÓN COTIZACIÓN - FINAL DEL SCROLL (z-27) */}
       <div
         ref={quoteRef}
-        className="absolute inset-0 flex flex-col items-center justify-center z-[26] px-4 sm:px-6"
+        className="absolute inset-0 flex flex-col items-center justify-start md:justify-center z-[27] px-3 sm:px-4 md:px-6 py-4 md:py-0 overflow-y-auto"
       >
-        <div className="max-w-4xl w-full py-4">
+        <div className="max-w-4xl w-full py-2 md:py-4">
           {/* Header de la sección */}
-          <div className="text-center mb-4 sm:mb-6">
-            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 backdrop-blur-md mb-2 sm:mb-3">
-              <span className="text-green-400 text-xs font-medium">
+          <div className="text-center mb-3 sm:mb-4 md:mb-6">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 md:px-4 py-0.5 sm:py-1 md:py-1.5 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 backdrop-blur-md mb-1.5 sm:mb-2 md:mb-3">
+              <span className="text-green-400 text-[10px] sm:text-xs font-medium">
                 ✨ Última Sección
               </span>
             </div>
             
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-2 sm:mb-3 bg-gradient-to-r from-green-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black mb-1.5 sm:mb-2 md:mb-3 bg-gradient-to-r from-green-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
               Cotiza tu Proyecto
             </h2>
             
-            <p className="text-sm sm:text-base md:text-lg text-gray-400 max-w-2xl mx-auto px-2">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-400 max-w-2xl mx-auto px-2">
               Cuéntanos tu idea y te responderemos en menos de 24 horas
             </p>
           </div>
 
           {/* Formulario de Contacto */}
-          <div className="bg-gradient-to-br from-green-950/30 via-emerald-950/20 to-cyan-950/30 backdrop-blur-xl rounded-xl md:rounded-2xl border border-green-500/30 p-4 sm:p-5 md:p-6 shadow-2xl shadow-green-500/20">
-            <form className="space-y-3 sm:space-y-4">
+          <div className="bg-gradient-to-br from-green-950/30 via-emerald-950/20 to-cyan-950/30 backdrop-blur-xl rounded-lg sm:rounded-xl md:rounded-2xl border border-green-500/30 p-3 sm:p-4 md:p-5 lg:p-6 shadow-2xl shadow-green-500/20">
+            <form className="space-y-2 sm:space-y-3 md:space-y-4">
               {/* Grid de campos principales */}
-              <div className="grid md:grid-cols-2 gap-3 sm:gap-4">
+              <div className="grid md:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
                 {/* Nombre */}
                 <div>
-                  <label htmlFor="name" className="block text-xs font-medium text-green-300 mb-1.5">
+                  <label htmlFor="name" className="block text-[10px] sm:text-xs font-medium text-green-300 mb-1">
                     Nombre completo *
                   </label>
                   <input
@@ -1106,13 +1220,13 @@ export const ZoomHero = () => {
                     id="name"
                     required
                     placeholder="Juan Pérez"
-                    className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                    className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 md:py-2.5 text-xs sm:text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-xs font-medium text-green-300 mb-1.5">
+                  <label htmlFor="email" className="block text-[10px] sm:text-xs font-medium text-green-300 mb-1">
                     Email *
                   </label>
                   <input
@@ -1120,20 +1234,20 @@ export const ZoomHero = () => {
                     id="email"
                     required
                     placeholder="juan@ejemplo.com"
-                    className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                    className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 md:py-2.5 text-xs sm:text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
                   />
                 </div>
               </div>
 
               {/* Tipo de proyecto */}
               <div>
-                <label htmlFor="project-type" className="block text-xs font-medium text-green-300 mb-1.5">
+                <label htmlFor="project-type" className="block text-[10px] sm:text-xs font-medium text-green-300 mb-1">
                   Tipo de proyecto *
                 </label>
                 <select
                   id="project-type"
                   required
-                  className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                  className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 md:py-2.5 text-xs sm:text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
                 >
                   <option value="">Selecciona una opción</option>
                   <option value="web">Sitio Web / Landing Page</option>
@@ -1146,26 +1260,26 @@ export const ZoomHero = () => {
 
               {/* Descripción */}
               <div>
-                <label htmlFor="description" className="block text-xs font-medium text-green-300 mb-1.5">
+                <label htmlFor="description" className="block text-[10px] sm:text-xs font-medium text-green-300 mb-1">
                   Cuéntanos sobre tu proyecto *
                 </label>
                 <textarea
                   id="description"
                   required
-                  rows={3}
+                  rows={2}
                   placeholder="Describe brevemente tu idea..."
-                  className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all resize-none"
+                  className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 md:py-2.5 text-xs sm:text-sm bg-black/40 border border-green-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all resize-none"
                 />
               </div>
 
               {/* Presupuesto */}
               <div>
-                <label htmlFor="budget" className="block text-xs font-medium text-green-300 mb-1.5">
+                <label htmlFor="budget" className="block text-[10px] sm:text-xs font-medium text-green-300 mb-1">
                   Presupuesto estimado (opcional)
                 </label>
                 <select
                   id="budget"
-                  className="w-full px-3 py-2.5 sm:py-2 text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                  className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 md:py-2.5 text-xs sm:text-sm bg-black/40 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
                 >
                   <option value="">Prefiero no especificar</option>
                   <option value="small">Menos de $5,000</option>
@@ -1178,24 +1292,31 @@ export const ZoomHero = () => {
               {/* Botón de envío */}
               <Button
                 type="submit"
-                className="w-full py-3 sm:py-4 text-sm sm:text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-lg shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 group"
+                className="w-full py-2 sm:py-2.5 md:py-3 lg:py-4 text-xs sm:text-sm md:text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-lg shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 group"
               >
                 Enviar Cotización
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
+                <ArrowRight className="ml-1.5 sm:ml-2 group-hover:translate-x-1 transition-transform" size={16} />
               </Button>
             </form>
 
             {/* Información de contacto alternativa */}
-            <div className="mt-6 pt-6 border-t border-green-500/20">
-              <p className="text-center text-gray-400 text-xs mb-3">
+            <div className="mt-3 sm:mt-4 md:mt-5 lg:mt-6 pt-3 sm:pt-4 md:pt-5 lg:pt-6 border-t border-green-500/20">
+              <p className="text-center text-gray-400 text-[10px] sm:text-xs mb-2 sm:mb-3">
                 ¿Prefieres contactarnos directamente?
               </p>
-              <div className="flex flex-wrap justify-center gap-3">
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
                 <a
                   href="mailto:contacto@ekiproyect.com"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-300 text-xs transition-all"
+                  className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-300 text-[10px] sm:text-xs transition-all"
                 >
-                  📧 contacto@ekiproyect.com
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48" className="flex-shrink-0">
+                    <path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"></path>
+                    <path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"></path>
+                    <polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"></polygon>
+                    <path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"></path>
+                    <path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0 C43.076,8,45,9.924,45,12.298z"></path>
+                  </svg>
+                  contacto@ekiproyect.com
                 </a>
                 <a
                   href="https://wa.me/1234567890"
@@ -1203,16 +1324,23 @@ export const ZoomHero = () => {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-300 text-xs transition-all"
                 >
-                  💬 WhatsApp
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48" className="flex-shrink-0">
+                    <path fill="#fff" d="M4.9,43.3l2.7-9.8C5.9,30.6,5,27.3,5,24C5,13.5,13.5,5,24,5c5.1,0,9.8,2,13.4,5.6 C41,14.2,43,18.9,43,24c0,10.5-8.5,19-19,19c0,0,0,0,0,0h0c-3.2,0-6.3-0.8-9.1-2.3L4.9,43.3z"></path>
+                    <path fill="#fff" d="M4.9,43.8c-0.1,0-0.3-0.1-0.4-0.1c-0.1-0.1-0.2-0.3-0.1-0.5L7,33.5c-1.6-2.9-2.5-6.2-2.5-9.6 C4.5,13.2,13.3,4.5,24,4.5c5.2,0,10.1,2,13.8,5.7c3.7,3.7,5.7,8.6,5.7,13.8c0,10.7-8.7,19.5-19.5,19.5c-3.2,0-6.3-0.8-9.1-2.3 L5,43.8C5,43.8,4.9,43.8,4.9,43.8z"></path>
+                    <path fill="#cfd8dc" d="M24,5c5.1,0,9.8,2,13.4,5.6C41,14.2,43,18.9,43,24c0,10.5-8.5,19-19,19h0c-3.2,0-6.3-0.8-9.1-2.3 L4.9,43.3l2.7-9.8C5.9,30.6,5,27.3,5,24C5,13.5,13.5,5,24,5 M24,43L24,43L24,43 M24,43L24,43L24,43 M24,4L24,4C13,4,4,13,4,24 c0,3.4,0.8,6.7,2.5,9.6L3.9,43c-0.1,0.3,0,0.7,0.3,1c0.2,0.2,0.4,0.3,0.7,0.3c0.1,0,0.2,0,0.3,0l9.7-2.5c2.8,1.5,6,2.2,9.2,2.2 c11,0,20-9,20-20c0-5.3-2.1-10.4-5.8-14.1C34.4,6.1,29.4,4,24,4L24,4z"></path>
+                    <path fill="#40c351" d="M35.2,12.8c-3-3-6.9-4.6-11.2-4.6C15.3,8.2,8.2,15.3,8.2,24c0,3,0.8,5.9,2.4,8.4L11,33l-1.6,5.8 l6-1.6l0.6,0.3c2.4,1.4,5.2,2.2,8,2.2h0c8.7,0,15.8-7.1,15.8-15.8C39.8,19.8,38.2,15.8,35.2,12.8z"></path>
+                    <path fill="#fff" fillRule="evenodd" d="M19.3,16c-0.4-0.8-0.7-0.8-1.1-0.8c-0.3,0-0.6,0-0.9,0 s-0.8,0.1-1.3,0.6c-0.4,0.5-1.7,1.6-1.7,4s1.7,4.6,1.9,4.9s3.3,5.3,8.1,7.2c4,1.6,4.8,1.3,5.7,1.2c0.9-0.1,2.8-1.1,3.2-2.3 c0.4-1.1,0.4-2.1,0.3-2.3c-0.1-0.2-0.4-0.3-0.9-0.6s-2.8-1.4-3.2-1.5c-0.4-0.2-0.8-0.2-1.1,0.2c-0.3,0.5-1.2,1.5-1.5,1.9 c-0.3,0.3-0.6,0.4-1,0.1c-0.5-0.2-2-0.7-3.8-2.4c-1.4-1.3-2.4-2.8-2.6-3.3c-0.3-0.5,0-0.7,0.2-1c0.2-0.2,0.5-0.6,0.7-0.8 c0.2-0.3,0.3-0.5,0.5-0.8c0.2-0.3,0.1-0.6,0-0.8C20.6,19.3,19.7,17,19.3,16z" clipRule="evenodd"></path>
+                  </svg>
+                  WhatsApp
                 </a>
               </div>
             </div>
           </div>
 
           {/* Footer integrado (sin ser footer tradicional) */}
-          <div className="mt-8 space-y-6">
+          <div className="mt-4 sm:mt-6 md:mt-8 space-y-4 sm:space-y-5 md:space-y-6">
             {/* Links rápidos */}
-            <div className="flex flex-wrap justify-center gap-4 text-xs">
+            <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3 md:gap-4 text-[10px] sm:text-xs">
               <Link to="/about" className="text-gray-400 hover:text-green-400 transition-colors">
                 Sobre Nosotros
               </Link>
@@ -1231,14 +1359,16 @@ export const ZoomHero = () => {
             </div>
 
             {/* Redes sociales */}
-            <div className="flex justify-center gap-3">
+            <div className="flex justify-center gap-2 sm:gap-2.5 md:gap-3">
               <a
                 href="https://github.com/ekiproyect"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 transition-all hover:scale-110"
               >
-                <span className="text-base">🐙</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 50 50">
+                  <path fill="currentColor" d="M17.791,46.836C18.502,46.53,19,45.823,19,45v-5.4c0-0.197,0.016-0.402,0.041-0.61C19.027,38.994,19.014,38.997,19,39 c0,0-3,0-3.6,0c-1.5,0-2.8-0.6-3.4-1.8c-0.7-1.3-1-3.5-2.8-4.7C8.9,32.3,9.1,32,9.7,32c0.6,0.1,1.9,0.9,2.7,2c0.9,1.1,1.8,2,3.4,2 c2.487,0,3.82-0.125,4.622-0.555C21.356,34.056,22.649,33,24,33v-0.025c-5.668-0.182-9.289-2.066-10.975-4.975 c-3.665,0.042-6.856,0.405-8.677,0.707c-0.058-0.327-0.108-0.656-0.151-0.987c1.797-0.296,4.843-0.647,8.345-0.714 c-0.112-0.276-0.209-0.559-0.291-0.849c-3.511-0.178-6.541-0.039-8.187,0.097c-0.02-0.332-0.047-0.663-0.051-0.999 c1.649-0.135,4.597-0.27,8.018-0.111c-0.079-0.5-0.13-1.011-0.13-1.543c0-1.7,0.6-3.5,1.7-5c-0.5-1.7-1.2-5.3,0.2-6.6 c2.7,0,4.6,1.3,5.5,2.1C21,13.4,22.9,13,25,13s4,0.4,5.6,1.1c0.9-0.8,2.8-2.1,5.5-2.1c1.5,1.4,0.7,5,0.2,6.6c1.1,1.5,1.7,3.2,1.6,5 c0,0.484-0.045,0.951-0.11,1.409c3.499-0.172,6.527-0.034,8.204,0.102c-0.002,0.337-0.033,0.666-0.051,0.999 c-1.671-0.138-4.775-0.28-8.359-0.089c-0.089,0.336-0.197,0.663-0.325,0.98c3.546,0.046,6.665,0.389,8.548,0.689 c-0.043,0.332-0.093,0.661-0.151,0.987c-1.912-0.306-5.171-0.664-8.879-0.682C35.112,30.873,31.557,32.75,26,32.969V33 c2.6,0,5,3.9,5,6.6V45c0,0.823,0.498,1.53,1.209,1.836C41.37,43.804,48,35.164,48,25C48,12.318,37.683,2,25,2S2,12.318,2,25 C2,35.164,8.63,43.804,17.791,46.836z"></path>
+                </svg>
               </a>
               <a
                 href="https://linkedin.com"
@@ -1246,7 +1376,9 @@ export const ZoomHero = () => {
                 rel="noopener noreferrer"
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 transition-all hover:scale-110"
               >
-                <span className="text-base">💼</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 50 50">
+                  <path fill="currentColor" d="M41,4H9C6.24,4,4,6.24,4,9v32c0,2.76,2.24,5,5,5h32c2.76,0,5-2.24,5-5V9C46,6.24,43.76,4,41,4z M17,20v19h-6V20H17z M11,14.47c0-1.4,1.2-2.47,3-2.47s2.93,1.07,3,2.47c0,1.4-1.12,2.53-3,2.53C12.2,17,11,15.87,11,14.47z M39,39h-6c0,0,0-9.26,0-10 c0-2-1-4-3.5-4.04h-0.08C27,24.96,26,27.02,26,29c0,0.91,0,10,0,10h-6V20h6v2.56c0,0,1.93-2.56,5.81-2.56 c3.97,0,7.19,2.73,7.19,8.26V39z"></path>
+                </svg>
               </a>
               <a
                 href="https://twitter.com"
@@ -1254,7 +1386,9 @@ export const ZoomHero = () => {
                 rel="noopener noreferrer"
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 transition-all hover:scale-110"
               >
-                <span className="text-base">🐦</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 50 50">
+                  <path fill="currentColor" d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z"></path>
+                </svg>
               </a>
             </div>
 
