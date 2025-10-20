@@ -4,56 +4,86 @@ import teamMember1 from "@/assets/team-member-1.jpg";
 import teamMember2 from "@/assets/team-member-2.jpg";
 import teamMember3 from "@/assets/team-member-3.jpg";
 import teamMember4 from "@/assets/team-member-4.jpg";
+import Ernes from "@/assets/ernes.jpg";
 
 const Team = () => {
   const teamMembers = [
     {
-      name: "Carlos Rodriguez",
+      name: "Ernes Fuenzalida",
       role: "CTO & Lead Developer",
-      description: "Especialista en arquitectura de software y desarrollo full-stack con más de 12 años de experiencia.",
-      image: teamMember1,
-      skills: ["React", "Node.js", "AWS", "Docker"],
+      ownerRole: "Team Leader",
+      squad: "Front",
+      description:
+        "Lidera arquitectura y delivery end-to-end con foco en frontend y experiencias.",
+      image: Ernes,
+      skills: [
+        "Next.js",
+        "Design System",
+        "Azure",
+        "Code Review",
+        "Stakeholder Mgmt",
+        "Roadmap"
+      ],
       social: {
-        github: "#",
-        linkedin: "#",
-        email: "carlos@eki.com"
+        github: "https://github.com/ernitoft",
+        linkedin: "https://www.linkedin.com/in/ernesft",
+        email: "ernesft21@gmail.com"
       }
     },
     {
-      name: "María González",
-      role: "Senior Frontend Developer",
-      description: "Experta en experiencia de usuario y desarrollo frontend moderno con enfoque en performance.",
+      name: "Fernando Condori",
+      role: "Finance Owner",
+      ownerRole: "Finanzas",
+      squad: "Back",
+      description:
+        "Owner de finanzas: modela flujos financieros y los servicios backend que los soportan.",
       image: teamMember2,
-      skills: ["React", "TypeScript", "UI/UX", "Next.js"],
-      social: {
-        github: "#",
-        linkedin: "#",
-        email: "maria@eki.com"
-      }
+      skills: [
+        "FinOps",
+        "Procesos Financieros",
+        "API Design",
+        "Observabilidad",
+        "Billing & Payments"
+      ],
+      social: { github: "#", linkedin: "#", email: "maria@eki.com" }
     },
     {
-      name: "David López",
-      role: "Backend Developer",
-      description: "Desarrollador backend especializado en APIs escalables y microservicios en la nube.",
+      name: "Vicente Araya",
+      role: "Frontend Developer",
+      ownerRole: null,
+      squad: "Front",
+      description:
+        "Frontend engineer enfocado en performance y developer experience.",
       image: teamMember3,
-      skills: ["Python", "Django", "PostgreSQL", "Kubernetes"],
-      social: {
-        github: "#",
-        linkedin: "#",
-        email: "david@eki.com"
-      }
+      skills: [
+        "React/Next.js",
+        "TypeScript",
+        "A11y",
+        "Performance Web",
+        "State Mgmt",
+        "Testing UI",
+        "Storybook"
+      ],
+      social: { github: "#", linkedin: "#", email: "david@eki.com" }
     },
     {
-      name: "Ana Martínez",
-      role: "DevOps Engineer",
-      description: "Ingeniera DevOps con expertise en automatización, CI/CD y infraestructura cloud-native.",
+      name: "Renato Morales",
+      role: "Backend Developer",
+      ownerRole: null,
+      squad: "Back",
+      description:
+        "DevOps: automatización, despliegue y confiabilidad de plataformas.",
       image: teamMember4,
-      skills: ["AWS", "Terraform", "Jenkins", "Monitoring"],
-      social: {
-        github: "#",
-        linkedin: "#",
-        email: "ana@eki.com"
-      }
+      skills: [
+        "CI/CD",
+        "Docker/K8s",
+        "Terraform",
+        "Monitoring",
+        "Security/IAM",
+        "APIs & Jobs",
+        "SRE"
+      ],
+      social: { github: "#", linkedin: "#", email: "ana@eki.com" }
     }
   ];
 
@@ -103,7 +133,30 @@ const Team = () => {
 
                     {/* Info */}
                     <h3 className="text-2xl font-bold mb-2">{member.name}</h3>
-                    <p className="text-accent font-semibold mb-4">{member.role}</p>
+                    <p className="text-accent font-semibold">
+                      {member.role}
+                    </p>
+
+                    {/* Badges: Encargado y Squad */}
+                    <div className="flex justify-center gap-2 mt-2 mb-4">
+                      {member.ownerRole && (
+                        <span
+                          className="px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-800 border border-yellow-300"
+                          aria-label={`Encargado: ${member.ownerRole}`}
+                        >
+                          Encargado: {member.ownerRole}
+                        </span>
+                      )}
+                      {member.squad && (
+                        <span
+                          className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 border border-blue-300"
+                          aria-label={`Squad: ${member.squad}`}
+                        >
+                          Squad: {member.squad}
+                        </span>
+                      )}
+                    </div>
+
                     <p className="text-muted-foreground mb-6 leading-relaxed">
                       {member.description}
                     </p>
