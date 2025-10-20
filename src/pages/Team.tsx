@@ -12,7 +12,7 @@ const Team = () => {
       name: "Ernes Fuenzalida",
       role: "CTO & Lead Developer",
       ownerRole: "Team Leader",
-      squad: "Front",
+      squad: "Frontend Developer",
       description:
         "Lidera arquitectura y delivery end-to-end con foco en frontend y experiencias.",
       image: Ernes,
@@ -22,19 +22,19 @@ const Team = () => {
         "Azure",
         "Code Review",
         "Stakeholder Mgmt",
-        "Roadmap"
+        "Roadmap",
       ],
       social: {
         github: "https://github.com/ernitoft",
         linkedin: "https://www.linkedin.com/in/ernesft",
-        email: "ernesft21@gmail.com"
-      }
+        email: "ernesft21@gmail.com",
+      },
     },
     {
       name: "Fernando Condori",
       role: "Finance Owner",
       ownerRole: "Finanzas",
-      squad: "Back",
+      squad: "Backend Developer",
       description:
         "Owner de finanzas: modela flujos financieros y los servicios backend que los soportan.",
       image: teamMember2,
@@ -43,48 +43,51 @@ const Team = () => {
         "Procesos Financieros",
         "API Design",
         "Observabilidad",
-        "Billing & Payments"
+        "Billing & Payments",
       ],
-      social: { github: "#", linkedin: "#", email: "maria@eki.com" }
+      social: { github: "#", linkedin: "#", email: "maria@eki.com" },
     },
     {
       name: "Vicente Araya",
-      role: "Frontend Developer",
-      ownerRole: null,
-      squad: "Front",
+      role: "Quality Lead",
+      ownerRole: "Calidad",
+      squad: "Frontend Developer",
       description:
-        "Frontend engineer enfocado en performance y developer experience.",
+        "Especialista en calidad, performance y experiencia de desarrollo.",
       image: teamMember3,
       skills: [
         "React/Next.js",
         "TypeScript",
         "A11y",
         "Performance Web",
-        "State Mgmt",
         "Testing UI",
-        "Storybook"
+        "Storybook",
+        "Jest/RTL",
+        "Playwright",
+        "Lighthouse",
       ],
-      social: { github: "#", linkedin: "#", email: "david@eki.com" }
+      social: { github: "#", linkedin: "#", email: "david@eki.com" },
     },
     {
       name: "Renato Morales",
-      role: "Backend Developer",
-      ownerRole: null,
-      squad: "Back",
+      role: "IT Admin Lead",
+      ownerRole: "Administración",
+      squad: "Backend Developer",
       description:
-        "DevOps: automatización, despliegue y confiabilidad de plataformas.",
+        "Administra infraestructura, CI/CD y confiabilidad de sistemas.",
       image: teamMember4,
       skills: [
         "CI/CD",
-        "Docker/K8s",
+        "Docker",
         "Terraform",
         "Monitoring",
         "Security/IAM",
-        "APIs & Jobs",
-        "SRE"
+        "SRE",
+        "Backups & DR",
+        "Cost Control",
       ],
-      social: { github: "#", linkedin: "#", email: "ana@eki.com" }
-    }
+      social: { github: "#", linkedin: "#", email: "ana@eki.com" },
+    },
   ];
 
   return (
@@ -139,20 +142,13 @@ const Team = () => {
 
                     {/* Badges: Encargado y Squad */}
                     <div className="flex justify-center gap-2 mt-2 mb-4">
-                      {member.ownerRole && (
-                        <span
-                          className="px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-800 border border-yellow-300"
-                          aria-label={`Encargado: ${member.ownerRole}`}
-                        >
-                          Encargado: {member.ownerRole}
-                        </span>
-                      )}
+                      
                       {member.squad && (
                         <span
                           className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 border border-blue-300"
                           aria-label={`Squad: ${member.squad}`}
                         >
-                          Squad: {member.squad}
+                          {member.squad}
                         </span>
                       )}
                     </div>
