@@ -4,7 +4,7 @@ import teamMember1 from "@/assets/team-member-1.jpg";
 import teamMember2 from "@/assets/team-member-2.jpg";
 import teamMember3 from "@/assets/team-member-3.jpg";
 import teamMember4 from "@/assets/team-member-4.jpg";
-import Ernes from "@/assets/ernes.jpg";
+import Ernes from "@/assets/Ernes.jpg";
 
 const Team = () => {
   const teamMembers = [
