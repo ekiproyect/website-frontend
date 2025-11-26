@@ -86,7 +86,7 @@ const Team = () => {
         "Backups & DR",
         "Cost Control",
       ],
-      social: { github: "https://github.com/naatox", linkedin: "https://www.linkedin.com/in/renato-morales-constancio/", email: "ana@eki.com" },
+      social: { github: "https://github.com/naatox", linkedin: "https://www.linkedin.com/in/renato-morales-constancio/", email: "rmoralesconstancio@gmail.com" },
     },
   ];
 
