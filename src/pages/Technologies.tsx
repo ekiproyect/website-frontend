@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import heroImage2 from "@/assets/hero-image2.jpg";
 
 const Technologies = () => {
   const techCategories = [
@@ -79,11 +80,23 @@ const Technologies = () => {
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-accent text-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
+      <section className="relative py-20 overflow-hidden">
+        {/* Imagen de fondo */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroImage2})` }}
+        />
+        {/* Lado Azul Oscuro con opacidad */}
+        <div className="absolute inset-0 bg-blue-600/80" />
+        {/* Lado Celeste con clip-path diagonal y opacidad */}
+        <div 
+          className="absolute inset-0 bg-cyan-400/40" 
+          style={{ clipPath: 'polygon(40% 0, 100% 0, 100% 100%, 60% 100%)' }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Nuestras <span className="text-yellow-300">Tecnologías</span>
+              Nuestras <span className="underline decoration-4 underline-offset-8">Tecnologías</span>
             </h1>
             <p className="text-xl md:text-2xl leading-relaxed text-white/90">
               Utilizamos las tecnologías más avanzadas y probadas de la industria 
