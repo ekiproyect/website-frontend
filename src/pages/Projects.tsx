@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, Calendar, Users, Rocket, Server, TrendingUp, CalendarDays } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import heroImage2 from "@/assets/hero-image2.jpg";
+import { GlowingEffect } from "@/components/ui/glowing-effect";
+import { CardSpotlight } from "@/components/ui/card-spotlight";
 
 const Projects = () => {
   const [activeProject, setActiveProject] = useState(0);
@@ -202,49 +204,73 @@ const Projects = () => {
             </h2>
             
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="bg-cyan-400/20 p-3 rounded-lg">
-                    <Rocket className="w-6 h-6 text-cyan-400" />
+              <CardSpotlight
+                radius={400}
+                color="#06b6d4"
+                className="bg-white/5 backdrop-blur-sm border-white/10"
+              >
+                <div className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-cyan-400/20 p-3 rounded-lg">
+                      <Rocket className="w-6 h-6 text-cyan-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-white">
+                      Discovery continuo + delivery paralelo para ganar tiempo al mercado.
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-medium">
-                    Discovery continuo + delivery paralelo para ganar tiempo al mercado.
-                  </h3>
                 </div>
-              </div>
+              </CardSpotlight>
               
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="bg-cyan-400/20 p-3 rounded-lg">
-                    <Server className="w-6 h-6 text-cyan-400" />
+              <CardSpotlight
+                radius={400}
+                color="#06b6d4"
+                className="bg-white/5 backdrop-blur-sm border-white/10"
+              >
+                <div className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-cyan-400/20 p-3 rounded-lg">
+                      <Server className="w-6 h-6 text-cyan-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-white">
+                      Arquitecturas escalables, listas para observabilidad y compliance.
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-medium">
-                    Arquitecturas escalables, listas para observabilidad y compliance.
-                  </h3>
                 </div>
-              </div>
+              </CardSpotlight>
               
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="bg-cyan-400/20 p-3 rounded-lg">
-                    <TrendingUp className="w-6 h-6 text-cyan-400" />
+              <CardSpotlight
+                radius={400}
+                color="#06b6d4"
+                className="bg-white/5 backdrop-blur-sm border-white/10"
+              >
+                <div className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-cyan-400/20 p-3 rounded-lg">
+                      <TrendingUp className="w-6 h-6 text-cyan-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-white">
+                      Growth loops instrumentados con dashboards compartidos.
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-medium">
-                    Growth loops instrumentados con dashboards compartidos.
-                  </h3>
                 </div>
-              </div>
+              </CardSpotlight>
               
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="bg-cyan-400/20 p-3 rounded-lg">
-                    <CalendarDays className="w-6 h-6 text-cyan-400" />
+              <CardSpotlight
+                radius={400}
+                color="#06b6d4"
+                className="bg-white/5 backdrop-blur-sm border-white/10"
+              >
+                <div className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-cyan-400/20 p-3 rounded-lg">
+                      <CalendarDays className="w-6 h-6 text-cyan-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-white">
+                      Rituales claros: kickoff ejecutivo, planning, demos y retro con señales de negocio.
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-medium">
-                    Rituales claros: kickoff ejecutivo, planning, demos y retro con señales de negocio.
-                  </h3>
                 </div>
-              </div>
+              </CardSpotlight>
             </div>
           </div>
         </div>
@@ -280,84 +306,97 @@ const Projects = () => {
             className="min-h-[70vh] flex items-center justify-center py-12"
           >
             <div className="container mx-auto px-4">
-              <Card className="max-w-5xl mx-auto overflow-hidden bg-white/60 backdrop-blur-xl border-2 shadow-2xl">
-                <div className="grid md:grid-cols-2 gap-0">
-                  {/* Image Side */}
-                  <div className="relative h-64 md:h-auto">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-accent text-accent-foreground px-4 py-2 rounded-full text-sm font-medium">
-                        {project.category}
-                      </span>
+              <div className="relative max-w-5xl mx-auto rounded-2xl p-[3px]">
+                <GlowingEffect
+                  blur={0}
+                  borderWidth={3}
+                  spread={80}
+                  glow={true}
+                  disabled={false}
+                  proximity={64}
+                  inactiveZone={0.01}
+                  variant="default"
+                  movementDuration={0.2}
+                />
+                <Card className="relative overflow-hidden bg-white/60 backdrop-blur-xl border-0 shadow-2xl z-10">
+                  <div className="grid md:grid-cols-2 gap-0">
+                    {/* Image Side */}
+                    <div className="relative h-64 md:h-auto">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-accent text-accent-foreground px-4 py-2 rounded-full text-sm font-medium">
+                          {project.category}
+                        </span>
+                      </div>
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <h3 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                          {project.title}
+                        </h3>
+                      </div>
                     </div>
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <h3 className="text-4xl md:text-5xl font-bold text-white mb-2">
-                        {project.title}
-                      </h3>
-                    </div>
+
+                    {/* Content Side */}
+                    <CardContent className="p-8 flex flex-col justify-center">
+                      <p className="text-muted-foreground mb-6 leading-relaxed">
+                        {project.description}
+                      </p>
+
+                      {/* Project Details */}
+                      <div className="flex items-center gap-6 mb-6 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-5 h-5 text-accent" />
+                          <span>{project.duration}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users className="w-5 h-5 text-accent" />
+                          <span>{project.teamSize}</span>
+                        </div>
+                      </div>
+
+                      {/* Features */}
+                      <div className="mb-6">
+                        <h4 className="font-semibold mb-3">Características principales:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {project.features.map((feature, featureIndex) => (
+                            <span
+                              key={featureIndex}
+                              className="bg-muted px-3 py-1.5 rounded-md text-sm"
+                            >
+                              {feature}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Technologies */}
+                      <div className="mb-6">
+                        <h4 className="font-semibold mb-3">Tecnologías:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {project.technologies.map((tech, techIndex) => (
+                            <span
+                              key={techIndex}
+                              className="bg-gradient-to-r from-accent/20 to-accent/10 text-accent border border-accent/30 px-3 py-1.5 rounded-md text-sm font-medium"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <Button variant="default" size="lg" className="w-full">
+                        <ExternalLink className="w-5 h-5 mr-2" />
+                        Ver Demo
+                      </Button>
+                    </CardContent>
                   </div>
-
-                  {/* Content Side */}
-                  <CardContent className="p-8 flex flex-col justify-center">
-                    <p className="text-muted-foreground mb-6 leading-relaxed">
-                      {project.description}
-                    </p>
-
-                    {/* Project Details */}
-                    <div className="flex items-center gap-6 mb-6 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-5 h-5 text-accent" />
-                        <span>{project.duration}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Users className="w-5 h-5 text-accent" />
-                        <span>{project.teamSize}</span>
-                      </div>
-                    </div>
-
-                    {/* Features */}
-                    <div className="mb-6">
-                      <h4 className="font-semibold mb-3">Características principales:</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {project.features.map((feature, featureIndex) => (
-                          <span
-                            key={featureIndex}
-                            className="bg-muted px-3 py-1.5 rounded-md text-sm"
-                          >
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Technologies */}
-                    <div className="mb-6">
-                      <h4 className="font-semibold mb-3">Tecnologías:</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {project.technologies.map((tech, techIndex) => (
-                          <span
-                            key={techIndex}
-                            className="bg-gradient-to-r from-accent/20 to-accent/10 text-accent border border-accent/30 px-3 py-1.5 rounded-md text-sm font-medium"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Action Button */}
-                    <Button variant="default" size="lg" className="w-full">
-                      <ExternalLink className="w-5 h-5 mr-2" />
-                      Ver Demo
-                    </Button>
-                  </CardContent>
-                </div>
-              </Card>
+                </Card>
+              </div>
             </div>
           </div>
         ))}
