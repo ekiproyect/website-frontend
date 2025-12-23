@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { href: "/", label: "Inicio" },
@@ -19,8 +29,21 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
-      <div className="container mx-auto px-4 py-4">
+    <header 
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled 
+          ? "top-4 px-4" 
+          : "top-0"
+      }`}
+    >
+      <div 
+        className={`bg-background/95 backdrop-blur-sm border transition-all duration-300 ${
+          isScrolled 
+            ? "rounded-full shadow-lg" 
+            : "border-b rounded-none"
+        }`}
+      >
+        <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
@@ -82,6 +105,7 @@ const Header = () => {
             </div>
           </div>
         )}
+      </div>
       </div>
     </header>
   );
