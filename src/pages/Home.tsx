@@ -4,6 +4,7 @@ import { ArrowRight, Code, Smartphone, Cloud, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-image.jpg";
 import { HeroRotator } from '../components/HeroRotator';
+import { Meteors } from "@/components/ui/meteors";
 
 const Home = () => {
   const features = [
@@ -32,7 +33,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center  ">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroImage})` }}
@@ -60,6 +61,9 @@ const Home = () => {
             </Button>
           </div>
         </div>
+
+        {/* Meteors Effect */}
+        <Meteors number={30} />
       </section>
 
       {/* Features Section */}
