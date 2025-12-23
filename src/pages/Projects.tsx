@@ -1,10 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Github, Calendar, Users } from "lucide-react";
-import { useState } from "react";
+import { ExternalLink, Calendar, Users, Rocket, Server, TrendingUp, CalendarDays } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import heroImage2 from "@/assets/hero-image2.jpg";
 
 const Projects = () => {
-  const [selectedProject, setSelectedProject] = useState(0);
+  const [activeProject, setActiveProject] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const featuredProjects = [
     {
@@ -139,138 +142,107 @@ const Projects = () => {
     }
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+
+      const section = sectionRef.current;
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      const scrollY = window.scrollY;
+      
+      // Calculate scroll progress for the section
+      const progress = Math.min(
+        Math.max((scrollY - sectionTop + window.innerHeight / 2) / sectionHeight, 0),
+        1
+      );
+      setScrollProgress(progress * 100);
+
+      // Determine active project based on scroll
+      const projectIndex = Math.floor(progress * featuredProjects.length);
+      setActiveProject(Math.min(projectIndex, featuredProjects.length - 1));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [featuredProjects.length]);
+
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20 bg-background">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-accent text-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Nuestros <span className="text-yellow-300">Proyectos</span>
-            </h1>
-            <p className="text-xl md:text-2xl leading-relaxed text-white/90">
-              Descubre algunos de los proyectos que hemos desarrollado para 
-              empresas de diferentes industrias, cada uno con soluciones únicas y resultados medibles.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Projects Carousel Section */}
-      <section className="relative py-24 overflow-hidden bg-black">
-        {/* Background Image with Blur */}
+      <section className="relative py-16 overflow-hidden">
+        {/* Imagen de fondo */}
         <div 
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `url(${featuredProjects[selectedProject].image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'blur(60px)',
-          }}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroImage2})` }}
         />
-        
-        {/* Gradient Overlay */}
-        <div className={`absolute inset-0 bg-gradient-to-r ${featuredProjects[selectedProject].color}`} />
-
+        {/* Lado Azul Oscuro con opacidad */}
+        <div className="absolute inset-0 bg-blue-600/80" />
+        {/* Lado Celeste con clip-path diagonal y opacidad */}
+        <div 
+          className="absolute inset-0 bg-cyan-400/40" 
+          style={{ clipPath: 'polygon(40% 0, 100% 0, 100% 100%, 60% 100%)' }}
+        />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="grid lg:grid-cols-5 gap-8 items-start">
-            {/* Left Side - Project Selector */}
-            <div className="lg:col-span-2 space-y-2">
-              {featuredProjects.map((project, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedProject(index)}
-                  className={`w-full text-left px-6 py-4 rounded-lg transition-all duration-300 ${
-                    selectedProject === index
-                      ? 'bg-white text-black font-bold scale-105'
-                      : 'text-gray-400 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <span className="text-lg">{project.title}</span>
-                </button>
-              ))}
-            </div>
+          <div className="max-w-4xl mx-auto text-center text-white">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              Nuestros <span className="underline decoration-4 underline-offset-8">Proyectos</span>
+            </h1>
+          </div>
+        </div>
+      </section>
 
-            {/* Right Side - Content and Image */}
-            <div className="lg:col-span-3 space-y-6">
-              {/* Image */}
-              <div 
-                key={`image-${selectedProject}`}
-                className="relative rounded-2xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-right-4 duration-500"
-              >
-                <img
-                  src={featuredProjects[selectedProject].image}
-                  alt={featuredProjects[selectedProject].title}
-                  className="w-full h-64 md:h-80 object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-accent text-accent-foreground px-4 py-2 rounded-full text-sm font-medium">
-                    {featuredProjects[selectedProject].category}
-                  </span>
+      {/* How We Work Section */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+              Cómo trabajamos cuando <span className="text-cyan-400">escalamos contigo</span>
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="bg-cyan-400/20 p-3 rounded-lg">
+                    <Rocket className="w-6 h-6 text-cyan-400" />
+                  </div>
+                  <h3 className="text-lg font-medium">
+                    Discovery continuo + delivery paralelo para ganar tiempo al mercado.
+                  </h3>
                 </div>
               </div>
-
-              {/* Content - Fixed Height */}
-              <div 
-                key={`content-${selectedProject}`}
-                className="space-y-4 min-h-[500px] animate-in fade-in slide-in-from-right-8 duration-700"
-              >
-                <h3 className="text-3xl md:text-4xl font-bold text-white">
-                  {featuredProjects[selectedProject].title}
-                </h3>
-                <p className="text-base md:text-lg text-gray-300 leading-relaxed">
-                  {featuredProjects[selectedProject].description}
-                </p>
-
-                {/* Project Details */}
-                <div className="flex items-center gap-6 text-sm text-gray-300 pt-2">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-accent" />
-                    <span>{featuredProjects[selectedProject].duration}</span>
+              
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="bg-cyan-400/20 p-3 rounded-lg">
+                    <Server className="w-6 h-6 text-cyan-400" />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-accent" />
-                    <span>{featuredProjects[selectedProject].teamSize}</span>
-                  </div>
+                  <h3 className="text-lg font-medium">
+                    Arquitecturas escalables, listas para observabilidad y compliance.
+                  </h3>
                 </div>
-
-                {/* Features */}
-                <div>
-                  <h4 className="font-semibold text-white mb-3 text-lg">Características principales:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {featuredProjects[selectedProject].features.map((feature, featureIndex) => (
-                      <span
-                        key={featureIndex}
-                        className="bg-white/10 backdrop-blur-sm text-white px-3 py-1.5 rounded-md text-sm border border-white/20"
-                      >
-                        {feature}
-                      </span>
-                    ))}
+              </div>
+              
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="bg-cyan-400/20 p-3 rounded-lg">
+                    <TrendingUp className="w-6 h-6 text-cyan-400" />
                   </div>
+                  <h3 className="text-lg font-medium">
+                    Growth loops instrumentados con dashboards compartidos.
+                  </h3>
                 </div>
-
-                {/* Technologies */}
-                <div>
-                  <h4 className="font-semibold text-white mb-3 text-lg">Tecnologías:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {featuredProjects[selectedProject].technologies.map((tech, techIndex) => (
-                      <span
-                        key={techIndex}
-                        className="bg-gradient-to-r from-accent/30 to-accent/10 text-white border border-accent/40 px-3 py-1.5 rounded-md text-sm font-medium"
-                      >
-                        {tech}
-                      </span>
-                    ))}
+              </div>
+              
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="bg-cyan-400/20 p-3 rounded-lg">
+                    <CalendarDays className="w-6 h-6 text-cyan-400" />
                   </div>
-                </div>
-
-                {/* Action Button */}
-                <div className="pt-4">
-                  <Button variant="default" size="lg" className="bg-white text-black hover:bg-gray-200">
-                    <ExternalLink className="w-5 h-5 mr-2" />
-                    Ver Demo
-                  </Button>
+                  <h3 className="text-lg font-medium">
+                    Rituales claros: kickoff ejecutivo, planning, demos y retro con señales de negocio.
+                  </h3>
                 </div>
               </div>
             </div>
@@ -278,98 +250,117 @@ const Projects = () => {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">
-              Portfolio de <span className="text-accent">Soluciones</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Cada proyecto representa un desafío único resuelto con innovación, 
-              tecnología de vanguardia y un enfoque centrado en resultados.
-            </p>
-          </div>
+      {/* Featured Projects Scroll Section */}
+      <section ref={sectionRef} className="relative bg-background">
+        {/* Scroll Indicator */}
+        <div className="fixed right-8 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col gap-3">
+          {featuredProjects.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                const section = sectionRef.current;
+                if (section) {
+                  const scrollTo = section.offsetTop + (section.offsetHeight / featuredProjects.length) * index;
+                  window.scrollTo({ top: scrollTo, behavior: 'smooth' });
+                }
+              }}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                activeProject === index 
+                  ? 'bg-accent scale-125' 
+                  : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+              }`}
+            />
+          ))}
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
-                <div className="relative overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-medium">
-                      {project.category}
-                    </span>
-                  </div>
-                </div>
-
-                <CardContent className="p-6">
-                  <h3 className="text-2xl font-bold mb-3">{project.title}</h3>
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
-                    {project.description}
-                  </p>
-
-                  {/* Project Details */}
-                  <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {project.duration}
+        {/* Project Cards */}
+        {featuredProjects.map((project, index) => (
+          <div 
+            key={index} 
+            className="min-h-[70vh] flex items-center justify-center py-12"
+          >
+            <div className="container mx-auto px-4">
+              <Card className="max-w-5xl mx-auto overflow-hidden bg-white/60 backdrop-blur-xl border-2 shadow-2xl">
+                <div className="grid md:grid-cols-2 gap-0">
+                  {/* Image Side */}
+                  <div className="relative h-64 md:h-auto">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-accent text-accent-foreground px-4 py-2 rounded-full text-sm font-medium">
+                        {project.category}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4" />
-                      {project.teamSize}
-                    </div>
-                  </div>
-
-                  {/* Features */}
-                  <div className="mb-4">
-                    <h4 className="font-semibold mb-2">Características principales:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {project.features.map((feature, featureIndex) => (
-                        <span
-                          key={featureIndex}
-                          className="bg-muted px-2 py-1 rounded text-xs"
-                        >
-                          {feature}
-                        </span>
-                      ))}
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                        {project.title}
+                      </h3>
                     </div>
                   </div>
 
-                  {/* Technologies */}
-                  <div className="mb-6">
-                    <h4 className="font-semibold mb-2">Tecnologías:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {project.technologies.map((tech, techIndex) => (
-                        <span
-                          key={techIndex}
-                          className="bg-gradient-to-r from-accent/10 to-tech-blue/10 text-accent border border-accent/20 px-2 py-1 rounded text-xs font-medium"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                  {/* Content Side */}
+                  <CardContent className="p-8 flex flex-col justify-center">
+                    <p className="text-muted-foreground mb-6 leading-relaxed">
+                      {project.description}
+                    </p>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-3">
-                    <Button variant="default" size="sm" className="flex-1">
-                      <ExternalLink className="w-4 h-4 mr-2" />
+                    {/* Project Details */}
+                    <div className="flex items-center gap-6 mb-6 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-5 h-5 text-accent" />
+                        <span>{project.duration}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Users className="w-5 h-5 text-accent" />
+                        <span>{project.teamSize}</span>
+                      </div>
+                    </div>
+
+                    {/* Features */}
+                    <div className="mb-6">
+                      <h4 className="font-semibold mb-3">Características principales:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {project.features.map((feature, featureIndex) => (
+                          <span
+                            key={featureIndex}
+                            className="bg-muted px-3 py-1.5 rounded-md text-sm"
+                          >
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Technologies */}
+                    <div className="mb-6">
+                      <h4 className="font-semibold mb-3">Tecnologías:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {project.technologies.map((tech, techIndex) => (
+                          <span
+                            key={techIndex}
+                            className="bg-gradient-to-r from-accent/20 to-accent/10 text-accent border border-accent/30 px-3 py-1.5 rounded-md text-sm font-medium"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <Button variant="default" size="lg" className="w-full">
+                      <ExternalLink className="w-5 h-5 mr-2" />
                       Ver Demo
                     </Button>
-                    <Button variant="outline" size="sm">
-                      <Github className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardContent>
+                  </CardContent>
+                </div>
               </Card>
-            ))}
+            </div>
           </div>
-        </div>
+        ))}
       </section>
 
       {/* CTA Section */}
