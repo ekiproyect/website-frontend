@@ -66,15 +66,19 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-accent" />
-                <span className="text-primary-foreground/80 text-sm">info@eki.cl</span>
+                <a href="mailto:ekiteam.contacto@gmail.com" className="text-primary-foreground/80 hover:text-accent transition-colors text-sm">
+                  ekiteam.contacto@gmail.com
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-4 h-4 text-accent" />
-                <span className="text-primary-foreground/80 text-sm">+1 (555) 123-4567</span>
+                <a href="https://wa.me/56979815301" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-accent transition-colors text-sm">
+                  +56 9 7981 5301
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-4 h-4 text-accent" />
-                <span className="text-primary-foreground/80 text-sm">Barcelona, España</span>
+                <span className="text-primary-foreground/80 text-sm">Antofagasta, Chile</span>
               </div>
             </div>
 
@@ -82,12 +86,13 @@ const Footer = () => {
             <div className="flex space-x-4 pt-2">
               {[
                 { icon: Github, href: "#" },
-                { icon: Linkedin, href: "#" },
-                { icon: Twitter, href: "#" },
+                { icon: Linkedin, href: "https://www.linkedin.com/company/ekiproject/" },
               ].map((social, index) => (
                 <a
                   key={index}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary-foreground/80 hover:text-accent transition-colors"
                 >
                   <social.icon className="w-5 h-5" />

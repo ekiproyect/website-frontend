@@ -37,10 +37,12 @@ const Header = () => {
       }`}
     >
       <div 
-        className={`bg-background/95 backdrop-blur-sm border transition-all duration-300 ${
-          isScrolled 
-            ? "rounded-full shadow-lg" 
-            : "border-b rounded-none"
+        className={`bg-background/95 backdrop-blur-sm border ${
+          isMenuOpen
+            ? "rounded-lg shadow-lg"
+            : isScrolled 
+            ? "rounded-full shadow-lg transition-all duration-300" 
+            : "border-b rounded-none transition-all duration-300"
         }`}
       >
         <div className="container mx-auto px-4 py-4">
