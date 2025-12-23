@@ -79,6 +79,7 @@ const Footer = () => {
               <div className="flex items-center space-x-3">
                 <MapPin className="w-4 h-4 text-accent" />
                 <span className="text-primary-foreground/80 text-sm">Antofagasta, Chile</span>
+                <span className="text-primary-foreground/80 text-sm">Antofagasta, Chile</span>
               </div>
             </div>
 
