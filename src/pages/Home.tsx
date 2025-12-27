@@ -4,6 +4,7 @@ import { ArrowRight, Code, Smartphone, Cloud, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { HeroRotator } from '../components/HeroRotator';
 import { Meteors } from "@/components/ui/meteors";
+import heroImage from "@/assets/hero-image.jpg";
 
 const Home = () => {
   const features = [
@@ -35,7 +36,7 @@ const Home = () => {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url('/src/assets/hero-image.jpg')` }}
+          style={{ backgroundImage: `url(${heroImage})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-accent/75" />
         </div>
