@@ -32,7 +32,7 @@ const Header = () => {
     <header 
       className={`fixed w-full z-50 transition-all duration-300 ${
         isScrolled 
-          ? "top-4 px-4" 
+          ? "top-2 sm:top-4 px-2 sm:px-4" 
           : "top-0"
       }`}
     >
@@ -45,20 +45,20 @@ const Header = () => {
             : "border-b rounded-none transition-all duration-300"
         }`}
       >
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4">
         <nav className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <img src="logos/eki/Logo nuevo.png" alt="Logo" width={40} height={40} />
+          <Link to="/" className="flex items-center space-x-2 shrink-0">
+            <img src="logos/eki/Logo nuevo.png" alt="Logo" width={32} height={32} className="sm:w-10 sm:h-10" />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex space-x-8">
+          <div className="hidden lg:flex space-x-4 xl:space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-accent ${
+                className={`text-xs xl:text-sm font-medium transition-colors hover:text-accent ${
                   isActive(item.href) ? "text-accent" : "text-muted-foreground"
                 }`}
               >
@@ -69,7 +69,7 @@ const Header = () => {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <Button variant="hero" size="sm">
+            <Button variant="hero" size="sm" className="text-xs xl:text-sm px-3 xl:px-4">
               Contáctanos
             </Button>
           </div>
@@ -78,10 +78,10 @@ const Header = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="lg:hidden h-8 w-8 sm:h-10 sm:w-10"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X /> : <Menu />}
+            {isMenuOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5" /> : <Menu className="h-4 w-4 sm:h-5 sm:w-5" />}
           </Button>
         </nav>
 
