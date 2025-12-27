@@ -3,7 +3,7 @@ import { Github, Linkedin, Mail } from "lucide-react";
 import teamMember2 from "@/assets/team-member-2.jpg";
 import teamMember3 from "@/assets/team-member-3.jpg";
 import teamMember4 from "@/assets/team-member-4.jpg";
-import ernes from "@/assets/ernes.jpg";
+import ernes from "@/assets/Ernes.jpg";
 import heroImage2 from "@/assets/hero-image2.jpg";
 
 const Team = () => {

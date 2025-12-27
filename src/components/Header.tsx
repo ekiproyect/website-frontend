@@ -59,7 +59,6 @@ const Header = () => {
   const navItems = [
     { href: "/", label: "Inicio" },
     { href: "/about", label: "Nosotros" },
-    { href: "/team", label: "Equipo" },
     { href: "/projects", label: "Proyectos" },
     { href: "/services", label: "Servicios" },
     { href: "/technologies", label: "Tecnologías" },
@@ -101,7 +100,9 @@ const Header = () => {
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`text-xs xl:text-sm font-medium transition-colors hover:text-accent ${isActive(item.href) ? "text-accent" : "text-muted-foreground"
+                  className={`text-xs xl:text-sm font-medium transition-all hover:text-accent inline-block pb-1 nav-link-underline ${isActive(item.href)
+                    ? "text-accent active"
+                    : "text-muted-foreground"
                     }`}
                 >
                   {item.label}

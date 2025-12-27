@@ -127,4 +127,25 @@ All colors MUST be HSL.
   .animate-meteor-effect {
     animation: meteor 5s linear infinite;
   }
+
+  /* Nav underline animation - expands from left to right */
+  .nav-link-underline {
+    position: relative;
+  }
+
+  .nav-link-underline::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: hsl(var(--accent));
+    transition: width 0.3s ease-out;
+  }
+
+  .nav-link-underline:hover::after,
+  .nav-link-underline.active::after {
+    width: 100%;
+  }
 }
