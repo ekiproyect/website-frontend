@@ -22,7 +22,7 @@ const ScrollProgressBar = () => {
   }, []);
 
   return (
-    <div className={`fixed top-24 left-0 right-0 z-40 h-1 bg-muted transition-opacity duration-300 ${
+    <div className={`fixed top-24 left-0 right-0 z-40 h-1 bg-muted transition-opacity duration-300 hidden md:block ${
       scrollProgress > 0 ? 'opacity-100' : 'opacity-0'
     }`}>
       <div 
