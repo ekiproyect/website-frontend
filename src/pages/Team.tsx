@@ -3,7 +3,7 @@ import { Github, Linkedin, Mail } from "lucide-react";
 import teamMember2 from "@/assets/team-member-2.jpg";
 import teamMember3 from "@/assets/team-member-3.jpg";
 import teamMember4 from "@/assets/team-member-4.jpg";
-import Ernes from "@/assets/Ernes.jpg";
+import ernes from "@/assets/ernes.jpg";
 import heroImage2 from "@/assets/hero-image2.jpg";
 
 const Team = () => {
@@ -15,7 +15,7 @@ const Team = () => {
       squad: "Frontend Developer",
       description:
         "Lidera arquitectura y delivery end-to-end con foco en frontend y experiencias.",
-      image: Ernes,
+      image: ernes,
       skills: [
         "Next.js",
         "Design System",
@@ -95,15 +95,15 @@ const Team = () => {
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
         {/* Imagen de fondo */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroImage2})` }}
         />
         {/* Lado Azul Oscuro con opacidad */}
         <div className="absolute inset-0 bg-blue-600/80" />
         {/* Lado Celeste con clip-path diagonal y opacidad */}
-        <div 
-          className="absolute inset-0 bg-cyan-400/40" 
+        <div
+          className="absolute inset-0 bg-cyan-400/40"
           style={{ clipPath: 'polygon(40% 0, 100% 0, 100% 100%, 60% 100%)' }}
         />
         <div className="container mx-auto px-4 relative z-10">
@@ -112,7 +112,7 @@ const Team = () => {
               Nuestro <span className="underline decoration-4 underline-offset-8">Equipo</span>
             </h1>
             <p className="text-xl md:text-2xl leading-relaxed text-white/90">
-              Conoce a los ingenieros de software que hacen posible cada proyecto, 
+              Conoce a los ingenieros de software que hacen posible cada proyecto,
               combinando experiencia técnica con pasión por la innovación.
             </p>
           </div>
@@ -127,7 +127,7 @@ const Team = () => {
               Cuatro Ingenieros de <span className="text-accent">Software</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Un equipo multidisciplinario con la experiencia y dedicación 
+              Un equipo multidisciplinario con la experiencia y dedicación
               necesaria para llevar tu proyecto al siguiente nivel.
             </p>
           </div>
@@ -154,7 +154,7 @@ const Team = () => {
 
                     {/* Badges: Encargado y Squad */}
                     <div className="flex justify-center gap-2 mt-2 mb-4">
-                      
+
                       {member.squad && (
                         <span
                           className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 border border-blue-300"
