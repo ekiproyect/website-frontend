@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { LoadingScreen } from "./components/LoadingScreen";
-import { HamburgerMenu } from "./components/HamburgerMenu";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Team from "./pages/Team";
@@ -38,7 +37,6 @@ const App = () => {
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <HamburgerMenu />
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
