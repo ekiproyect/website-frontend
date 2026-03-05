@@ -6,9 +6,10 @@ interface IntroOverlayProps {
 }
 
 export function IntroOverlay({ onFinish }: IntroOverlayProps) {
-    const rootRef = useRef<HTMLDivElement>(null);
-    const titleRef = useRef<HTMLDivElement>(null);
+    const rootRef       = useRef<HTMLDivElement>(null);
+    const titleRef      = useRef<HTMLDivElement>(null);
     const lightSweepRef = useRef<HTMLDivElement>(null);
+    const bgWhiteRef    = useRef<HTMLDivElement>(null);
 
     const [isMobile, setIsMobile] = useState(false);
 
@@ -30,17 +31,17 @@ export function IntroOverlay({ onFinish }: IntroOverlayProps) {
             // Make root visible (starts at opacity 0 in JSX)
             gsap.set(rootRef.current, { autoAlpha: 1 });
 
-            // Hard initial state for EKI text
+            // EKI: starts slightly below scale 1 and invisible
             gsap.set(titleRef.current, {
-                opacity: 1,
-                scale: 1,
-                x: 0,
+                opacity: 0,
+                scale: 0.98,
                 y: 0,
-                rotation: 0,
                 transformOrigin: 'center center',
-                filter: 'blur(0px)',
-                willChange: 'transform, opacity, filter',
+                willChange: 'transform, opacity',
             });
+
+            // White fade overlay: hidden initially
+            gsap.set(bgWhiteRef.current, { opacity: 0 });
 
             // Light sweep (desktop only)
             if (!mobile && lightSweepRef.current) {
@@ -54,35 +55,43 @@ export function IntroOverlay({ onFinish }: IntroOverlayProps) {
                 });
             }
 
-            // Main timeline: EKI zooms in, blurs, fades → overlay fades out
+            // Scale target — large enough to clip completely at any viewport
+            const zoomScale = mobile ? 12 : 9;
+
+            // Main timeline: EKI rushes into camera → white flash → done
             const tl = gsap.timeline({
                 defaults: { ease: 'power2.out' },
                 onComplete: () => {
-                    // Fade out the whole overlay then call onFinish
-                    gsap.to(rootRef.current, {
-                        autoAlpha: 0,
-                        duration: 0.4,
-                        ease: 'power2.inOut',
-                        onComplete: () => {
-                            document.body.style.overflow = prevOverflow;
-                            onFinish();
-                        },
-                    });
+                    document.body.style.overflow = prevOverflow;
+                    onFinish();
                 },
             });
 
+            // 1) Quick entrance: fade in + settle to scale 1
             tl.to(titleRef.current, {
-                scale: 2.2,
-                duration: 0.85,
-                ease: 'power2.in',
+                opacity: 1,
+                scale: 1,
+                duration: 0.25,
+                ease: 'power2.out',
             }, 0)
-                .to(titleRef.current, {
-                    scale: 3.6,
-                    opacity: 0,
-                    filter: 'blur(22px)',
-                    duration: 0.95,
-                    ease: 'power1.inOut',
-                }, 0.75);
+
+            // 2) Zoom into camera — no opacity reduction during main zoom
+            .to(titleRef.current, {
+                scale: zoomScale,
+                y: -40,
+                duration: 1.1,
+                ease: 'power3.in',
+            }, 0.25)
+
+            // 3) White overlay fades in during last ~30% of zoom
+            .to(bgWhiteRef.current, {
+                opacity: 1,
+                duration: 0.38,
+                ease: 'power2.in',
+            }, 0.25 + 1.1 * 0.68)
+
+            // 4) Hold white briefly then snap out (no rootRef fade — instant hide via autoAlpha)
+            .set(rootRef.current, { autoAlpha: 0 }, '+=0.05');
         }, rootRef);
 
         return () => {
@@ -202,6 +211,12 @@ export function IntroOverlay({ onFinish }: IntroOverlayProps) {
                     </span>
                 </h1>
             </div>
+
+            {/* ── White flash overlay (crossfade to hero bg) ── */}
+            <div
+                ref={bgWhiteRef}
+                className="absolute inset-0 z-20 pointer-events-none bg-zinc-50"
+            />
         </div>
     );
 }

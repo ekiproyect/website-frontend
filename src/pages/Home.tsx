@@ -1,8 +1,9 @@
-﻿import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { IntroOverlay } from '../components/home/IntroOverlay';
 import { RotatingTitleHero } from '../components/home/RotatingTitleHero';
 import { HeroTakeoverStage } from '../components/home/HeroTakeoverStage';
 import { ProjectsVideoSection } from '../components/home/ProjectsVideoSection';
+import { ProjectsCarousel } from '../components/home/ProjectsCarousel';
 import { FloatingNav } from '../components/navegation/FloatingNav';
 
 const INTRO_KEY = 'eki_intro_done';
@@ -25,13 +26,10 @@ const Home = () => {
     setIntroDone(true);
     window.scrollTo(0, 0);
   };
-  const START_REVEAL = 0.18;
-  // Ref al contenedor del dark content — HeroTakeoverStage lo anima con translateY
-  const darkContentRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="bg-zinc-50 text-zinc-900 relative">
-      {/* z-0 — grilla decorativa fija */}
+    <div className="relative bg-zinc-50 text-zinc-900">
+      {/* Fondo grilla */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div
           className="w-full h-full opacity-[0.07]"
@@ -44,41 +42,24 @@ const Home = () => {
         />
       </div>
 
-      {/*
-        Dark content: fixed durante el takeover, sincronizado con translateY.
-        Arranca translateY(100vh) y baja a 0 mientras el panel sube.
-        z-[9] — debajo del panel negro (z-10) pero visible dentro de él.
-      */}
-      <div
-        ref={darkContentRef}
-        className="fixed inset-0 z-[9] bg-zinc-950 text-white flex items-center justify-center overflow-hidden"
-        style={{ transform: 'translateY(100vh)', willChange: 'transform' }}
-      >
-        <ProjectsVideoSection />
-      </div>
-
-      {/* Stage: hero pinned + panel negro que sube */}
-      <HeroTakeoverStage
-        coverAtVh={1.2}
-        startReveal={START_REVEAL}
-        darkContentRef={darkContentRef}
-      >
+      {/* Hero + takeover */}
+      <HeroTakeoverStage coverAtVh={1.0} startReveal={0.18}>
         <RotatingTitleHero animate={introDone} />
       </HeroTakeoverStage>
 
-      {/* Contenido dark real post-takeover — scrolleable */}
-      <div className="relative bg-zinc-950 text-white">
+      {/* Secciones dark normales */}
+      <div className="relative z-10 bg-zinc-950 text-white">
         <ProjectsVideoSection />
+        <ProjectsCarousel />
       </div>
 
-      {/* z-[200] — navbar */}
-      <FloatingNav />
+      {/* Navbar */}
+      <FloatingNav introDone={introDone} />
 
-      {/* z-[300] — intro overlay */}
+      {/* Intro inicial */}
       {!introDone && <IntroOverlay onFinish={handleIntroFinish} />}
     </div>
   );
 };
 
 export default Home;
-

@@ -21,11 +21,14 @@ export function RotatingTitleHero({ animate = true }: Props) {
   const wordIdxRef = useRef(wordIdx);
 
   // Refs para animación de entrada
-  const heroRef  = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const subRef   = useRef<HTMLParagraphElement>(null);
+  const heroRef   = useRef<HTMLElement>(null);
+  const titleRef  = useRef<HTMLDivElement>(null);
+  const subRef    = useRef<HTMLParagraphElement>(null);
+  // StrictMode guard — entry runs exactly once
+  const playedRef = useRef(false);
 
-  // StrictMode-safe: ref guard evita doble interval en dev
+  // ── Word carousel ──────────────────────────────────────────────────────────
+  // StrictMode-safe: ref guard evita doble interval en mount
   useLayoutEffect(() => {
     if (!animate) return;
     if (startedRef.current) return;
@@ -43,6 +46,7 @@ export function RotatingTitleHero({ animate = true }: Props) {
           filter: 'blur(6px)',
           duration: 0.3,
           ease: 'power2.in',
+          overwrite: 'auto',
           onComplete: () => {
             // Avanzar índice y sincronizar ref
             const next = (wordIdxRef.current + 1) % WORDS.length;
@@ -59,6 +63,7 @@ export function RotatingTitleHero({ animate = true }: Props) {
                 filter: 'blur(0px)',
                 duration: 0.38,
                 ease: 'power3.out',
+                overwrite: 'auto',
               },
             );
           },
@@ -74,16 +79,47 @@ export function RotatingTitleHero({ animate = true }: Props) {
     };
   }, [animate]);
 
+  // ── Entry animation (title mask reveal + subtitle fade) ───────────────────
   useLayoutEffect(() => {
     if (!animate) return;
+
+    const title = titleRef.current;
+    const sub   = subRef.current;
+    if (!title || !sub) return;
+
     const ctx = gsap.context(() => {
-      gsap.set([titleRef.current, subRef.current], { autoAlpha: 0, y: 30 });
-      gsap
-        .timeline({ defaults: { ease: 'power3.out' } })
-        .to(titleRef.current, { autoAlpha: 1, y: 0, duration: 0.7  }, 0.1)
-        .to(subRef.current,   { autoAlpha: 1, y: 0, duration: 0.55 }, 0.3);
+      // Reveal wrapper first (CSS visibility:hidden guards frame 0), then GSAP owns it
+      const wrapper = title.parentElement as HTMLElement | null;
+      if (wrapper) gsap.set(wrapper, { visibility: 'visible' });
+
+      // Hard initial state — inside context so revert cleans it up
+      gsap.set(title, {
+        clipPath: 'inset(0 0 100% 0)',
+        y: 12,
+        willChange: 'clip-path, transform',
+      });
+      gsap.set(sub, {
+        autoAlpha: 0,
+        y: 20,
+        willChange: 'transform, opacity',
+      });
+
+      if (playedRef.current) return;
+      playedRef.current = true;
+
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out', overwrite: 'auto' } })
+        .to(title, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: 0.72 }, 0)
+        .to(sub,   { autoAlpha: 1, y: 0, duration: 0.52 }, 0.42);
+
+      // Defer one frame so layout is fully settled before clip-path animates
+      tl.pause();
+      requestAnimationFrame(() => tl.play(0));
     }, heroRef);
-    return () => ctx.revert();
+
+    return () => {
+      ctx.revert();
+      if (!animate) playedRef.current = false;
+    };
   }, [animate]);
 
   const currentWord = WORDS[wordIdx];
@@ -101,7 +137,7 @@ export function RotatingTitleHero({ animate = true }: Props) {
         <div className="absolute right-[15%] top-[30%] w-[400px] h-[400px] rounded-full bg-sky-400/8 blur-[120px]" />
       </div>
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-6 md:px-12 py-28 md:py-36 flex flex-col items-center text-center gap-8">
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-6 md:px-12 py-28 md:py-36 flex flex-col items-center text-center gap-8" style={{ visibility: 'hidden' }}>
 
         {/* Título gigante */}
         <div ref={titleRef}>

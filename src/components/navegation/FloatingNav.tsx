@@ -1,14 +1,26 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { gsap } from "gsap";
 
 type Item =
     | { path: string; label: string; type: "route" }
     | { path: `#${string}`; label: string; type: "scroll" };
 
-export const FloatingNav = () => {
+interface FloatingNavProps {
+    introDone?: boolean;
+}
+
+export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
+
+    // Animation refs
+    const pillRef   = useRef<HTMLDivElement>(null);
+    const logoRef   = useRef<HTMLButtonElement>(null);
+    const itemRefs  = useRef<(HTMLButtonElement | null)[]>([]);
+    // StrictMode guard — entrance runs exactly once
+    const playedRef = useRef(false);
 
     const menuItems: Item[] = useMemo(
         () => [
@@ -21,6 +33,51 @@ export const FloatingNav = () => {
         ],
         []
     );
+
+    // Single scoped effect: set initial hidden state + run entrance when introDone fires
+    useLayoutEffect(() => {
+        const pill  = pillRef.current;
+        const logo  = logoRef.current;
+        const items = itemRefs.current.filter(Boolean) as HTMLButtonElement[];
+        if (!pill) return;
+
+        // Scope everything inside a gsap.context tied to the pill container
+        const ctx = gsap.context(() => {
+            // ── Always: hard-set GSAP initial state (CSS visibility:hidden already guards frame 0) ──
+            gsap.set(pill, {
+                visibility: 'visible', // hand off from CSS to GSAP
+                autoAlpha: 0,
+                scaleX: 0,
+                transformOrigin: "left center",
+                willChange: "transform, opacity",
+            });
+            gsap.set(logo, { visibility: 'visible', autoAlpha: 0, scale: 0.7, willChange: "transform, opacity" });
+            gsap.set(items, { autoAlpha: 0, y: 8, willChange: "transform, opacity" });
+
+            // ── Entrance: only when introDone and never replayed ──
+            if (!introDone || playedRef.current) return;
+            playedRef.current = true;
+
+            const tl = gsap.timeline({ defaults: { ease: "power3.out", overwrite: "auto" } })
+                // 1. Logo scales in first
+                .to(logo,  { autoAlpha: 1, scale: 1, duration: 0.32 }, 0)
+                // 2. Pill stretches from logo outward
+                .to(pill,  { autoAlpha: 1, scaleX: 1, duration: 0.42, ease: "power2.out" }, 0.08)
+                // 3. Items stagger in after pill is mostly open
+                .to(items, { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.05 }, 0.32);
+
+            // Start on next frame to avoid layout-shift conflicts
+            tl.pause();
+            requestAnimationFrame(() => tl.play(0));
+        });
+
+        return () => {
+            ctx.revert();
+            // Reset guard only if intro hasn't fired yet (cleanup before mount completes)
+            if (!introDone) playedRef.current = false;
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [introDone]);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 6);
@@ -56,9 +113,9 @@ export const FloatingNav = () => {
     };
 
     return (
-        // 📌 FLOTANTE: puedes cambiar a top-6 left-6 si lo quieres más “esquina”
         <div className="fixed top-6 left-6 z-[300]">
             <div
+                ref={pillRef}
                 className={[
                     "flex items-center gap-6",
                     "rounded-2xl border",
@@ -67,12 +124,15 @@ export const FloatingNav = () => {
                     "shadow-lg shadow-black/8",
                     scrolled ? "border-black/12" : "border-black/8",
                 ].join(" ")}
+                style={{ visibility: 'hidden' }}
             >
                 {/* Logo / Marca */}
                 <button
+                    ref={logoRef}
                     onClick={() => navigate("/")}
                     className="flex items-center gap-3"
                     aria-label="Ir al inicio"
+                    style={{ visibility: 'hidden' }}
                 >
                     <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center font-black text-white">
                         EKI
@@ -81,12 +141,13 @@ export const FloatingNav = () => {
 
                 {/* Links desktop */}
                 <nav className="hidden md:flex items-center gap-1">
-                    {menuItems.map((item) => (
+                    {menuItems.map((item, i) => (
                         <button
                             key={item.path}
+                            ref={(el) => { itemRefs.current[i] = el; }}
                             onClick={() => goToItem(item)}
                             className={[
-                                "px-4 py-2 rounded-xl text-sm font-semibold transition",
+                                "px-4 py-2 rounded-xl text-sm font-semibold transition-colors",
                                 isActive(item)
                                     ? "text-zinc-900 bg-black/8"
                                     : "text-zinc-600 hover:text-zinc-900 hover:bg-black/5",
@@ -99,10 +160,9 @@ export const FloatingNav = () => {
 
                 {/* Links mobile (compacto) */}
                 <div className="md:hidden flex items-center gap-2">
-                    {/* si quieres, aquí después metemos un dropdown/hamburger para mobile */}
                     <button
                         onClick={() => navigate("/")}
-                        className="px-3 py-2 rounded-xl text-sm font-semibold text-zinc-600 hover:text-zinc-900 hover:bg-black/5 transition"
+                        className="px-3 py-2 rounded-xl text-sm font-semibold text-zinc-600 hover:text-zinc-900 hover:bg-black/5 transition-colors"
                     >
                         Menú
                     </button>
