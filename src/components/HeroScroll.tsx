@@ -5,6 +5,10 @@ import { ProjectsVideoSection } from "./home/ProjectsVideoSection";
 import { ProjectsCarousel } from "./home/ProjectsCarousel";
 import { RotatingTitleHero } from "./home/RotatingTitleHero";
 import { StackingCards } from "./StackingCards"; // 👈 1. IMPORTAR AQUÍ
+import { TechMarquee } from "./TechtMarquee";
+
+
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -72,6 +76,7 @@ export function HeroScroll() {
       >
         <div className="max-w-7xl mx-auto">
            <ProjectsVideoSection/>
+           <TechMarquee/>
            <ProjectsCarousel/>          
           
           {/* 👇 Puedes borrar este div o comentarlo, las tarjetas ya nos dan suficiente altura de scroll */}
