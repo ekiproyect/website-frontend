@@ -44,19 +44,12 @@ All colors MUST be HSL.
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -141,10 +134,32 @@ All colors MUST be HSL.
   animation: glitch 0.3s infinite;
 }
 
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
+/* ==================================================== */
+/* CONFIGURACIÓN DE LENIS (SMOOTH SCROLL)               */
+/* ==================================================== */
+html.lenis, html.lenis body {
+  height: auto;
+  width: 100vw;
+  overflow-x: hidden;
 }
+
+/* Importante: Forzar a auto para que Lenis tome el control */
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+/* ==================================================== */
 
 /* Scrollbar personalizado */
 ::-webkit-scrollbar {
@@ -162,14 +177,4 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #2563eb, #7c3aed);
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
 }
