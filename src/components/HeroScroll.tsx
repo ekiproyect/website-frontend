@@ -6,6 +6,9 @@ import { ProjectsCarousel } from "./home/ProjectsCarousel";
 import { RotatingTitleHero } from "./home/RotatingTitleHero";
 import { StackingCards } from "./StackingCards"; // 👈 1. IMPORTAR AQUÍ
 import { TechMarquee } from "./TechtMarquee";
+import { ServicesScroll } from "./ServicesScroll";
+import { ProcessSection } from "./ProcessSection";
+import { Footer } from "./Footer";
 
 
 
@@ -52,7 +55,9 @@ export function HeroScroll() {
   }, []);
 
   return (
-    <main className="relative bg-zinc-50 text-zinc-900">
+    // 1. LA SOLUCIÓN GLOBAL: Agregamos w-full y overflow-x-hidden aquí
+    <main className="relative w-full overflow-x-hidden bg-zinc-50 text-zinc-900">
+      
       {/* HERO (clavado) */}
       <section className="sticky top-0 h-[92vh] w-full flex items-center justify-center z-10 overflow-hidden">
         <div ref={heroContentRef} className="text-center flex flex-col items-center px-6">
@@ -60,15 +65,14 @@ export function HeroScroll() {
         </div>
       </section>
 
-      {/* SECCIÓN NEGRA */}
+      {/* SECCIÓN NEGRA CONTINUA */}
       <section
         ref={nextSectionRef}
+        // 👇 QUITAMOS shadow-2xl y pb-20 para que no haya cortes 👇
         className="
           relative z-20 bg-zinc-950 text-white w-full
-          shadow-2xl
           px-6 md:px-12
           pt-14 md:pt-20
-          pb-20
         "
         style={{
           marginTop: "-14vh",
@@ -76,18 +80,18 @@ export function HeroScroll() {
       >
         <div className="max-w-7xl mx-auto">
            <ProjectsVideoSection/>
-           <TechMarquee/>
-           <ProjectsCarousel/>          
-          
-          {/* 👇 Puedes borrar este div o comentarlo, las tarjetas ya nos dan suficiente altura de scroll */}
-          {/* <div className="h-[120vh]" /> */}
+           <TechMarquee />
+           <ProjectsCarousel />
+           <ServicesScroll />
         </div>
       </section>
-
-      {/* 👈 2. AGREGAR LA NUEVA SECCIÓN AQUÍ */}
-      {/* Esta sección entra en negro y se abre en blanco mágicamente */}
+      
+      {/* EL PROCESO: Empieza oscuro y GSAP lo ilumina a blanco */}
+      <ProcessSection />
+      
+      {/* LOS PRINCIPIOS: Siguen sobre el lienzo blanco que dejó el proceso */}
       <StackingCards />
-
+        <Footer />
     </main>
   );
 }

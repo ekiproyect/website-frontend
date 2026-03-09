@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { Logo3D } from '../Logo3D'; // <-- Ajusta esta ruta según dónde guardaste el componente
+import { Logo3D } from '../Logo3D';
 
 const WORDS = ['Project', 'Diseño', 'Confianza', 'Equipo', 'Familia', ''];
 const INTERVAL_MS = 2800;
@@ -20,10 +20,10 @@ export function RotatingTitleHero({ animate = true }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const subRef = useRef<HTMLParagraphElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null); // <-- Nueva referencia para animar la entrada del 3D
+  const logoRef = useRef<HTMLDivElement>(null); 
   const playedRef = useRef(false);
 
-  // --- ANIMACIÓN DEL TEXTO ROTATIVO (Sin cambios) ---
+  // --- ANIMACIÓN DEL TEXTO ROTATIVO ---
   useLayoutEffect(() => {
     if (!animate) return;
     if (startedRef.current) return;
@@ -97,7 +97,6 @@ export function RotatingTitleHero({ animate = true }: Props) {
         willChange: 'transform, opacity',
       });
 
-      // Preparamos el logo 3D para que entre desde la derecha y un poco más pequeño
       gsap.set(logo, {
         autoAlpha: 0,
         x: 40,
@@ -113,7 +112,6 @@ export function RotatingTitleHero({ animate = true }: Props) {
 
       tl.to(title, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: 0.72 }, 0)
         .to(sub, { autoAlpha: 1, y: 0, duration: 0.52 }, 0.42)
-        // Animamos el logo con un efecto "back" para que rebote suavemente al final
         .to(logo, { autoAlpha: 1, x: 0, scale: 1, duration: 1, ease: 'back.out(1.2)' }, 0.2); 
 
       tl.pause();
@@ -133,59 +131,60 @@ export function RotatingTitleHero({ animate = true }: Props) {
       id="hero"
       ref={heroRef}
       aria-label="Hero principal"
-      // 1. CAMBIO: Quitamos bg-zinc-50 y ponemos bg-transparent
       className="relative flex items-center min-h-[84vh] bg-transparent"
     >
-      {/* 2. CAMBIO: Quitamos overflow-hidden para que el blur no se corte feo */}
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute left-1/4 top-[40%] -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-fuchsia-400/10 blur-[160px]" />
-        <div className="absolute right-[10%] top-[30%] w-[400px] h-[400px] rounded-full bg-sky-400/8 blur-[120px]" />
+        <div className="absolute left-1/4 top-[40%] -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-zinc-300/30 blur-[160px]" />
+        <div className="absolute right-[10%] top-[30%] w-[400px] h-[400px] rounded-full bg-zinc-400/10 blur-[120px]" />
       </div>
 
       <div
         ref={contentRef}
-        // 3. CAMBIO: Aumentamos lg:gap-8 a lg:gap-24 (o lg:gap-32 si lo quieres AÚN más separado)
-        className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center"
+        // CAMBIO 1: max-w-7xl -> max-w-[1400px] y ajustamos el grid para darle más espacio al texto (1.1fr vs 0.9fr)
+        className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-24 items-center"
         style={{ visibility: 'hidden' }}
       >
         {/* COLUMNA IZQUIERDA: Texto y CTA */}
-        <div className="flex flex-col items-start text-left gap-8 order-2 lg:order-1">
-          <div ref={titleRef}>
-            {/* Ajusté un poquito el clamp() porque en dos columnas el texto necesita ser un 10% más pequeño para no desbordar */}
+        {/* COLUMNA IZQUIERDA: Texto y CTA */}
+        {/* TRUCO 1: min-w-0 evita que el Grid crezca horizontalmente y mueva las cosas */}
+        <div className="flex flex-col items-start text-left gap-8 order-2 lg:order-1 min-w-0">
+          
+          {/* TRUCO 2: Un contenedor con altura fija (min-h). 
+              El H1 bailará aquí adentro, pero el subtítulo de abajo jamás se enterará */}
+          <div ref={titleRef} className="w-full min-h-[140px] md:min-h-[160px] lg:min-h-[200px] flex items-start">
+            
             <h1
-              className="font-black leading-[0.95] tracking-tighter text-zinc-900"
+              className="font-semibold font-heading leading-[0.95] tracking-tighter text-zinc-900 flex flex-wrap items-baseline gap-x-4 lg:gap-x-6 w-full"
               style={{ fontSize: 'clamp(3rem, 6vw, 6.5rem)' }} 
             >
-              EKI
+              <span>EKI</span>
               {currentWord ? (
-                <>
-                  <br className="hidden lg:block" /> {/* Salto de línea opcional para que la palabra baje */}
-                  <span
-                    ref={wordRef}
-                    aria-live="polite"
-                    aria-atomic="true"
-                    className="inline-block bg-gradient-to-r from-fuchsia-600 via-purple-600 to-sky-600 bg-clip-text text-transparent min-w-[3ch] mt-2 lg:mt-0"
-                    style={{ willChange: 'transform, opacity, filter' }}
-                  >
-                    {currentWord}
-                  </span>
-                </>
+                <span
+                  ref={wordRef}
+                  aria-live="polite"
+                  aria-atomic="true"
+                  className="font-heading italic inline-block bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pb-[0.2em] pr-[0.2em]"
+                  style={{ willChange: 'transform, opacity, filter' }}
+                >
+                  {currentWord}
+                </span>
               ) : (
                 <span
                   ref={wordRef}
                   aria-hidden
-                  className="inline-block text-purple-500/50 min-w-[1ch]"
+                  className="inline-block text-zinc-900 -ml-4 lg:-ml-6 pb-[0.2em]"
                   style={{ willChange: 'transform, opacity, filter' }}
                 >
                   .
                 </span>
               )}
             </h1>
+
           </div>
 
           <p
             ref={subRef}
-            className="text-sm sm:text-base md:text-lg text-zinc-600 leading-relaxed max-w-lg"
+            className="text-sm sm:text-base md:text-lg text-zinc-600 leading-relaxed max-w-lg text-left"
           >
             Empresa de diseño web con sede en Antofagasta. Combinamos diseño de alta gama,
             desarrollo personalizado y SEO estratégico para dar visibilidad a las marcas y

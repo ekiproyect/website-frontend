@@ -104,70 +104,70 @@ export function ProjectsVideoSection() {
       className="relative z-10 w-full pt-0 pb-12 md:pb-16 scroll-mt-28"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-          {/* LEFT (se queda igual) */}
-          <div ref={leftRef} className="flex flex-col gap-5">
-            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-zinc-500">
-              Diseño Web · Antofagasta
-            </span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+  {/* LEFT */}
+  <div ref={leftRef} className="flex flex-col gap-5">
+    <span className="text-xs font-semibold tracking-[0.2em] uppercase text-zinc-500">
+      Diseño Web · Antofagasta
+    </span>
 
-            <h2
-              className="leading-[1.05] tracking-tight"
-              style={{ fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}
-            >
-              <span className="font-black text-white">¿Tu sitio web te está</span>
-              <br />
-              <em className="font-light text-zinc-300 not-italic" style={{ fontStyle: 'italic' }}>
-                costando clientes?
-              </em>
-            </h2>
+    <h2
+      className="leading-[1.05] tracking-tight"
+      style={{ fontSize: 'clamp(2rem, 4vw, 3.4rem)' }}
+    >
+      <span className="font-black text-white">¿Tu sitio web te está</span>
+      <br />
+      <em className="font-light text-zinc-300 not-italic" style={{ fontStyle: 'italic' }}>
+        costando clientes?
+      </em>
+    </h2>
 
-            <p className="text-zinc-400 leading-relaxed max-w-md text-sm">
-              Si tu sitio no refleja la calidad de tu trabajo, está alejando a los clientes que mereces.
-            </p>
+    <p className="text-zinc-400 leading-relaxed max-w-md text-sm">
+      Si tu sitio no refleja la calidad de tu trabajo, está alejando a los clientes que mereces.
+    </p>
 
-            <p className="text-zinc-500 leading-relaxed max-w-md text-sm">
-              En EKI creamos sitios que capturan atención en segundos, generan confianza y trabajan por ti las 24 horas —
-              combinando diseño de alto nivel, desarrollo a medida y SEO estratégico.
-            </p>
+    <p className="text-zinc-500 leading-relaxed max-w-md text-sm">
+      En EKI creamos sitios que capturan atención en segundos, generan confianza y trabajan por ti las 24 horas —
+      combinando diseño de alto nivel, desarrollo a medida y SEO estratégico.
+    </p>
 
-            <ul className="flex flex-col gap-3">
-              {BULLETS.map((b) => (
-                <li key={b} className="flex items-center gap-3 text-sm text-zinc-300">
-                  <CheckCircle className="w-4 h-4 text-fuchsia-400 shrink-0" aria-hidden />
-                  {b}
-                </li>
-              ))}
-            </ul>
+    <ul className="flex flex-col gap-3">
+      {BULLETS.map((b) => (
+        <li key={b} className="flex items-center gap-3 text-sm text-zinc-300">
+          <CheckCircle className="w-4 h-4 text-fuchsia-400 shrink-0" aria-hidden />
+          {b}
+        </li>
+      ))}
+    </ul>
 
-            <Button
-              onClick={() => navigate('/projects')}
-              className="self-start mt-1 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
-            >
-              Ver proyectos
-            </Button>
-          </div>
+    <Button
+      onClick={() => navigate('/projects')}
+      className="self-start mt-1 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
+    >
+      Ver proyectos
+    </Button>
+  </div>
 
-          {/* RIGHT (reemplazado por WebP) */}
-          <div ref={rightRef} className="w-full">
-            <div className="relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10 shadow-[0_24px_64px_rgba(0,0,0,0.55)]">
-              <img
-                src="/mockups/projects-showcase.webp"
-                alt="Projects showcase"
-                className="w-full h-auto object-cover"
-                loading="lazy"
-                draggable={false}
-              />
-              {/* overlay sutil para premium look */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/25 via-transparent to-transparent" />
-            </div>
+  {/* RIGHT */}
+  <div ref={rightRef} className="w-full flex items-center justify-center">
+    <div className="w-full max-w-[640px]">
+      <div className="relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10 shadow-[0_24px_64px_rgba(0,0,0,0.55)]">
+        <img
+          src="/mockups/projects-showcase.webp"
+          alt="Projects showcase"
+          className="w-full h-auto object-cover"
+          loading="lazy"
+          draggable={false}
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/25 via-transparent to-transparent" />
+      </div>
 
-            {/* Opcional: mini caption */}
-            <div className="mt-3 text-xs text-zinc-500">
-              Ejemplos de interfaces reales construidas por EKI.
-            </div>
-          </div>
-        </div>
+      <div className="mt-3 text-xs text-zinc-500">
+        Ejemplos de interfaces reales construidas por EKI.
+      </div>
+    </div>
+  </div>
+</div>
       </div>
     </section>
   );

@@ -25,11 +25,10 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
     const menuItems: Item[] = useMemo(
         () => [
             { path: "/", label: "Inicio", type: "route" },
-            { path: "#filosofia", label: "Filosofía", type: "scroll" },
-            { path: "#servicios", label: "Servicios", type: "scroll" },
-            { path: "#tecnologias", label: "Tecnologías", type: "scroll" },
             { path: "#proyectos", label: "Proyectos", type: "scroll" },
-            { path: "#team", label: "Equipo", type: "scroll" },
+            { path: "/equipo", label: "Equipo", type: "route" },
+            { path: "#contacto", label: "Contacto", type: "scroll" },
+
         ],
         []
     );
@@ -134,7 +133,7 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
                     aria-label="Ir al inicio"
                     style={{ visibility: 'hidden' }}
                 >
-                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center font-black text-white">
+                    <div className="h-10 w-10 rounded-xl bg-black  flex items-center justify-center font-black text-white">
                         EKI
                     </div>
                 </button>
