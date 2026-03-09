@@ -25,7 +25,7 @@ const About = () => {
 
       {/* 3. APAGÓN: El Footer oscuro (si usas la versión que hicimos antes, 
           ajusta su fondo inicial a bg-zinc-950 para que no haya línea de corte con el equipo) */}
-      <Footer />
+      <Footer startsDark={true}/>
       
     </main>
   );

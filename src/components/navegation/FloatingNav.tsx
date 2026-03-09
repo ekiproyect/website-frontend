@@ -25,9 +25,9 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
     const menuItems: Item[] = useMemo(
         () => [
             { path: "/", label: "Inicio", type: "route" },
-            { path: "#proyectos", label: "Proyectos", type: "scroll" },
+            { path: "/proyectos", label: "Proyectos", type: "route" },
             { path: "/equipo", label: "Equipo", type: "route" },
-            { path: "#contacto", label: "Contacto", type: "scroll" },
+            { path: "/contacto", label: "Contacto", type: "route" },
 
         ],
         []

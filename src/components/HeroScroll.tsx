@@ -91,7 +91,7 @@ export function HeroScroll() {
       
       {/* LOS PRINCIPIOS: Siguen sobre el lienzo blanco que dejó el proceso */}
       <StackingCards />
-        <Footer />
+        <Footer  startsDark={true}/>
     </main>
   );
 }

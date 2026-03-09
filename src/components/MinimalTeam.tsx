@@ -12,15 +12,20 @@ if (typeof window !== "undefined") {
 const TEAM_MEMBERS = [
   {
     id: "01",
-    name: "Tu Nombre",
+    name: "Ernes Fuenzalida",
     role: "Tech Lead & Fundador",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop",
+    image: "/images/team/Ernes.jpg",
   },
   {
     id: "02",
-    name: "Carlos",
+    name: "Renato Morales",
     role: "Socio & Director Creativo",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop",
+    image: "/images/team/Renato.png",
+  },  {
+    id: "03",
+    name: "Vicente Araya",
+    role: "Socio & Director Creativo",
+    image: "/images/team/Vicente.JPG",
   },
 ];
 

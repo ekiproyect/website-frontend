@@ -4,36 +4,41 @@ import React, { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { ArrowUpRight } from "lucide-react"; // Icono premium para el botón
+import { ArrowUpRight } from "lucide-react";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export function Footer() {
+// 1. CREAMOS LA INTERFAZ PARA RECIBIR LA ORDEN
+interface FooterProps {
+  startsDark?: boolean;
+}
+
+export function Footer({ startsDark = false }: FooterProps) {
   const containerRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
+    // 2. LA LÓGICA: Si ya le dijimos que empiece oscuro, abortamos la animación de color
+    if (startsDark) return;
+
     const container = containerRef.current;
     const content = contentRef.current;
     if (!container || !content) return;
 
-    // === EL EFECTO APAGÓN (Lights Out) ===
-    // Empieza a oscurecerse cuando el footer asoma por debajo de la mitad de la pantalla
     gsap.to(container, {
-      backgroundColor: "#09090b", // El equivalente hex a bg-zinc-950 (Oscuridad total)
+      backgroundColor: "#09090b", 
       scrollTrigger: {
         trigger: container,
-        start: "top 70%",
-        end: "+=300", // Transición rápida y dramática
+        start: "top bottom",
+        end: "top 30%",
         scrub: true,
       }
     });
 
-    // El texto hace lo inverso: pasa de negro a blanco brillante
     gsap.to(content, {
-      color: "#fafafa", // El equivalente hex a text-zinc-50
+      color: "#fafafa",
       scrollTrigger: {
         trigger: container,
         start: "top 70%",
@@ -41,16 +46,20 @@ export function Footer() {
         scrub: true,
       }
     });
-  }, { scope: containerRef });
+  }, { scope: containerRef, dependencies: [startsDark] });
 
   return (
-    // INICIA EN BLANCO: Así se pega a StackingCards sin dejar ninguna línea divisoria
-    <footer ref={containerRef} className="relative w-full bg-zinc-50 overflow-hidden pt-20 pb-10">
-      
-      {/* EL ENVOLTORIO DE COLOR: Inicia en texto negro (zinc-900) */}
-      <div ref={contentRef} className="max-w-[1400px] mx-auto px-6 md:px-12 text-zinc-900 flex flex-col min-h-[80vh] justify-between">
+    // 3. ESTILOS DINÁMICOS: El fondo y el texto cambian según si startsDark es true o false
+    <footer 
+      ref={containerRef} 
+      className={`relative w-full overflow-hidden pt-20 pb-10 ${startsDark ? 'bg-zinc-950' : 'bg-zinc-50'}`}
+    >
+      <div 
+        ref={contentRef} 
+        className={`max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col min-h-[80vh] justify-between ${startsDark ? 'text-zinc-50' : 'text-zinc-900'}`}
+      >
 
-        {/* TOP SECTION: Call to Action Gigante (Estilo Dixie Raiz) */}
+        {/* TOP SECTION: Call to Action Gigante */}
         <div className="flex flex-col items-center justify-center pt-24 md:pt-40 pb-20 text-center">
           <p className="text-sm md:text-lg font-semibold tracking-[0.2em] uppercase opacity-70 mb-6 md:mb-10">
             ¿Tienes un proyecto en mente?
@@ -73,17 +82,15 @@ export function Footer() {
           </a>
         </div>
 
-        {/* BOTTOM SECTION: Grid arquitectónico de enlaces y datos */}
+        {/* BOTTOM SECTION: Grid de enlaces */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-end pt-12 md:pt-24 border-t border-current/20">
           
-          {/* Ubicación y Branding */}
           <div className="flex flex-col gap-2">
             <span className="text-xs font-bold tracking-widest uppercase opacity-50 mb-4">Sede Central</span>
             <p className="text-xl md:text-2xl font-medium">Antofagasta, Chile</p>
             <p className="text-base md:text-lg font-medium opacity-60">Diseño global, esencia local.</p>
           </div>
 
-          {/* Redes y Copyright */}
           <div className="flex flex-col md:items-end gap-8">
             <div className="flex flex-wrap gap-6 md:gap-10">
               <a href="#" className="text-base md:text-lg font-medium hover:opacity-50 transition-opacity">Instagram</a>
