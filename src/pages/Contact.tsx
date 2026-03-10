@@ -59,7 +59,8 @@ export default function Contact() {
           
           {/* COLUMNA IZQUIERDA: Copy y Datos Directos */}
           <div ref={leftColRef} className="flex flex-col justify-start">
-            <h1 className="text-[12vw] md:text-[10vw] lg:text-[5rem] xl:text-[6.5rem] 2xl:text-[7.5rem] font-black font-heading leading-[0.85] tracking-tighter uppercase mb-8 break-words">
+           {/* Antes tenías un montón de vws locos. Ahora usaremos un clamp() seguro */}
+            <h1 className="text-[14vw] lg:text-[6rem] xl:text-[7.5rem] font-black font-heading leading-[0.85] tracking-tighter uppercase mb-8 break-words max-w-full">
               Hablemos.
             </h1>
             

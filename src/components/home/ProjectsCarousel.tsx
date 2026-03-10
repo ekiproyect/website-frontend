@@ -133,7 +133,9 @@ export function ProjectsCarousel() {
       <div className="relative w-[100vw] left-1/2 -translate-x-1/2">
         <div ref={wrapperRef} className="relative">
           
-          <div className="relative overflow-hidden pl-6 md:pl-12 pr-4">
+          {/* 🔥 EL ARREGLO ESTÁ AQUÍ: Agregamos 'hidden md:block' 🔥 */}
+          {/* Esto oculta todo este bloque gigante de GSAP en celulares y lo muestra desde tablets hacia arriba */}
+          <div className="hidden md:block relative overflow-hidden pl-6 md:pl-12 pr-4">
             
             {/* TRACK */}
             <div

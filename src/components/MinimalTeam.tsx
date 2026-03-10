@@ -27,7 +27,7 @@ const TEAM_MEMBERS = [
     role: "Socio & Director Creativo",
     image: "/images/team/Vicente.webp",
   },
-    {
+  {
     id: "04",
     name: "Fernando Condori",
     role: "Socio & Director Creativo",
@@ -37,28 +37,14 @@ const TEAM_MEMBERS = [
 
 export function MinimalTeam() {
   const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null); // Referencia para el contenido interno
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(() => {
+ useGSAP(() => {
     const section = sectionRef.current;
     const content = contentRef.current;
     if (!section || !content) return;
 
-    // --- 1. TRANSICIÓN DE COLOR DE FONDO Y TEXTO (Dimmer Switch) ---
-    const tlColor = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: "top bottom", // Empieza cuando la sección asoma por abajo
-        end: "top 30%",      // Termina cuando está un poco más arriba del centro
-        scrub: true,         // Vinculado al scroll para suavidad total
-      }
-    });
-
-    tlColor
-      .to(section, { backgroundColor: "#09090b", ease: "none" }, 0) // De blanco a negro
-      .to(content, { color: "#fafafa", ease: "none" }, 0);          // Texto de negro a blanco
-
-    // --- 2. ANIMACIÓN DE ENTRADA DE LAS TARJETAS ---
+    // 1. ANIMACIÓN DE LAS TARJETAS (Se mantiene igual)
     const cards = gsap.utils.toArray(".team-item");
     gsap.fromTo(
       cards,
@@ -71,33 +57,60 @@ export function MinimalTeam() {
         ease: "power3.out",
         scrollTrigger: {
           trigger: section,
-          start: "top 60%", // Se activan cuando el fondo ya se ha oscurecido un poco
+          start: "top 50%", 
         },
       }
     );
+
+    // 🔥 2. EL ARREGLO: EL INTERRUPTOR MAESTRO 🔥
+    // Quitamos el 'scrub' y usamos eventos precisos que afectan a ambas secciones
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top 55%", // Se activa un poco antes de que entren las fotos
+      onEnter: () => {
+        // Oscurece la sección de Equipo Y la sección superior ("Nosotros") al mismo tiempo
+        gsap.to([section, section.previousElementSibling], {
+          backgroundColor: "#09090b", // Pasa a bg-zinc-950
+          duration: 0.6,
+          ease: "power2.out",
+          overwrite: "auto"
+        });
+        gsap.to(content, { color: "#fafafa", duration: 0.6, overwrite: "auto" });
+      },
+      onLeaveBack: () => {
+        // Si el usuario se arrepiente y hace scroll hacia arriba, enciende la luz de nuevo
+        gsap.to([section, section.previousElementSibling], {
+          backgroundColor: "#fafafa", // Vuelve a bg-zinc-50
+          duration: 0.6,
+          ease: "power2.out",
+          overwrite: "auto"
+        });
+        gsap.to(content, { color: "#18181b", duration: 0.6, overwrite: "auto" }); // text-zinc-900
+      }
+    });
+
   }, { scope: sectionRef });
 
   return (
-    // CAMBIO: Inicia en blanco (bg-zinc-50) para fusionarse con la sección anterior
+    // Restauramos a bg-zinc-50 para que el inicio sea idéntico a la sección superior
     <section ref={sectionRef} className="w-full bg-zinc-50 py-24 md:py-40 px-6 md:px-12">
       
-      {/* CAMBIO: El contenido inicia con texto oscuro (text-zinc-900) */}
       <div ref={contentRef} className="max-w-[1400px] mx-auto text-zinc-900">
         
         {/* Cabecera sutil */}
-        {/* CAMBIO: Usamos border-current para que el borde cambie de color con el texto */}
         <div className="flex justify-between items-end border-b border-current/20 pb-8 mb-16">
           <h2 className="text-2xl md:text-3xl font-medium tracking-tight">El Equipo</h2>
           <span className="opacity-60 font-mono text-sm">EKI / 2026</span>
         </div>
 
-        {/* Grid Minimalista */}
+        {/* Grid Minimalista (Tu código de miembros sigue intacto aquí adentro) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-          {TEAM_MEMBERS.map((member) => (
-            <div key={member.id} className="team-item group cursor-pointer">
-              
-              {/* Contenedor de la Imagen */}
-              <div className="w-full aspect-[3/4] overflow-hidden bg-zinc-200/10 mb-6">
+          {TEAM_MEMBERS.map((member, index) => (
+            <div 
+              key={member.id} 
+              className={`team-item group cursor-pointer ${index === 3 ? "lg:col-start-2" : ""}`}
+            >
+              <div className="w-full aspect-[3/4] overflow-hidden bg-zinc-500/10 mb-6">
                 <img 
                   src={member.image} 
                   alt={member.name} 
@@ -105,10 +118,8 @@ export function MinimalTeam() {
                 />
               </div>
 
-              {/* Información debajo de la foto */}
               <div className="flex justify-between items-start">
                 <div>
-                  {/* CAMBIO: Quitamos text-zinc-100 para que herede el color animado */}
                   <h3 className="text-xl md:text-2xl font-semibold tracking-tight mb-1">
                     {member.name}
                   </h3>
@@ -120,7 +131,6 @@ export function MinimalTeam() {
                   {member.id}
                 </span>
               </div>
-
             </div>
           ))}
         </div>

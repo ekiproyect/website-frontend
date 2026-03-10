@@ -134,36 +134,43 @@ return (
       className="relative flex items-center min-h-[84vh] bg-transparent overflow-hidden"
     >
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute left-1/4 top-[40%] -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-zinc-300/30 blur-[160px]" />
+        <div className="absolute left-1/4 top-[40%] -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-wihte blur-[160px]" />
         <div className="absolute right-[10%] top-[30%] w-[400px] h-[400px] rounded-full bg-zinc-400/10 blur-[120px]" />
       </div>
 
       <div
         ref={contentRef}
-        // 🔥 CAMBIO 1 (ESPACIO): Aumentamos los gaps a lg:gap-32 y xl:gap-40 para separar brutalmente el logo del texto
-        className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-16 lg:gap-32 xl:gap-40 items-center"
+        // 🔥 ARREGLO 1: En móviles pasamos a py-8 (menos espacio inútil arriba/abajo) y gap-6 (texto más cerca del logo)
+        className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12 py-8 md:py-24 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6 md:gap-16 lg:gap-32 xl:gap-40 items-center"
         style={{ visibility: 'hidden' }}
       >
         {/* COLUMNA IZQUIERDA: Texto y CTA */}
-        <div className="flex flex-col items-start text-left gap-8 md:gap-12 order-2 lg:order-1 min-w-0">
+        {/* 🔥 ARREGLO 2: Reducimos el gap interno del texto en móvil a gap-6 */}
+        <div className="flex flex-col items-start text-left gap-6 md:gap-12 order-2 lg:order-1 min-w-0">
           
           <div ref={titleRef} className="w-full flex items-start">
-            
             <h1
-              className="font-semibold font-heading leading-[0.95] tracking-tighter text-zinc-900 flex flex-col md:flex-row md:flex-wrap items-start md:items-baseline gap-x-4 lg:gap-x-6 w-full"
-              style={{ fontSize: 'clamp(3rem, 6vw, 6.5rem)' }} 
+              // 🔥 ARREGLO 1: Bajamos el tamaño mínimo del clamp de 3.5rem a 2.5rem para que "Confianza" quepa en un iPhone sin desbordar
+              className="font-semibold font-heading leading-[0.95] tracking-tighter text-zinc-900 flex flex-wrap items-baseline gap-x-2 md:gap-x-4 lg:gap-x-6 w-full"
+              style={{ fontSize: 'clamp(2.5rem, 11vw, 6.5rem)' }} 
             >
               <span>EKI</span>
 
-              {/* 🔥 CAMBIO 2 (EL ARREGLO DEL SALTO): Contenedor relativo de tamaño estricto 🔥 */}
-              <span className="relative inline-block w-[280px] md:w-[400px] lg:w-[500px] h-[1.1em]">
+              {/* 🔥 ARREGLO 2: El truco del Grid Stack 🔥 */}
+              <span className="inline-grid items-baseline">
+                
+                {/* 1. ESPACIADOR FANTASMA: Es invisible, pero le dice al navegador "este contenedor debe medir exactamente lo que mide la palabra más larga" */}
+                <span className="col-start-1 row-start-1 invisible pointer-events-none font-heading italic pb-[0.2em] pr-[0.2em]">
+                  Confianza
+                </span>
+
+                {/* 2. TU PALABRA ANIMADA: Se apila perfectamente en la misma celda (col-start-1 row-start-1) respetando la línea base */}
                 {currentWord ? (
                   <span
                     ref={wordRef}
                     aria-live="polite"
                     aria-atomic="true"
-                    // absolute left-0 top-0 hace que la palabra flote sin empujar nada
-                    className="absolute left-0 top-0 font-heading italic bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pb-[0.2em] pr-[0.2em]"
+                    className="col-start-1 row-start-1 font-heading italic bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pb-[0.2em] pr-[0.2em]"
                     style={{ willChange: 'transform, opacity, filter' }}
                   >
                     {currentWord}
@@ -172,8 +179,7 @@ return (
                   <span
                     ref={wordRef}
                     aria-hidden
-                    // El punto final también debe ser absoluto para no descuadrar
-                    className="absolute left-0 top-0 text-zinc-900 pb-[0.2em]"
+                    className="col-start-1 row-start-1 text-zinc-900 pb-[0.2em]"
                     style={{ willChange: 'transform, opacity, filter' }}
                   >
                     .
@@ -186,20 +192,22 @@ return (
 
           <p
             ref={subRef}
-            className="text-sm sm:text-base md:text-lg text-zinc-600 leading-relaxed max-w-lg text-left"
+            // 🔥 ARREGLO 3: Texto un poquito más pequeño en móviles súper chicos para ganar espacio
+            className="text-sm md:text-lg text-zinc-600 leading-relaxed max-w-lg text-left"
           >
             Empresa de diseño web con sede en Antofagasta. Combinamos diseño de alta gama,
             desarrollo personalizado y SEO estratégico para dar visibilidad a las marcas y
             aumentar el tráfico web.
           </p>
 
-          {/* Si vas a agregar un CTA (botón) después, iría justo aquí, y tampoco saltará */}
+          {/* CTA: Aquí puedes poner tu botón sin miedo a que se tape */}
         </div>
 
         {/* COLUMNA DERECHA: El Logo 3D */}
         <div 
           ref={logoRef} 
-          className="w-full h-[350px] lg:h-[550px] flex items-center justify-center order-1 lg:order-2"
+          // 🔥 ARREGLO 4: En celular el logo mide 240px en vez de 350px. Suficiente para verse premium sin romper todo.
+          className="w-full h-[240px] md:h-[350px] lg:h-[550px] flex items-center justify-center order-1 lg:order-2"
         >
           <Logo3D />
         </div>
