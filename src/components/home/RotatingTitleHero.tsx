@@ -126,12 +126,12 @@ export function RotatingTitleHero({ animate = true }: Props) {
 
   const currentWord = WORDS[wordIdx];
 
-  return (
+return (
     <section
       id="hero"
       ref={heroRef}
       aria-label="Hero principal"
-      className="relative flex items-center min-h-[84vh] bg-transparent"
+      className="relative flex items-center min-h-[84vh] bg-transparent overflow-hidden"
     >
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
         <div className="absolute left-1/4 top-[40%] -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] rounded-full bg-zinc-300/30 blur-[160px]" />
@@ -140,46 +140,48 @@ export function RotatingTitleHero({ animate = true }: Props) {
 
       <div
         ref={contentRef}
-        // CAMBIO 1: max-w-7xl -> max-w-[1400px] y ajustamos el grid para darle más espacio al texto (1.1fr vs 0.9fr)
-        className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-24 items-center"
+        // 🔥 CAMBIO 1 (ESPACIO): Aumentamos los gaps a lg:gap-32 y xl:gap-40 para separar brutalmente el logo del texto
+        className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-16 lg:gap-32 xl:gap-40 items-center"
         style={{ visibility: 'hidden' }}
       >
         {/* COLUMNA IZQUIERDA: Texto y CTA */}
-        {/* COLUMNA IZQUIERDA: Texto y CTA */}
-        {/* TRUCO 1: min-w-0 evita que el Grid crezca horizontalmente y mueva las cosas */}
-        <div className="flex flex-col items-start text-left gap-8 order-2 lg:order-1 min-w-0">
+        <div className="flex flex-col items-start text-left gap-8 md:gap-12 order-2 lg:order-1 min-w-0">
           
-          {/* TRUCO 2: Un contenedor con altura fija (min-h). 
-              El H1 bailará aquí adentro, pero el subtítulo de abajo jamás se enterará */}
-          <div ref={titleRef} className="w-full min-h-[140px] md:min-h-[160px] lg:min-h-[200px] flex items-start">
+          <div ref={titleRef} className="w-full flex items-start">
             
             <h1
-              className="font-semibold font-heading leading-[0.95] tracking-tighter text-zinc-900 flex flex-wrap items-baseline gap-x-4 lg:gap-x-6 w-full"
+              className="font-semibold font-heading leading-[0.95] tracking-tighter text-zinc-900 flex flex-col md:flex-row md:flex-wrap items-start md:items-baseline gap-x-4 lg:gap-x-6 w-full"
               style={{ fontSize: 'clamp(3rem, 6vw, 6.5rem)' }} 
             >
               <span>EKI</span>
-              {currentWord ? (
-                <span
-                  ref={wordRef}
-                  aria-live="polite"
-                  aria-atomic="true"
-                  className="font-heading italic inline-block bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pb-[0.2em] pr-[0.2em]"
-                  style={{ willChange: 'transform, opacity, filter' }}
-                >
-                  {currentWord}
-                </span>
-              ) : (
-                <span
-                  ref={wordRef}
-                  aria-hidden
-                  className="inline-block text-zinc-900 -ml-4 lg:-ml-6 pb-[0.2em]"
-                  style={{ willChange: 'transform, opacity, filter' }}
-                >
-                  .
-                </span>
-              )}
-            </h1>
 
+              {/* 🔥 CAMBIO 2 (EL ARREGLO DEL SALTO): Contenedor relativo de tamaño estricto 🔥 */}
+              <span className="relative inline-block w-[280px] md:w-[400px] lg:w-[500px] h-[1.1em]">
+                {currentWord ? (
+                  <span
+                    ref={wordRef}
+                    aria-live="polite"
+                    aria-atomic="true"
+                    // absolute left-0 top-0 hace que la palabra flote sin empujar nada
+                    className="absolute left-0 top-0 font-heading italic bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pb-[0.2em] pr-[0.2em]"
+                    style={{ willChange: 'transform, opacity, filter' }}
+                  >
+                    {currentWord}
+                  </span>
+                ) : (
+                  <span
+                    ref={wordRef}
+                    aria-hidden
+                    // El punto final también debe ser absoluto para no descuadrar
+                    className="absolute left-0 top-0 text-zinc-900 pb-[0.2em]"
+                    style={{ willChange: 'transform, opacity, filter' }}
+                  >
+                    .
+                  </span>
+                )}
+              </span>
+
+            </h1>
           </div>
 
           <p
@@ -190,6 +192,8 @@ export function RotatingTitleHero({ animate = true }: Props) {
             desarrollo personalizado y SEO estratégico para dar visibilidad a las marcas y
             aumentar el tráfico web.
           </p>
+
+          {/* Si vas a agregar un CTA (botón) después, iría justo aquí, y tampoco saltará */}
         </div>
 
         {/* COLUMNA DERECHA: El Logo 3D */}

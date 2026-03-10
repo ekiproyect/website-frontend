@@ -11,11 +11,11 @@ interface Project {
 }
 
 const PROJECTS: Project[] = [
-  { id: 1, videoSrc: '/videos/proyecto1.mp4', posterSrc: '/images/p1.jpg' },
-  { id: 2, videoSrc: '/videos/proyecto2.mp4', posterSrc: '/images/p2.jpg' },
-  { id: 3, videoSrc: '/videos/proyecto3.mp4', posterSrc: '/images/p3.jpg' },
-  { id: 4, videoSrc: '/videos/proyecto4.mp4', posterSrc: '/images/p4.jpg' },
-  { id: 5, videoSrc: '/videos/proyecto5.mp4', posterSrc: '/images/p5.jpg' },
+  { id: 1, videoSrc: '/videos/proyecto1.mp4', posterSrc: '/images/p1.webp' },
+  { id: 2, videoSrc: '/videos/proyecto2.mp4', posterSrc: '/images/p2.webp' },
+  { id: 3, videoSrc: '/videos/proyecto3.mp4', posterSrc: '/images/p3.webp' },
+  { id: 4, videoSrc: '/videos/proyecto4.mp4', posterSrc: '/images/p4.webp' },
+  { id: 5, videoSrc: '/videos/proyecto5.mp4', posterSrc: '/images/p5.webp' },
 ];
 
 export function ProjectsCarousel() {

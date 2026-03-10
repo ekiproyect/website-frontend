@@ -78,13 +78,9 @@ export function ProcessSection() {
         },
       });
 
-      // 🔥 EL ARREGLO DEL "DIMMER SWITCH" 🔥
-      // Al ponerlo aquí con el '0' al final, garantizamos que la luz SOLO empiece
-      // a encenderse en el milisegundo exacto en que la sección hace "clic" en el techo.
-      tl.to(container, { backgroundColor: "#fafafa", duration: 1.2, ease: "none" }, 0);
-      tl.to(contentWrapper, { color: "#18181b", duration: 1.2, ease: "none" }, 0);
+      // (ELIMINAMOS EL CAMBIO DE COLOR PORQUE AHORA EMPIEZA BLANCO DESDE EL INICIO)
 
-      // Progreso de la línea
+      // Progreso de la línea vertical
       tl.eventCallback("onUpdate", () => {
         const p = tl.progress(); 
         if (lineFillRef.current) lineFillRef.current.style.transform = `scaleY(${p})`;
@@ -97,7 +93,7 @@ export function ProcessSection() {
         }
       });
 
-      // Tiempo para asimilar la primera tarjeta mientras el fondo se ilumina
+      // Tiempo para asimilar la primera tarjeta
       tl.to({}, { duration: HOLD });
 
       for (let i = 1; i < steps; i++) {
@@ -125,11 +121,11 @@ export function ProcessSection() {
   );
 
   return (
-    // 🔥 EL ARREGLO DE LA GRIETA: z-30 y -mt-[1px] solapan esta sección 1 píxel hacia arriba 
-    // matando cualquier transparencia o línea divisoria del navegador.
-    <section ref={containerRef} className="h-screen w-full bg-zinc-950 overflow-hidden relative z-30 -mt-[1px]">
+    // 🔥 CAMBIO: Ahora inicia en bg-zinc-50 para conectar con el final de Servicios 🔥
+    <section ref={containerRef} className="h-screen w-full bg-zinc-50 overflow-hidden relative z-30 -mt-[1px]">
       
-      <div ref={contentWrapperRef} className="w-full max-w-[1400px] mx-auto px-6 md:px-12 flex items-center h-full text-zinc-300">
+      {/* 🔥 CAMBIO: El texto ahora es oscuro (text-zinc-900) 🔥 */}
+      <div ref={contentWrapperRef} className="w-full max-w-[1400px] mx-auto px-6 md:px-12 flex items-center h-full text-zinc-900">
         
         {/* IZQUIERDA */}
         <div className="w-[40%] md:w-[50%] flex flex-col justify-center h-full relative z-10">
@@ -151,7 +147,7 @@ export function ProcessSection() {
                   className="absolute inset-0 flex justify-end items-center"
                 >
                   <h3
-                    className="text-[7rem] md:text-[14rem] lg:text-[18rem] font-heading font-medium leading-none tracking-tighter select-none"
+                    className="text-[7rem] md:text-[14rem] lg:text-[18rem] font-heading font-medium leading-none tracking-tighter select-none opacity-20"
                     style={{ fontVariantNumeric: "slashed-zero" }}
                   >
                     {step.id}.
@@ -161,7 +157,7 @@ export function ProcessSection() {
             </div>
 
             <div ref={lineWrapRef} className="relative h-[30vh] md:h-[50vh] w-[2px] ml-4 shrink-0">
-              <div className="absolute inset-y-0 left-0 w-full bg-current opacity-20" />
+              <div className="absolute inset-y-0 left-0 w-full bg-current opacity-10" />
               <div
                 ref={lineFillRef}
                 className="absolute top-0 left-0 w-full bg-current origin-top"

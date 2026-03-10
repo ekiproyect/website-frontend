@@ -84,7 +84,7 @@ export function ProjectsGrid() {
                   src={project.image} 
                   alt={project.client} 
                   // Efecto zoom en hover muy sutil
-                  className="w-full h-full object-cover origin-center scale-[1.02] group-hover:scale-110 transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                  className="w-full h-full object-cover origin-center scale-[1.02] group-hover:scale-110 transition-transform duration-1000 ease-out"
                 />
               </div>
 

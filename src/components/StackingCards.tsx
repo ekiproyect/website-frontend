@@ -14,25 +14,25 @@ const PRINCIPLES = [
     id: '01',
     title: 'Nuestra Misión',
     desc: 'Impulsar el crecimiento digital de las marcas desde Antofagasta hacia el mundo. Combinamos diseño de alta gama y tecnología para crear experiencias web que destacan y dominan su sector.',
-    image: '/images/mision.jpeg' 
+    image: '/images/mision.webp' 
   },
   {
     id: '02',
     title: 'Filosofía',
     desc: 'Creemos que la primera impresión lo es todo. Rechazamos las plantillas genéricas; cada proyecto es una obra de artesanía digital donde el rendimiento y la estética coexisten en perfecta armonía.',
-    image: '/images/filosofia.jpeg'
+    image: '/images/filosofia.webp'
   },
   {
     id: '03',
     title: 'Diseño Premium',
     desc: 'El buen diseño genera confianza inmediata. Creamos interfaces visuales (UI) y experiencias de usuario (UX) meticulosas que capturan la atención en los primeros 3 segundos vitales.',
-    image: '/images/diseno.jpeg'
+    image: '/images/diseno.webp'
   },
   {
     id: '04',
     title: 'Desarrollo & SEO',
     desc: 'Una arquitectura invisible pero implacable. Escribimos código optimizado para una carga ultrarrápida y aplicamos estrategias SEO para asegurar visibilidad total en los motores de búsqueda.',
-    image: '/images/desarrollo.jpeg'
+    image: '/images/desarrollo.webp'
   },
 ];
 

@@ -70,20 +70,39 @@ export function ServicesScroll() {
         return -(track.scrollWidth - window.innerWidth);
       };
 
-      const tween = gsap.to(track, {
-        x: () => getScrollAmount(),
-        ease: "none",
+      // 🔥 CREAMOS UNA LÍNEA DE TIEMPO 🔥
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => `+=${Math.abs(getScrollAmount())}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+        }
       });
 
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: () => `+=${Math.abs(getScrollAmount())}`,
-        pin: true,
-        animation: tween,
-        scrub: 1,
-        invalidateOnRefresh: true,
+      // 1. El movimiento horizontal (dura todo el trayecto base de '1')
+      tl.to(track, {
+        x: () => getScrollAmount(),
+        ease: "none",
+        duration: 1
       });
+
+      // 2. EL ENCENDIDO: Se activa al 80% del trayecto (0.8)
+      tl.to(section, {
+        backgroundColor: "#fafafa",
+        duration: 0.2, // Dura el último 20%
+        ease: "none"
+      }, 0.7);
+
+      // 3. Sincronizamos el texto superior para que se oscurezca y siga visible
+      tl.to(".sync-text", {
+        color: "#18181b", // text-zinc-900
+        duration: 0.2,
+        ease: "none"
+      }, 0.8);
+      
     },
     { scope: sectionRef }
   );
@@ -93,33 +112,33 @@ export function ServicesScroll() {
       ref={sectionRef}
       className="relative h-screen bg-zinc-950 overflow-hidden w-screen left-1/2 -translate-x-1/2 flex flex-col justify-center"
     >
-      {/* 1. TÍTULO FIJO: Flota arriba, alineado con el grid principal, y NUNCA se mueve en el eje X */}
+      {/* 1. TÍTULO FIJO */}
       <div className="absolute inset-x-0 top-[12vh] md:top-[18vh] z-10 pointer-events-none">
-  <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center">
-    <h2 className="text-4xl md:text-6xl font-black font-heading text-zinc-100 tracking-tighter">
-      ¿Qué{" "}
-      <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.2em]">
-        ofrecemos?
-      </span>
-    </h2>
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center">
+          
+          {/* Añadimos la clase 'sync-text' para que GSAP los encuentre */}
+          <h2 className="sync-text text-4xl md:text-6xl font-black font-heading text-zinc-100 tracking-tighter">
+            ¿Qué{" "}
+            <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.2em]">
+              ofrecemos?
+            </span>
+          </h2>
 
-    <p className="text-base md:text-lg text-zinc-400 mt-4 max-w-lg leading-relaxed mx-auto">
-      No solo escribimos código. Construimos ecosistemas digitales completos de
-      extremo a extremo, preparados para dominar el mercado.
-    </p>
-  </div>
-</div>
+          <p className="sync-text text-base md:text-lg text-zinc-400 mt-4 max-w-lg leading-relaxed mx-auto">
+            No solo escribimos código. Construimos ecosistemas digitales completos de
+            extremo a extremo, preparados para dominar el mercado.
+          </p>
+        </div>
+      </div>
 
-      {/* 2. EL TREN DE TARJETAS: Empujado un poco hacia abajo (mt-24) para no pisar el texto */}
+      {/* 2. EL TREN DE TARJETAS */}
       <div className="mt-24 md:mt-32 flex items-center overflow-hidden">
         <div
           ref={trackRef}
           className="flex items-center gap-6 md:gap-8 w-max px-0"
           style={{ willChange: "transform" }}
         >
-          {/* 3. EL ESPACIADOR FANTASMA: 
-              Este margen calcula exactamente dónde empieza tu texto de arriba para que la primera 
-              tarjeta se alinee a la perfección al iniciar. */}
+          {/* ESPACIADOR FANTASMA */}
           <div className="w-6 md:w-12 xl:w-[calc((100vw-1400px)/2+3rem)] shrink-0" />
 
           {/* TARJETAS */}
@@ -131,11 +150,12 @@ export function ServicesScroll() {
                 bg-[#121214] border border-white/5 rounded-[2rem]
                 p-8 md:p-10 flex flex-col justify-between
                 hover:bg-[#1a1a1d] hover:border-white/10 transition-all duration-500 group
+                shadow-2xl
               "
             >
               <div className="flex justify-between items-start">
                 <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-zinc-50 group-hover:text-zinc-900 transition-colors duration-500">
-                  <service.Icon strokeWidth={1.5} className="w-6 h-6" />
+                  <service.Icon strokeWidth={1.5} className="w-6 h-6 text-zinc-100 group-hover:text-zinc-900" />
                 </div>
 
                 <span className="font-heading text-xl text-zinc-600 font-medium tracking-widest">
@@ -157,7 +177,7 @@ export function ServicesScroll() {
             </div>
           ))}
 
-          {/* Espacio extra al final para que termine suavemente */}
+          {/* Espacio extra al final */}
           <div className="w-[10vw] md:w-[20vw] shrink-0" />
         </div>
       </div>

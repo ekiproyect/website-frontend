@@ -3,14 +3,15 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import Home from "./pages/Home";
-import About from "./pages/About";
 import Team from "./pages/Team";
-import Projects from "./pages/Projects";
 import NotFound from "./pages/NotFound";
 import { SmoothScroll } from "./components/SmoothScroll";
-import Contact from "./pages/Contact";
+import { Suspense, lazy } from 'react';
 const App = () => {
+  const Home = lazy(() => import('./pages/Home')); // O el nombre de tu Home
+const About = lazy(() => import('./pages/About'));
+const Projects = lazy(() => import('./pages/Projects'));
+const Contact = lazy(() => import('./pages/Contact'));
   return (
     <>
       <ErrorBoundary>
@@ -20,6 +21,7 @@ const App = () => {
             <Sonner />
             
             <BrowserRouter>
+            <Suspense fallback={<div className="flex items-center justify-center h-screen">Cargando...</div>}>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/equipo" element={<About />} />
@@ -28,6 +30,8 @@ const App = () => {
                 <Route path="/contacto" element={<Contact />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+          
+            </Suspense>
             </BrowserRouter>
           </TooltipProvider>
           </SmoothScroll>

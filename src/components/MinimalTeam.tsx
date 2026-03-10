@@ -14,18 +14,18 @@ const TEAM_MEMBERS = [
     id: "01",
     name: "Ernes Fuenzalida",
     role: "Tech Lead & Fundador",
-    image: "/images/team/Ernes.jpg",
+    image: "/images/team/Ernes.webp",
   },
   {
     id: "02",
     name: "Renato Morales",
     role: "Socio & Director Creativo",
-    image: "/images/team/Renato.png",
+    image: "/images/team/Renato.webp",
   },  {
     id: "03",
     name: "Vicente Araya",
     role: "Socio & Director Creativo",
-    image: "/images/team/Vicente.JPG",
+    image: "/images/team/Vicente.webp",
   },
 ];
 
