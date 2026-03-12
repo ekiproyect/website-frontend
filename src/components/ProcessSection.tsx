@@ -125,12 +125,12 @@ export function ProcessSection() {
         {/* IZQUIERDA */}
         <div className="w-[40%] md:w-[50%] flex flex-col justify-center h-full relative z-10">
           <div className="mb-8 md:mb-16 pl-2">
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-heading font-semibold tracking-tight leading-[1.1]">
-              Nuestro proceso <br />
-              <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.1em]">
-                orientado a resultados
-              </span>
-            </h2>
+           <h2 className="text-3xl md:text-5xl lg:text-6xl font-heading font-semibold tracking-tight leading-[1.15] md:leading-[1.12]">
+  Nuestro proceso <br />
+  <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.1em] py-[0.06em] inline-block">
+    orientado a resultados
+  </span>
+</h2>
           </div>
 
           <div className="flex items-center w-full">

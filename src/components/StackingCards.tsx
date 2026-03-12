@@ -128,7 +128,7 @@ export function StackingCards() {
                 </div>
 
                 <div 
-                  className="relative w-full max-w-4xl aspect-[4/3] lg:aspect-video mx-auto z-20 group"
+                  className="relative w-full max-w-xl aspect-[4/3] lg:aspect-video mx-auto z-20 group"
                   style={{ perspective: '1500px' }}
                 >
                   <div 
@@ -159,7 +159,7 @@ export function StackingCards() {
 
                 <div className="text-center z-10">
                   {/* Cambiamos text-zinc-600 por opacity-70 */}
-                  <p className="text-lg md:text-xl opacity-70 leading-relaxed max-w-sm mx-auto lg:mx-0 lg:ml-6 lg:text-left">
+                  <p className="text-lg md:text-xl text- opacity-70 leading-relaxed max-w-sm mx-auto lg:mx-0 lg:ml-6 lg:text-center">
                     {principle.desc}
                   </p>
                 </div>
