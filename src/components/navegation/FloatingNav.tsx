@@ -171,7 +171,8 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
                         <button
                             key={item.path}
                             onClick={() => goToItem(item)}
-                            className="text-5xl font-black font-heading text-left tracking-tighter"
+                            // 🔥 ARREGLO: Usamos text-[13vw] en móvil para que nunca se desborde 🔥
+                            className="text-[13vw] md:text-5xl font-black font-heading text-left tracking-tighter"
                         >
                             {item.label}
                         </button>

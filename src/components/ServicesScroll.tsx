@@ -142,13 +142,14 @@ export function ServicesScroll() {
             <div
               key={service.id}
               className="
-                w-[85vw] md:w-[400px] shrink-0 h-[420px]
-                bg-[#121214] border border-white/5 rounded-[2rem]
-                p-8 md:p-10 flex flex-col justify-between
-                hover:bg-[#1a1a1d] hover:border-white/10 transition-all duration-500 group
-                shadow-2xl
-              "
-            >
+                  w-[85vw] md:w-[400px] shrink-0 
+                  h-[360px] md:h-[420px] 
+                  bg-[#121214] border border-white/5 rounded-[2rem]
+                  p-6 md:p-10 flex flex-col justify-between
+                  hover:bg-[#1a1a1d] hover:border-white/10 transition-all duration-500 group
+                  shadow-2xl
+                "
+              >
               <div className="flex justify-between items-start">
                 <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-zinc-50 group-hover:text-zinc-900 transition-colors duration-500">
                   <service.Icon strokeWidth={1.5} className="w-6 h-6 text-zinc-100 group-hover:text-zinc-900" />
@@ -180,15 +181,13 @@ export function ServicesScroll() {
 
       {/* 3. SUBTÍTULO FIJO ABAJO */}
       {/* Ubicado en la parte inferior con posición absoluta */}
-      <div className="absolute inset-x-0 bottom-[12vh] md:bottom-[15vh] z-10 pointer-events-none">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center">
-          
-          {/* Mantenemos la clase sync-text para que cambie de color a gris oscuro cuando el fondo se haga blanco */}
-          <p className="sync-text text-base md:text-lg text-zinc-400 max-w-lg leading-relaxed mx-auto">
+      {/* 🔥 ARREGLO: En móvil lo bajamos a bottom-[4vh] para que no choque con la tarjeta 🔥 */}
+      <div className="absolute inset-x-0 bottom-[4vh] md:bottom-[15vh] z-10 pointer-events-none px-6">
+        <div className="max-w-[1400px] mx-auto text-center">
+          <p className="sync-text text-sm md:text-lg text-zinc-400 max-w-lg leading-relaxed mx-auto">
             No solo escribimos código. Construimos ecosistemas digitales completos de
             extremo a extremo, preparados para dominar el mercado.
           </p>
-
         </div>
       </div>
     </section>

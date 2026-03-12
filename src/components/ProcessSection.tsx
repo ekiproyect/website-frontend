@@ -120,68 +120,59 @@ export function ProcessSection() {
   return (
     <section ref={containerRef} className="h-screen w-full bg-zinc-50 overflow-hidden relative z-30 -mt-[1px]">
       
-      <div ref={contentWrapperRef} className="w-full max-w-[1400px] mx-auto px-6 md:px-12 flex items-center h-full text-zinc-900">
+      <div ref={contentWrapperRef} className="w-full max-w-[1400px] mx-auto px-6 md:px-12 flex items-center h-full text-zinc-900 relative">
         
-        {/* IZQUIERDA */}
-        <div className="w-[40%] md:w-[50%] flex flex-col justify-center h-full relative z-10">
-          <div className="mb-8 md:mb-16 pl-2">
-           <h2 className="text-3xl md:text-5xl lg:text-6xl font-heading font-semibold tracking-tight leading-[1.15] md:leading-[1.12]">
-  Nuestro proceso <br />
-  <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.1em] py-[0.06em] inline-block">
-    orientado a resultados
-  </span>
-</h2>
+        {/* 🔥 TÍTULO EN MÓVIL: Arriba, libre e independiente 🔥 */}
+        <div className="absolute top-[15vh] left-6 right-6 md:hidden z-20">
+          <h2 className="text-3xl font-heading font-semibold tracking-tight leading-[1.1]">
+            Nuestro proceso <br />
+            <span className="italic bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent">
+              orientado a resultados
+            </span>
+          </h2>
+        </div>
+
+        {/* IZQUIERDA (Línea y Números) */}
+        {/* Cambiamos a w-[35%] en móvil para darle más espacio al texto derecho */}
+        <div className="w-[35%] md:w-[50%] flex flex-col justify-center h-full relative z-10 mt-16 md:mt-0">
+          
+          {/* 🔥 TÍTULO EN ESCRITORIO: Se oculta en móvil 🔥 */}
+          <div className="hidden md:block mb-16 pl-2">
+            <h2 className="text-5xl lg:text-6xl font-heading font-semibold tracking-tight leading-[1.1]">
+              Nuestro proceso <br />
+              <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.1em]">
+                orientado a resultados
+              </span>
+            </h2>
           </div>
 
           <div className="flex items-center w-full">
-            {/* Contenedor de números con overflow-hidden para la mecánica de tragamonedas */}
-            <div className="relative h-[140px] md:h-[260px] lg:h-[300px] overflow-hidden w-full flex justify-end items-center pr-8 md:pr-16">
+            <div className="relative h-[140px] md:h-[260px] lg:h-[300px] overflow-hidden w-full flex justify-end items-center pr-4 md:pr-16">
               {PROCESS_STEPS.map((step, i) => (
-                <div
-                  key={`num-${step.id}`}
-                  ref={(el) => { numberRefs.current[i] = el; }}
-                  className="absolute inset-0 flex justify-end items-center"
-                >
-                  <h3
-                    // 🔥 QUEDÓ TOTALMENTE NEGRO: Se eliminó opacity-20 y se añadió text-zinc-950 🔥
-                    className="text-[7rem] md:text-[14rem] lg:text-[18rem] font-heading font-medium leading-none tracking-tighter select-none text-zinc-950"
-                    style={{ fontVariantNumeric: "slashed-zero" }}
-                  >
+                <div key={`num-${step.id}`} ref={(el) => { numberRefs.current[i] = el; }} className="absolute inset-0 flex justify-end items-center">
+                  <h3 className="text-[5.5rem] md:text-[14rem] lg:text-[18rem] font-heading font-medium leading-none tracking-tighter select-none text-zinc-950" style={{ fontVariantNumeric: "slashed-zero" }}>
                     {step.id}.
                   </h3>
                 </div>
               ))}
             </div>
 
-            {/* 🔥 LÍNEA EDITORIAL BLACK & WHITE 🔥 */}
-            {/* La línea ahora mide solo 1px de grosor para máxima elegancia */}
-            <div ref={lineWrapRef} className="relative h-[30vh] md:h-[50vh] w-[1px] ml-4 shrink-0 bg-zinc-200">
-              <div
-                ref={lineFillRef}
-                className="absolute top-0 left-0 w-full bg-zinc-950 origin-top"
-                style={{ transform: "scaleY(0)" }}
-              />
-              {/* El dot ahora es un nodo blanco con borde negro súper nítido */}
-              <div
-                ref={dotRef}
-                className="absolute left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-zinc-50 border-[3px] border-zinc-950 z-10"
-              />
+            <div ref={lineWrapRef} className="relative h-[30vh] md:h-[50vh] w-[1px] ml-2 md:ml-4 shrink-0 bg-zinc-200">
+              <div ref={lineFillRef} className="absolute top-0 left-0 w-full bg-zinc-950 origin-top" style={{ transform: "scaleY(0)" }} />
+              <div ref={dotRef} className="absolute left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-zinc-50 border-[3px] border-zinc-950 z-10" />
             </div>
           </div>
         </div>
 
-        {/* DERECHA */}
-        <div className="w-[60%] md:w-[50%] relative h-full flex items-center pl-6 md:pl-12">
+        {/* DERECHA (Textos) */}
+        {/* Aumentamos a w-[65%] en móvil para que el texto encaje perfectamente */}
+        <div className="w-[65%] md:w-[50%] relative h-full flex items-center mt-16 md:mt-0">
           {PROCESS_STEPS.map((step, i) => (
-            <div
-              key={`text-${step.id}`}
-              ref={(el) => { textRefs.current[i] = el; }}
-              className="absolute inset-0 flex flex-col justify-center pl-6 md:pl-12"
-            >
-              <h4 className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight mb-6">
+            <div key={`text-${step.id}`} ref={(el) => { textRefs.current[i] = el; }} className="absolute inset-0 flex flex-col justify-center pl-6 md:pl-12">
+              <h4 className="text-2xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight mb-4 md:mb-6">
                 {step.title}
               </h4>
-              <p className="text-base md:text-xl text-zinc-600 leading-relaxed max-w-lg">
+              <p className="text-sm md:text-xl text-zinc-600 leading-relaxed max-w-lg">
                 {step.desc}
               </p>
             </div>

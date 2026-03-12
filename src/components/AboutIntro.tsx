@@ -50,7 +50,8 @@ export function AboutIntro() {
         {/* Título Monumental */}
         <h1 
           ref={titleRef} 
-          className="text-[20vw] md:text-[14vw] lg:text-[8rem] xl:text-[9.5rem] font-black font-heading leading-[0.85] tracking-tighter uppercase mb-12 md:mb-20 break-words w-full"
+          // 🔥 ARREGLO: text-[16vw] en móvil en vez de 20vw 🔥
+          className="text-[16vw] md:text-[14vw] lg:text-[8rem] xl:text-[9.5rem] font-black font-heading leading-[0.85] tracking-tighter uppercase mb-12 md:mb-20 break-words w-full"
         >
           Nosotros.
         </h1>
