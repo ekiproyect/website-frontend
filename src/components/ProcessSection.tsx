@@ -140,7 +140,7 @@ export function ProcessSection() {
           <div className="hidden md:block mb-16 pl-2">
             <h2 className="text-5xl lg:text-6xl font-heading font-semibold tracking-tight leading-[1.1]">
               Nuestro proceso <br />
-              <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.1em]">
+              <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.1em] py-[0.06em] inline-block">
                 orientado a resultados
               </span>
             </h2>

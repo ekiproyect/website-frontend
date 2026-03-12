@@ -74,7 +74,7 @@ export function Footer({ startsDark = false }: FooterProps) {
           >
             {/* break-all salva la vida si alguien abre esto en un celular muy angosto */}
             <span className="text-lg sm:text-xl md:text-4xl lg:text-5xl font-medium tracking-tight border-b-[2px] md:border-b-[3px] border-transparent group-hover:border-current transition-colors duration-300 text-center break-all md:break-normal">
-              contacto.eki@gmail.com
+              ekiteam.contacto@gmail.com
             </span>
             
             {/* Ahora la flecha está abajo en móvil y a la derecha en PC, siempre visible */}
@@ -95,9 +95,8 @@ export function Footer({ startsDark = false }: FooterProps) {
 
           <div className="flex flex-col items-center md:items-end gap-8">
             <div className="flex flex-wrap justify-center md:justify-end gap-6 md:gap-10">
-              <a href="#" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">Instagram</a>
-              <a href="#" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">LinkedIn</a>
-              <a href="#" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">Behance</a>
+              <a href="https://www.instagram.com/ekiproject" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">Instagram</a>
+              <a href="https://www.linkedin.com/company/ekiproject" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">LinkedIn</a>
             </div>
             
             <p className="text-xs md:text-sm font-medium opacity-50 text-center md:text-right">

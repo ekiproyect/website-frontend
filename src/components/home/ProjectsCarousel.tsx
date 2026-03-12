@@ -102,18 +102,26 @@ export function ProjectsCarousel() {
     return () => window.removeEventListener('resize', onResize);
   }, [activeIdx, setTrackX]);
 
-  // Play only active
   useEffect(() => {
-    videoRefs.current.forEach((vid, i) => {
-      if (!vid) return;
-      if (i === activeIdx && !prefersReduced) {
-        vid.play().catch(() => {});
-      } else {
-        vid.pause();
-        vid.currentTime = 0;
-      }
-    });
-  }, [activeIdx, prefersReduced]);
+  videoRefs.current.forEach((vid, i) => {
+    if (!vid) return;
+
+    if (i === activeIdx && !prefersReduced) {
+      // Activo: reproduce
+      vid.play().catch(() => {});
+    } else {
+      // Inactivo: pausa y vuelve al poster de forma confiable
+      vid.pause();
+
+      // 1) Quita cualquier frame dibujado
+      try { vid.currentTime = 0; } catch {}
+
+      // 2) Fuerza a que el navegador "recargue" el video => vuelve a mostrar poster
+      // (esto es lo que evita el cuadro negro)
+      vid.load();
+    }
+  });
+}, [activeIdx, prefersReduced]);
 
   const goTo = useCallback((idx: number) => {
     const max = PROJECTS.length - 1;

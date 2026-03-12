@@ -5,22 +5,32 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
 import { SmoothScroll } from "./components/SmoothScroll";
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy } from "react";
+import { ScrollToTop } from "./components/ScrollToTop";
+
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+const Projects = lazy(() => import("./pages/Projects"));
+const Contact = lazy(() => import("./pages/Contact"));
+
 const App = () => {
-  const Home = lazy(() => import('./pages/Home')); // O el nombre de tu Home
-const About = lazy(() => import('./pages/About'));
-const Projects = lazy(() => import('./pages/Projects'));
-const Contact = lazy(() => import('./pages/Contact'));
   return (
-    <>
-      <ErrorBoundary>
+    <ErrorBoundary>
+      <BrowserRouter>
         <SmoothScroll>
-        <TooltipProvider>
+          <TooltipProvider>
             <Toaster />
             <Sonner />
-            
-            <BrowserRouter>
-            <Suspense fallback={<div className="flex items-center justify-center h-screen">Cargando...</div>}>
+
+            <ScrollToTop />
+
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-screen">
+                  Cargando...
+                </div>
+              }
+            >
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/equipo" element={<About />} />
@@ -28,13 +38,11 @@ const Contact = lazy(() => import('./pages/Contact'));
                 <Route path="/contacto" element={<Contact />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-          
             </Suspense>
-            </BrowserRouter>
           </TooltipProvider>
-          </SmoothScroll>
-      </ErrorBoundary>
-    </>
+        </SmoothScroll>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 };
 

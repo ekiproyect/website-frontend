@@ -12,21 +12,22 @@ import { Footer } from "./Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// 🔥 1. CREAMOS LA INTERFAZ PARA RECIBIR LA SEÑAL 🔥
 interface HeroScrollProps {
   introDone?: boolean;
 }
 
-// 🔥 2. RECIBIMOS LA SEÑAL AQUÍ 🔥
 export function HeroScroll({ introDone = true }: HeroScrollProps) {
+  // 🔥 1. NUEVA REFERENCIA: Para anclar la sección completa del Hero 🔥
+  const heroSectionRef = useRef<HTMLElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
   const nextSectionRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    // 🔥 3. SI LA INTRO NO TERMINA, ABORTAMOS LA ANIMACIÓN 🔥
     if (!introDone) return;
 
     const ctx = gsap.context(() => {
+      
+      // Animaciones opcionales que ya tenías
       gsap.fromTo(
         ".reveal-text",
         { yPercent: 110 },
@@ -39,6 +40,16 @@ export function HeroScroll({ introDone = true }: HeroScrollProps) {
         { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.5 }
       );
 
+      // 🔥 2. EL ANCLAJE ABSOLUTO DE GSAP 🔥
+      // Esto clava el hero en la pantalla y permite que la sección negra lo cubra
+      ScrollTrigger.create({
+        trigger: heroSectionRef.current,
+        start: "top top",
+        pin: true,
+        pinSpacing: false, // La magia: evita que se genere espacio extra, dejando que la sección negra lo "pise"
+      });
+
+      // 3. Efecto de hundimiento mientras la sección negra sube
       gsap.to(heroContentRef.current, {
         scale: 0.86,
         autoAlpha: 0,
@@ -56,14 +67,18 @@ export function HeroScroll({ introDone = true }: HeroScrollProps) {
     });
 
     return () => ctx.revert();
-  }, [introDone]); // 🔥 4. AÑADIMOS INTRODONE A LAS DEPENDENCIAS 🔥
+  }, [introDone]);
 
   return (
-    <main className="relative w-full overflow-x-hidden bg-zinc-50 text-zinc-900">
+    <main className="relative w-full overflow-x-clip bg-zinc-50 text-zinc-900">
       
-      <section className="sticky top-0 h-[92vh] w-full flex items-center justify-center z-10 overflow-hidden">
-        <div ref={heroContentRef} className="text-center flex flex-col items-center px-6">
-            {/* 🔥 5. LE PASAMOS LA SEÑAL AL TÍTULO PARA QUE DESPIERTE 🔥 */}
+      {/* 🔥 EL ARREGLO: Cambiamos 100vh por 86vh 🔥 */}
+      <section 
+        ref={heroSectionRef} 
+        // Al medir 86% del alto, obligamos a la sección negra a asomarse un 14% en el borde inferior
+        className="h-[86vh] w-full flex items-center justify-center z-10 overflow-hidden"
+      >
+        <div ref={heroContentRef} className="text-center w-full flex flex-col items-center px-6">
             <RotatingTitleHero animate={introDone} />
         </div>
       </section>
@@ -71,15 +86,11 @@ export function HeroScroll({ introDone = true }: HeroScrollProps) {
       {/* SECCIÓN NEGRA CONTINUA */}
       <section
         ref={nextSectionRef}
-        // 👇 QUITAMOS shadow-2xl y pb-20 para que no haya cortes 👇
         className="
           relative z-20 bg-zinc-950 text-white w-full
           px-6 md:px-12
           pt-14 md:pt-20
         "
-        style={{
-          marginTop: "-14vh",
-        }}
       >
         <div className="max-w-7xl mx-auto">
            <ProjectsVideoSection/>
@@ -89,12 +100,9 @@ export function HeroScroll({ introDone = true }: HeroScrollProps) {
         </div>
       </section>
       
-      {/* EL PROCESO: Empieza oscuro y GSAP lo ilumina a blanco */}
       <ProcessSection />
-      
-      {/* LOS PRINCIPIOS: Siguen sobre el lienzo blanco que dejó el proceso */}
       <StackingCards />
-        <Footer  startsDark={true}/>
+      <Footer startsDark={true}/>
     </main>
   );
 }

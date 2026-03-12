@@ -134,15 +134,17 @@ export function ProjectsVideoSection() {
     <ul className="flex flex-col gap-3">
       {BULLETS.map((b) => (
         <li key={b} className="flex items-center gap-3 text-sm text-zinc-300">
-          <CheckCircle className="w-4 h-4 text-fuchsia-400 shrink-0" aria-hidden />
+          {/* 🔥 ARREGLO 1: Ícono blanco puro en lugar de fucsia 🔥 */}
+          <CheckCircle className="w-4 h-4 text-zinc-100 shrink-0" aria-hidden />
           {b}
         </li>
       ))}
     </ul>
 
     <Button
-      onClick={() => navigate('/projects')}
-      className="self-start mt-1 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-semibold px-6 py-2.5 rounded-full transition-colors"
+      onClick={() => navigate('/proyectos')}
+      // 🔥 ARREGLO 2: Botón invertido (Fondo blanco, texto negro) tipo Apple/Editorial 🔥
+      className="self-start mt-4 bg-zinc-50 hover:bg-zinc-200 text-zinc-950 font-bold px-8 py-6 rounded-full transition-all duration-300"
     >
       Ver proyectos
     </Button>

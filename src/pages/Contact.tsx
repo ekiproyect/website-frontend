@@ -74,7 +74,7 @@ export default function Contact() {
                   Email Directo
                 </span>
                 <a href="mailto:hola@eki.cl" className="text-2xl md:text-3xl font-medium hover:text-emerald-400 transition-colors">
-                  contacto.eki@gmail.com
+                  ekiteam.contacto@gmail.com
                 </a>
               </div>
               
