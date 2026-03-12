@@ -4,24 +4,29 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ProjectsVideoSection } from "./home/ProjectsVideoSection";
 import { ProjectsCarousel } from "./home/ProjectsCarousel";
 import { RotatingTitleHero } from "./home/RotatingTitleHero";
-import { StackingCards } from "./StackingCards"; // 👈 1. IMPORTAR AQUÍ
+import { StackingCards } from "./StackingCards"; 
 import { TechMarquee } from "./TechtMarquee";
 import { ServicesScroll } from "./ServicesScroll";
 import { ProcessSection } from "./ProcessSection";
 import { Footer } from "./Footer";
 
-
-
-
 gsap.registerPlugin(ScrollTrigger);
 
-export function HeroScroll() {
+// 🔥 1. CREAMOS LA INTERFAZ PARA RECIBIR LA SEÑAL 🔥
+interface HeroScrollProps {
+  introDone?: boolean;
+}
+
+// 🔥 2. RECIBIMOS LA SEÑAL AQUÍ 🔥
+export function HeroScroll({ introDone = true }: HeroScrollProps) {
   const heroContentRef = useRef<HTMLDivElement>(null);
   const nextSectionRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
+    // 🔥 3. SI LA INTRO NO TERMINA, ABORTAMOS LA ANIMACIÓN 🔥
+    if (!introDone) return;
+
     const ctx = gsap.context(() => {
-      // Entrada (opcional)
       gsap.fromTo(
         ".reveal-text",
         { yPercent: 110 },
@@ -34,7 +39,6 @@ export function HeroScroll() {
         { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.5 }
       );
 
-      // Scroll: hero se achica y se desvanece mientras llega la sección negra
       gsap.to(heroContentRef.current, {
         scale: 0.86,
         autoAlpha: 0,
@@ -52,16 +56,15 @@ export function HeroScroll() {
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [introDone]); // 🔥 4. AÑADIMOS INTRODONE A LAS DEPENDENCIAS 🔥
 
   return (
-    // 1. LA SOLUCIÓN GLOBAL: Agregamos w-full y overflow-x-hidden aquí
     <main className="relative w-full overflow-x-hidden bg-zinc-50 text-zinc-900">
       
-      {/* HERO (clavado) */}
       <section className="sticky top-0 h-[92vh] w-full flex items-center justify-center z-10 overflow-hidden">
         <div ref={heroContentRef} className="text-center flex flex-col items-center px-6">
-            <RotatingTitleHero />
+            {/* 🔥 5. LE PASAMOS LA SEÑAL AL TÍTULO PARA QUE DESPIERTE 🔥 */}
+            <RotatingTitleHero animate={introDone} />
         </div>
       </section>
 

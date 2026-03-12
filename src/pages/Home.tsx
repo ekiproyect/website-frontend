@@ -45,7 +45,7 @@ const Home = () => {
 
       {/* Hero + transición + sección negra (todo vive dentro de HeroScroll) */}
       <div className="relative z-10">
-        <HeroScroll  />
+        <HeroScroll introDone = {introDone} />
       </div>
 
       {/* Intro overlay (encima de todo) */}

@@ -112,27 +112,23 @@ export function ServicesScroll() {
       ref={sectionRef}
       className="relative h-screen bg-zinc-950 overflow-hidden w-screen left-1/2 -translate-x-1/2 flex flex-col justify-center"
     >
-      {/* 1. TÍTULO FIJO */}
-      <div className="absolute inset-x-0 top-[12vh] md:top-[18vh] z-10 pointer-events-none">
+      {/* 1. TÍTULO FIJO ARRIBA */}
+      <div className="absolute inset-x-0 top-[12vh] md:top-[16vh] z-10 pointer-events-none">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center">
           
-          {/* Añadimos la clase 'sync-text' para que GSAP los encuentre */}
-          <h2 className="sync-text text-4xl md:text-6xl font-black font-heading text-zinc-100 tracking-tighter">
-            ¿Qué{" "}
+          <h2 className="sync-text text-4xl md:text-6xl font-semibold font-black font-heading text-zinc-100 tracking-tighter">
+            Nuestros{" "}
             <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.2em]">
-              ofrecemos?
+              Servicios.
             </span>
           </h2>
 
-          <p className="sync-text text-base md:text-lg text-zinc-400 mt-4 max-w-lg leading-relaxed mx-auto">
-            No solo escribimos código. Construimos ecosistemas digitales completos de
-            extremo a extremo, preparados para dominar el mercado.
-          </p>
         </div>
       </div>
 
       {/* 2. EL TREN DE TARJETAS */}
-      <div className="mt-24 md:mt-32 flex items-center overflow-hidden">
+      {/* Le quité el 'mt-24 md:mt-32' para que quede en el centro exacto entre el título y el texto inferior */}
+      <div className="flex items-center overflow-hidden">
         <div
           ref={trackRef}
           className="flex items-center gap-6 md:gap-8 w-max px-0"
@@ -179,6 +175,20 @@ export function ServicesScroll() {
 
           {/* Espacio extra al final */}
           <div className="w-[10vw] md:w-[20vw] shrink-0" />
+        </div>
+      </div>
+
+      {/* 3. SUBTÍTULO FIJO ABAJO */}
+      {/* Ubicado en la parte inferior con posición absoluta */}
+      <div className="absolute inset-x-0 bottom-[12vh] md:bottom-[15vh] z-10 pointer-events-none">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center">
+          
+          {/* Mantenemos la clase sync-text para que cambie de color a gris oscuro cuando el fondo se haga blanco */}
+          <p className="sync-text text-base md:text-lg text-zinc-400 max-w-lg leading-relaxed mx-auto">
+            No solo escribimos código. Construimos ecosistemas digitales completos de
+            extremo a extremo, preparados para dominar el mercado.
+          </p>
+
         </div>
       </div>
     </section>

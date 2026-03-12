@@ -21,20 +21,39 @@ export function RotatingTitleHero({ animate = true }: Props) {
   const titleRef = useRef<HTMLDivElement>(null);
   const subRef = useRef<HTMLParagraphElement>(null);
   const logoRef = useRef<HTMLDivElement>(null); 
-  const playedRef = useRef(false);
 
-  // --- ANIMACIÓN DEL TEXTO ROTATIVO ---
+  // --- ANIMACIÓN ÚNICA ORQUESTADA ---
   useLayoutEffect(() => {
+    // Si la intro no ha terminado (animate = false), no hacemos absolutamente nada.
     if (!animate) return;
-    if (startedRef.current) return;
-    startedRef.current = true;
 
+    // Si ya llegamos aquí, es porque la intro terminó.
+    const title = titleRef.current;
+    const sub = subRef.current;
+    const logo = logoRef.current;
+    const wordElement = wordRef.current;
+
+    if (!title || !sub || !logo || !wordElement) return;
+
+    // Confiamos el 100% de la limpieza a GSAP context
     const ctx = gsap.context(() => {
-      const id = setInterval(() => {
-        const el = wordRef.current;
-        if (!el) return;
+      
+      // 1. SETEAR ESTADOS INICIALES (Todo oculto)
+      if (contentRef.current) gsap.set(contentRef.current, { visibility: 'visible' });
+      gsap.set(title, { clipPath: 'inset(0 0 100% 0)', y: 8, willChange: 'clip-path, transform' });
+      gsap.set(sub, { autoAlpha: 0, y: 16, willChange: 'transform, opacity' });
+      gsap.set(logo, { autoAlpha: 0, x: 40, scale: 0.9 });
 
-        gsap.to(el, {
+      // 2. DISPARAR ANIMACIÓN DE ENTRADA (Aparecen los elementos)
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out', overwrite: 'auto' } });
+
+      tl.to(title, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: 0.72 }, 0)
+        .to(sub, { autoAlpha: 1, y: 0, duration: 0.52 }, 0.42)
+        .to(logo, { autoAlpha: 1, x: 0, scale: 1, duration: 1, ease: 'back.out(1.2)' }, 0.2); 
+
+      // 3. INICIAR EL TEXTO ROTATIVO (Solo después de que se inicie la animación principal)
+      const id = setInterval(() => {
+        gsap.to(wordElement, {
           autoAlpha: 0,
           y: -14,
           filter: 'blur(6px)',
@@ -44,10 +63,10 @@ export function RotatingTitleHero({ animate = true }: Props) {
           onComplete: () => {
             const next = (wordIdxRef.current + 1) % WORDS.length;
             wordIdxRef.current = next;
-            setWordIdx(next);
+            setWordIdx(next); // Cambiamos la palabra en React
 
             gsap.fromTo(
-              el,
+              wordElement,
               { autoAlpha: 0, y: 14, filter: 'blur(6px)' },
               {
                 autoAlpha: 1,
@@ -62,67 +81,14 @@ export function RotatingTitleHero({ animate = true }: Props) {
         });
       }, INTERVAL_MS);
 
+      // Limpiamos el intervalo si GSAP limpia el contexto
       return () => clearInterval(id);
+
     }, heroRef);
 
-    return () => {
-      ctx.revert();
-      startedRef.current = false;
-    };
-  }, [animate]);
-
-  // --- ANIMACIÓN DE ENTRADA GENERAL ---
-  useLayoutEffect(() => {
-    if (!animate) return;
-
-    const title = titleRef.current;
-    const sub = subRef.current;
-    const logo = logoRef.current;
-    if (!title || !sub || !logo) return;
-
-    const ctx = gsap.context(() => {
-      if (contentRef.current) {
-        gsap.set(contentRef.current, { visibility: 'visible' });
-      }
-
-      gsap.set(title, {
-        clipPath: 'inset(0 0 100% 0)',
-        y: 8,
-        willChange: 'clip-path, transform',
-      });
-
-      gsap.set(sub, {
-        autoAlpha: 0,
-        y: 16,
-        willChange: 'transform, opacity',
-      });
-
-      gsap.set(logo, {
-        autoAlpha: 0,
-        x: 40,
-        scale: 0.9,
-      });
-
-      if (playedRef.current) return;
-      playedRef.current = true;
-
-      const tl = gsap.timeline({
-        defaults: { ease: 'power3.out', overwrite: 'auto' },
-      });
-
-      tl.to(title, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: 0.72 }, 0)
-        .to(sub, { autoAlpha: 1, y: 0, duration: 0.52 }, 0.42)
-        .to(logo, { autoAlpha: 1, x: 0, scale: 1, duration: 1, ease: 'back.out(1.2)' }, 0.2); 
-
-      tl.pause();
-      requestAnimationFrame(() => tl.play(0));
-    }, heroRef);
-
-    return () => {
-      ctx.revert();
-      if (!animate) playedRef.current = false;
-    };
-  }, [animate]);
+    // Cuando el componente se desmonte (o cambie animate), se limpia TODO.
+    return () => ctx.revert();
+  }, [animate]); // Reacciona cada vez que 'animate' cambie
 
   const currentWord = WORDS[wordIdx];
 

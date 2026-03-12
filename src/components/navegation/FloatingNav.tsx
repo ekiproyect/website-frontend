@@ -22,7 +22,6 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
     const pillRef   = useRef<HTMLDivElement>(null);
     const logoRef   = useRef<HTMLButtonElement>(null);
     const itemRefs  = useRef<(HTMLButtonElement | null)[]>([]);
-    const playedRef = useRef(false);
 
     const menuItems: Item[] = useMemo(
         () => [
@@ -34,6 +33,7 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
         []
     );
 
+   // Single scoped effect: GSAP maneja la entrada sin playedRefs
     useLayoutEffect(() => {
         const pill  = pillRef.current;
         const logo  = logoRef.current;
@@ -41,26 +41,23 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
         if (!pill) return;
 
         const ctx = gsap.context(() => {
-            gsap.set(pill, { visibility: 'visible', autoAlpha: 0, scaleX: 0, transformOrigin: "left center" });
-            gsap.set(logo, { visibility: 'visible', autoAlpha: 0, scale: 0.7 });
-            gsap.set(items, { autoAlpha: 0, y: 8 });
+            // ── Estado inicial oculto (siempre se aplica) ──
+            gsap.set(pill, { visibility: 'visible', autoAlpha: 0, scaleX: 0, transformOrigin: "left center", willChange: "transform, opacity" });
+            gsap.set(logo, { visibility: 'visible', autoAlpha: 0, scale: 0.7, willChange: "transform, opacity" });
+            gsap.set(items, { autoAlpha: 0, y: 8, willChange: "transform, opacity" });
 
-            if (!introDone || playedRef.current) return;
-            playedRef.current = true;
+            // ── Si la intro no ha terminado, pausamos aquí ──
+            if (!introDone) return;
 
+            // ── Si la intro terminó, disparamos la línea de tiempo ──
             const tl = gsap.timeline({ defaults: { ease: "power3.out", overwrite: "auto" } })
                 .to(logo,  { autoAlpha: 1, scale: 1, duration: 0.32 }, 0)
                 .to(pill,  { autoAlpha: 1, scaleX: 1, duration: 0.42, ease: "power2.out" }, 0.08)
                 .to(items, { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.05 }, 0.32);
-
-            tl.pause();
-            requestAnimationFrame(() => tl.play(0));
         });
 
-        return () => {
-            ctx.revert();
-            if (!introDone) playedRef.current = false;
-        };
+        // Limpieza automática a prueba de Strict Mode
+        return () => ctx.revert();
     }, [introDone]);
 
     useEffect(() => {
