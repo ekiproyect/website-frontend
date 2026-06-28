@@ -26,13 +26,10 @@ npm run lint       # Ejecutar linter
 
 ## 🌐 Rutas principales
 - `/` → Página de inicio (Home)
-- `/about` → Acerca de EKI
-- `/team` → Equipo
-- `/projects` → Proyectos
-- `/services` → Servicios
-- `/technologies` → Tecnologías
-- `/privacy` → Políticas de privacidad
-- `/terms` → Términos y condiciones
+- `/equipo` → Equipo / Acerca de EKI (About)
+- `/proyectos` → Proyectos
+- `/contacto` → Contacto
+- `*` → Página no encontrada (NotFound)
 
 ## 🛠️ Funcionalidades destacadas
 - Sistema de componentes UI altamente personalizable con **shadcn/ui**.
