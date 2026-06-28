@@ -114,7 +114,7 @@ export function ProjectsCarousel() {
       vid.pause();
 
       // 1) Quita cualquier frame dibujado
-      try { vid.currentTime = 0; } catch {}
+      try { vid.currentTime = 0; } catch { /* noop */ }
 
       // 2) Fuerza a que el navegador "recargue" el video => vuelve a mostrar poster
       // (esto es lo que evita el cuadro negro)
@@ -225,7 +225,7 @@ export function ProjectsCarousel() {
           </div>
 
           {/* MOBILE */}
-          <div className="md:hidden mt-4 overflow-x-auto snap-x snap-mandatory flex gap-4 pb-2 pl-6 pr-4" style={{ scrollbarWidth: 'none' as any }}>
+          <div className="md:hidden mt-4 overflow-x-auto snap-x snap-mandatory flex gap-4 pb-2 pl-6 pr-4" style={{ scrollbarWidth: 'none' }}>
             {PROJECTS.map((p, i) => (
               <button
                 key={p.id}
