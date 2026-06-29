@@ -110,12 +110,12 @@ export function ServicesScroll() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen bg-zinc-950 overflow-hidden w-screen left-1/2 -translate-x-1/2 flex flex-col justify-center"
+      className="relative h-screen bg-zinc-950 overflow-hidden w-screen left-1/2 -translate-x-1/2 flex flex-col justify-between py-[8vh] md:py-[10vh]"
     >
-      {/* 1. TÍTULO FIJO ARRIBA */}
-      <div className="absolute inset-x-0 top-[12vh] md:top-[16vh] z-10 pointer-events-none">
+      {/* 1. TÍTULO ARRIBA (en flujo, no absoluto: nunca se solapa) */}
+      <div className="shrink-0 z-10 pointer-events-none">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 text-center">
-          
+
           <h2 className="sync-text text-4xl md:text-6xl font-semibold font-black font-heading text-zinc-100 tracking-tighter">
             Nuestros{" "}
             <span className="italic font-heading bg-gradient-to-r from-stone-400 to-stone-600 bg-clip-text text-transparent pr-[0.2em]">
@@ -126,9 +126,8 @@ export function ServicesScroll() {
         </div>
       </div>
 
-      {/* 2. EL TREN DE TARJETAS */}
-      {/* Le quité el 'mt-24 md:mt-32' para que quede en el centro exacto entre el título y el texto inferior */}
-      <div className="flex items-center overflow-hidden">
+      {/* 2. EL TREN DE TARJETAS (ocupa el espacio central restante) */}
+      <div className="flex items-center overflow-hidden flex-1 min-h-0">
         <div
           ref={trackRef}
           className="flex items-center gap-6 md:gap-8 w-max px-0"
@@ -142,8 +141,8 @@ export function ServicesScroll() {
             <div
               key={service.id}
               className="
-                  w-[85vw] md:w-[400px] shrink-0 
-                  h-[360px] md:h-[420px] 
+                  w-[85vw] md:w-[400px] shrink-0
+                  h-[clamp(300px,60vh,440px)]
                   bg-[#121214] border border-white/5 rounded-[2rem]
                   p-6 md:p-10 flex flex-col justify-between
                   hover:bg-[#1a1a1d] hover:border-white/10 transition-all duration-500 group
@@ -179,10 +178,8 @@ export function ServicesScroll() {
         </div>
       </div>
 
-      {/* 3. SUBTÍTULO FIJO ABAJO */}
-      {/* Ubicado en la parte inferior con posición absoluta */}
-      {/* 🔥 ARREGLO: En móvil lo bajamos a bottom-[4vh] para que no choque con la tarjeta 🔥 */}
-      <div className="absolute inset-x-0 bottom-[4vh] md:bottom-[15vh] z-10 pointer-events-none px-6">
+      {/* 3. SUBTÍTULO ABAJO (en flujo: nunca choca con las tarjetas) */}
+      <div className="shrink-0 z-10 pointer-events-none px-6">
         <div className="max-w-[1400px] mx-auto text-center">
           <p className="sync-text text-sm md:text-lg text-zinc-400 max-w-lg leading-relaxed mx-auto">
             No solo escribimos código. Construimos ecosistemas digitales completos de

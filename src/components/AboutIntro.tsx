@@ -47,13 +47,14 @@ export function AboutIntro() {
     <section ref={containerRef} className="w-full bg-zinc-50 text-zinc-900 pt-40 md:pt-56 pb-24 md:pb-40 px-6 md:px-12 transition-colors duration-[600ms] ease-out">
       <div className="max-w-[1400px] mx-auto flex flex-col items-center text-center">
         
-        {/* Título Monumental */}
-        <h1 
-          ref={titleRef} 
-          // 🔥 ARREGLO: text-[16vw] en móvil en vez de 20vw 🔥
-          className="text-[16vw] md:text-[14vw] lg:text-[8rem] xl:text-[9.5rem] font-black font-heading leading-[0.85] tracking-tighter uppercase mb-12 md:mb-20 break-words w-full"
+        {/* Título Monumental — fluido, nunca se corta ni desborda */}
+        <h1
+          ref={titleRef}
+          className="fluid-display font-black font-heading leading-[0.85] tracking-tighter uppercase mb-12 md:mb-20 w-full"
         >
-          Nosotros.
+          <span className="fluid-word mx-auto" style={{ ["--display-chars" as string]: 8, ["--display-max" as string]: "9.5rem" }}>
+            Nosotros
+          </span>
         </h1>
         
         {/* Línea divisoria minimalista */}

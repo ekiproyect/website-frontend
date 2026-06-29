@@ -105,6 +105,45 @@ All colors MUST be HSL.
   }
 }
 
+/* ==================================================== */
+/* TÍTULOS DISPLAY FLUIDOS (anti-desborde / anti-corte) */
+/* ==================================================== */
+/*
+  Una sola palabra en mayúsculas (Syne Black). El glifo más ancho (O/S redondas
+  + punto) llega a ~1.02em; usamos 1.05 como cota segura para que NINGUNA palabra
+  se corte, medido con Playwright. Para que SIEMPRE quepa en una línea:
+    font-size = min(techo, ancho_disponible / (nLetras * 1.05))
+  --display-chars: nº de caracteres de la palabra, incluyendo el punto final.
+  --display-max:   techo en rem.
+  El ancho se mide con cqi (ancho del contenedor) y cae a vw si no hay container.
+  Nunca parte la palabra: white-space nowrap + un solo token. Centrado con mx-auto.
+*/
+.fluid-display {
+  container-type: inline-size;
+}
+.fluid-display > .fluid-word,
+.fluid-word {
+  --display-chars: 8;
+  --display-max: 9rem;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  white-space: nowrap;
+  font-size: min(
+    var(--display-max),
+    calc(96cqi / (var(--display-chars) * 1.05))
+  );
+}
+/* Fallback si el contenedor no establece container-type (cqi -> vw) */
+@supports not (width: 1cqi) {
+  .fluid-word {
+    font-size: min(
+      var(--display-max),
+      calc(92vw / (var(--display-chars) * 1.05))
+    );
+  }
+}
+
 /* Animaciones personalizadas estilo GTA 6 */
 @keyframes scan {
   0% {

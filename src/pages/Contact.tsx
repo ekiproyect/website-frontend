@@ -6,12 +6,25 @@ import { useGSAP } from "@gsap/react";
 import { FloatingNav } from "../components/navegation/FloatingNav";
 import { Footer } from "../components/Footer";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-const SERVICES_OPTIONS = [
-  "Diseño High-End",
-  "Desarrollo a Medida",
-  "SEO & Escalamiento",
-  "Consultoría Digital",
+const SERVICES_OPTIONS: { label: string; info: string }[] = [
+  {
+    label: "Diseño High-End",
+    info: "Interfaces premium hechas a medida: identidad visual, UX/UI y animación que elevan la percepción de tu marca.",
+  },
+  {
+    label: "Desarrollo a Medida",
+    info: "Software construido desde cero para tu negocio. Webs, apps y plataformas escalables, sin plantillas genéricas.",
+  },
+  {
+    label: "SEO & Escalamiento",
+    info: "Optimización técnica, rendimiento y arquitectura para que tu producto sea visible, rápido y crezca sin frenos.",
+  },
+  {
+    label: "Consultoría Digital",
+    info: "Te asesoramos en estrategia, tecnología y producto para tomar las decisiones correctas antes de invertir.",
+  },
 ];
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xyknjbgr";
@@ -149,11 +162,13 @@ export default function Contact() {
           
           {/* COLUMNA IZQUIERDA (Se mantiene igual) */}
           <div ref={leftColRef} className="flex flex-col justify-start">
-            <h1 className="text-[14vw] lg:text-[6rem] xl:text-[7.5rem] font-black font-heading leading-[0.85] tracking-tighter uppercase mb-8 break-words max-w-full">
-              Hablemos.
+            <h1 className="fluid-display font-black font-heading leading-[0.85] tracking-tighter uppercase mb-8 max-w-full">
+              <span className="fluid-word" style={{ ["--display-chars" as string]: 8, ["--display-max" as string]: "7.5rem" }}>
+                Hablemos
+              </span>
             </h1>
 
-            <p className="text-xl  md:text-2xl text-zinc-400 font-medium leading-relaxed max-w-lg mb-12">
+            <p className="text-xl md:text-2xl text-zinc-400 font-medium leading-relaxed max-w-lg mb-12 text-justify [text-wrap:pretty] hyphens-auto">
               Desde Antofagasta hacia el mundo. Cuéntanos sobre tu visión y
               nosotros pondremos la ingeniería y el diseño para hacerla dominar
               el mercado. Carlos y el equipo revisan personalmente cada
@@ -232,18 +247,28 @@ export default function Contact() {
                   <span className="block text-sm font-bold tracking-[0.2em] text-zinc-500 uppercase mb-4">¿En qué podemos ayudarte?</span>
                   <div className="flex flex-wrap gap-3">
                     {SERVICES_OPTIONS.map((service) => (
-                      <button
-                        key={service}
-                        type="button"
-                        onClick={() => setSelectedService(service)}
-                        className={`px-5 py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 border ${
-                          selectedService === service
-                            ? "bg-zinc-100 text-zinc-950 border-zinc-100"
-                            : "bg-transparent text-zinc-400 border-zinc-700 hover:border-zinc-400 hover:text-zinc-200"
-                        }`}
-                      >
-                        {service}
-                      </button>
+                      <Tooltip key={service.label}>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedService(service.label)}
+                            aria-label={`${service.label}: ${service.info}`}
+                            className={`px-5 py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 border ${
+                              selectedService === service.label
+                                ? "bg-zinc-100 text-zinc-950 border-zinc-100"
+                                : "bg-transparent text-zinc-400 border-zinc-700 hover:border-zinc-400 hover:text-zinc-200"
+                            }`}
+                          >
+                            {service.label}
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent
+                          side="top"
+                          className="max-w-xs bg-zinc-900 text-zinc-200 border-zinc-700 text-sm leading-relaxed"
+                        >
+                          {service.info}
+                        </TooltipContent>
+                      </Tooltip>
                     ))}
                   </div>
                   <input type="hidden" name="service" value={selectedService} />

@@ -172,7 +172,7 @@ export function ProcessSection() {
               <h4 className="text-2xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight mb-4 md:mb-6">
                 {step.title}
               </h4>
-              <p className="text-sm md:text-xl text-zinc-600 leading-relaxed max-w-lg">
+              <p className="text-sm md:text-xl text-zinc-600 leading-relaxed max-w-lg text-justify [text-wrap:pretty] hyphens-auto">
                 {step.desc}
               </p>
             </div>

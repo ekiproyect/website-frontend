@@ -151,11 +151,11 @@ export class ErrorBoundary extends Component<Props, State> {
               <div className="mt-8 pt-6 border-t border-gray-700/50 text-center">
                 <p className="text-gray-500 text-sm">
                   Si el problema persiste, contáctanos en{' '}
-                  <a 
-                    href="mailto:contacto@ekiproyect.com" 
+                  <a
+                    href="mailto:ekiteam.contacto@gmail.com"
                     className="text-purple-400 hover:text-purple-300 underline"
                   >
-                    contacto@ekiproyect.com
+                    ekiteam.contacto@gmail.com
                   </a>
                 </p>
               </div>
