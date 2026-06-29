@@ -44,14 +44,15 @@ export function AboutIntro() {
 
   return (
     // Inicia con fondo blanco y texto oscuro por defecto
-    <section ref={containerRef} className="w-full bg-zinc-50 text-zinc-900 pt-40 md:pt-56 pb-24 md:pb-40 px-6 md:px-12 transition-colors duration-[600ms] ease-out">
+    <section ref={containerRef} className="w-full bg-zinc-50 text-zinc-900 pt-40 md:pt-56 pb-24 md:pb-40 px-6 md:px-12">
       <div className="max-w-[1400px] mx-auto flex flex-col items-center text-center">
         
         {/* Título Monumental */}
-        <h1 
-          ref={titleRef} 
-          // 🔥 ARREGLO: text-[16vw] en móvil en vez de 20vw 🔥
-          className="text-[16vw] md:text-[14vw] lg:text-[8rem] xl:text-[9.5rem] font-black font-heading leading-[0.85] tracking-tighter uppercase mb-12 md:mb-20 break-words w-full"
+        <h1
+          ref={titleRef}
+          // Una sola palabra: whitespace-nowrap evita que la "S." caiga a otra línea.
+          // Tamaños fluidos (vw) + topes en rem para que quepa en una línea a cualquier ancho.
+          className="text-[14vw] md:text-[12vw] lg:text-[6rem] xl:text-[7.5rem] font-black font-heading leading-[0.85] tracking-tighter uppercase mb-12 md:mb-20 whitespace-nowrap w-full"
         >
           Nosotros.
         </h1>
