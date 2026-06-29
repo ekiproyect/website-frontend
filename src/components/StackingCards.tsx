@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { useScrollDarken } from '../hooks/useScrollDarken';
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -42,10 +43,9 @@ export function StackingCards() {
 
   useGSAP(() => {
     const section = sectionRef.current;
-    const content = contentRef.current;
-    if (!section || !content) return;
+    if (!section) return;
 
-    // 1. ANIMACIÓN DE TARJETAS (Se mantiene igual)
+    // ANIMACIÓN DE TARJETAS (apilado)
     const cards = gsap.utils.toArray<HTMLElement>('.stack-card');
     cards.forEach((card, index) => {
       if (index === cards.length - 1) return;
@@ -58,30 +58,17 @@ export function StackingCards() {
         }
       });
     });
-// 🔥 2. EL APAGÓN SINCRONIZADO PERFECTO 🔥
-    gsap.to(section, {
-      backgroundColor: "#09090b", // Pasa a negro
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "80% center",   // 👈 Ambos empiezan aquí (cuando pasas la última tarjeta)
-        end: "bottom bottom",  // 👈 Ambos terminan aquí (justo cuando asoma el footer)
-        scrub: true,
-      }
-    });
-
-    gsap.to(content, {
-      color: "#fafafa", // El texto pasa a blanco
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "80% center",   // 👈 Sincronizado con el fondo
-        end: "bottom bottom",  // 👈 Sincronizado con el fondo
-        scrub: true,
-      }
-    });
-
   }, { scope: sectionRef });
+
+  // Apagón sincronizado (fondo + texto) al asomar el footer.
+  useScrollDarken({
+    trigger: sectionRef,
+    scope: sectionRef,
+    bgTargets: () => [sectionRef.current],
+    content: contentRef,
+    start: "80% center",
+    end: "bottom bottom",
+  });
 
  return (
     // Inicia en bg-zinc-50 para conectar con la sección de arriba

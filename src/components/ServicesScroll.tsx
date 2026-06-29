@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   GitBranch,
 } from "lucide-react";
+import { SECTION_THEME } from "../hooks/useScrollDarken";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -91,14 +92,14 @@ export function ServicesScroll() {
 
       // 2. EL ENCENDIDO: Se activa al 80% del trayecto (0.8)
       tl.to(section, {
-        backgroundColor: "#fafafa",
+        backgroundColor: SECTION_THEME.lightBg,
         duration: 0.2, // Dura el último 20%
         ease: "none"
       }, 0.7);
 
       // 3. Sincronizamos el texto superior para que se oscurezca y siga visible
       tl.to(".sync-text", {
-        color: "#18181b", // text-zinc-900
+        color: SECTION_THEME.darkText,
         duration: 0.2,
         ease: "none"
       }, 0.8);
