@@ -4,7 +4,6 @@ import React, { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { FloatingNav } from "../components/navegation/FloatingNav";
-import { Footer } from "../components/Footer";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 
 const SERVICES_OPTIONS = [
@@ -310,8 +309,6 @@ export default function Contact() {
           </div>
         </div>
       </section>
-
-      <Footer startsDark={true} />
     </main>
   );
 }
