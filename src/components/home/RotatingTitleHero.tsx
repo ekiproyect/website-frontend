@@ -1,6 +1,7 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState, lazy, Suspense } from 'react';
 import { gsap } from 'gsap';
-import { Logo3D } from '../Logo3D';
+
+const Logo3D = lazy(() => import('../Logo3D').then((m) => ({ default: m.Logo3D })));
 
 const WORDS = ['Project', 'Diseño', 'Confianza', 'Equipo', 'Familia', ''];
 const INTERVAL_MS = 2800;
@@ -175,7 +176,9 @@ return (
           // 🔥 ARREGLO 4: En celular el logo mide 240px en vez de 350px. Suficiente para verse premium sin romper todo.
           className="w-full h-[240px] md:h-[350px] lg:h-[550px] flex items-center justify-center order-1 lg:order-2"
         >
-          <Logo3D />
+          <Suspense fallback={<div className="w-full h-full" aria-hidden="true" />}>
+            <Logo3D />
+          </Suspense>
         </div>
       </div>
     </section>
