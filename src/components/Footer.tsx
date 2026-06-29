@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-import { ArrowUpRight } from "lucide-react";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+import { useScrollDarken } from "../hooks/useScrollDarken";
 
 interface FooterProps {
   startsDark?: boolean;
@@ -18,33 +11,18 @@ export function Footer({ startsDark = false }: FooterProps) {
   const containerRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(() => {
-    if (startsDark) return;
-
-    const container = containerRef.current;
-    const content = contentRef.current;
-    if (!container || !content) return;
-
-    gsap.to(container, {
-      backgroundColor: "#09090b", 
-      scrollTrigger: {
-        trigger: container,
-        start: "top bottom",
-        end: "top 30%",
-        scrub: true,
-      }
-    });
-
-    gsap.to(content, {
-      color: "#fafafa",
-      scrollTrigger: {
-        trigger: container,
-        start: "top 70%",
-        end: "+=300",
-        scrub: true,
-      }
-    });
-  }, { scope: containerRef, dependencies: [startsDark] });
+  // Funde el footer y la sección previa (blanca) hacia el negro en sincronía,
+  // para que la unión no tenga un corte abrupto. Se omite si ya parte oscuro.
+  useScrollDarken({
+    trigger: containerRef,
+    scope: containerRef,
+    bgTargets: () => [containerRef.current, containerRef.current?.previousElementSibling],
+    content: contentRef,
+    start: "top bottom",
+    end: "top 30%",
+    enabled: !startsDark,
+    dependencies: [startsDark],
+  });
 
   return (
     <footer 
@@ -76,11 +54,6 @@ export function Footer({ startsDark = false }: FooterProps) {
             <span className="text-lg sm:text-xl md:text-4xl lg:text-5xl font-medium tracking-tight border-b-[2px] md:border-b-[3px] border-transparent group-hover:border-current transition-colors duration-300 text-center break-all md:break-normal">
               ekiteam.contacto@gmail.com
             </span>
-            
-            {/* Ahora la flecha está abajo en móvil y a la derecha en PC, siempre visible */}
-            <div className="w-12 h-12 md:w-20 md:h-20 rounded-full bg-current flex items-center justify-center text-zinc-950 group-hover:scale-110 transition-transform duration-300 shrink-0">
-              <ArrowUpRight className="w-6 h-6 md:w-10 md:h-10" />
-            </div>
           </a>
         </div>
 

@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useScrollDarken } from "../hooks/useScrollDarken";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -41,10 +42,9 @@ export function MinimalTeam() {
 
  useGSAP(() => {
     const section = sectionRef.current;
-    const content = contentRef.current;
-    if (!section || !content) return;
+    if (!section) return;
 
-    // 1. ANIMACIÓN DE LAS TARJETAS (Se mantiene igual)
+    // ANIMACIÓN DE LAS TARJETAS (stagger de entrada)
     const cards = gsap.utils.toArray(".team-item");
     gsap.fromTo(
       cards,
@@ -57,39 +57,23 @@ export function MinimalTeam() {
         ease: "power3.out",
         scrollTrigger: {
           trigger: section,
-          start: "top 50%", 
+          start: "top 50%",
         },
       }
     );
-
-    // 🔥 2. EL ARREGLO: EL INTERRUPTOR MAESTRO 🔥
-    // Quitamos el 'scrub' y usamos eventos precisos que afectan a ambas secciones
-    ScrollTrigger.create({
-      trigger: section,
-      start: "top 55%", // Se activa un poco antes de que entren las fotos
-      onEnter: () => {
-        // Oscurece la sección de Equipo Y la sección superior ("Nosotros") al mismo tiempo
-        gsap.to([section, section.previousElementSibling], {
-          backgroundColor: "#09090b", // Pasa a bg-zinc-950
-          duration: 0.6,
-          ease: "power2.out",
-          overwrite: "auto"
-        });
-        gsap.to(content, { color: "#fafafa", duration: 0.6, overwrite: "auto" });
-      },
-      onLeaveBack: () => {
-        // Si el usuario se arrepiente y hace scroll hacia arriba, enciende la luz de nuevo
-        gsap.to([section, section.previousElementSibling], {
-          backgroundColor: "#fafafa", // Vuelve a bg-zinc-50
-          duration: 0.6,
-          ease: "power2.out",
-          overwrite: "auto"
-        });
-        gsap.to(content, { color: "#18181b", duration: 0.6, overwrite: "auto" }); // text-zinc-900
-      }
-    });
-
   }, { scope: sectionRef });
+
+  // Apagón sincronizado (equipo + sección "Nosotros" superior) ligado al scroll.
+  // start "top 70%" (no "top bottom"): la sección de equipo asoma dentro del primer
+  // viewport, así evitamos que el fondo arranque oscurecido al cargar la página.
+  useScrollDarken({
+    trigger: sectionRef,
+    scope: sectionRef,
+    bgTargets: () => [sectionRef.current, sectionRef.current?.previousElementSibling],
+    content: contentRef,
+    start: "top 70%",
+    end: "top 30%",
+  });
 
   return (
     // Restauramos a bg-zinc-50 para que el inicio sea idéntico a la sección superior
