@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 contexts/
+
+# Reportes descargados (SEO/Lighthouse), temporales
+downloaded Report*.csv
