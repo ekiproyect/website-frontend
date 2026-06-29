@@ -4,7 +4,7 @@
 //   anchoTexto ≈ chars * 0.62 * font-size  ->  debe ser <= containerPx
 import assert from "node:assert";
 
-const GLYPH = 1.05; // cota segura para el glifo más ancho de Syne Black (medido ~1.02)
+const GLYPH = 1.18; // peor caso medido (Syne Black O/S): "NOSOTROS" = 1.17em/char
 function fits({ chars, maxRem, containerPx }) {
   const maxPx = maxRem * 16;
   const fontSize = Math.min(maxPx, containerPx / (chars * GLYPH));
