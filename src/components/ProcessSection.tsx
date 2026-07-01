@@ -169,7 +169,7 @@ export function ProcessSection() {
         <div className="w-[65%] md:w-[50%] relative h-full flex items-center mt-16 md:mt-0">
           {PROCESS_STEPS.map((step, i) => (
             <div key={`text-${step.id}`} ref={(el) => { textRefs.current[i] = el; }} className="absolute inset-0 flex flex-col justify-center pl-6 md:pl-12">
-              <h4 className="text-2xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight mb-4 md:mb-6">
+              <h4 className="text-[5.2vw] sm:text-2xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight mb-4 md:mb-6 whitespace-nowrap">
                 {step.title}
               </h4>
               <p className="text-sm md:text-xl text-zinc-600 leading-relaxed max-w-lg text-justify [text-wrap:pretty] hyphens-auto">

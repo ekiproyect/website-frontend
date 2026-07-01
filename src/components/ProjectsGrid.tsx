@@ -42,27 +42,17 @@ const PROJECTS_DATA: Project[] = [
   },
   {
     id: "02",
-    client: "Arquitectura Studio",
-    category: "Desarrollo High-End",
+    client: "Chatbot Empresarial",
+    category: "OTEC",
     description:
-      "Sitio inmersivo para un estudio de arquitectura. Portafolio scroll-driven con transiciones fluidas y carga optimizada de imágenes pesadas, para que el trabajo se vea tan cuidado como el espacio que diseñan.",
-    image: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: "03",
-    client: "E-Commerce Finanzas",
-    category: "Desarrollo & SEO",
-    description:
-      "Plataforma de comercio con foco en conversión. Arquitectura SEO técnica, rendimiento medido y checkout sin fricción para que el tráfico orgánico se traduzca en ventas reales.",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: "04",
-    client: "App Inmobiliaria",
-    category: "Diseño UX/UI",
-    description:
-      "Experiencia de búsqueda de propiedades pensada para decidir rápido. Filtros claros, fichas legibles y un flujo de contacto directo que acorta el camino entre interés y visita.",
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200&auto=format&fit=crop",
+      "ChatBot entrenado para optimizar los procesos de una OTEC, respondiendo preguntas a nivel interno y a clientes. Reduce tiempos de atención y estandariza respuestas sobre cursos, procesos y trámites.",
+    detail:
+      "Un asistente conversacional entrenado con la información propia de la OTEC que atiende consultas 24/7 tanto del equipo interno como de los clientes. Optimiza la carga y validación de facturas, el seguimiento de pagos y el estado de flujos administrativos, evitando que ese trabajo dependa de revisar planillas o escribir correos. También responde preguntas frecuentes sobre cursos, procesos de inscripción y trámites, liberando al equipo humano para los casos que realmente lo requieren.",
+    image: "/images/projects/ChatBot/chatbot1.png",
+    gallery: [
+      "/images/projects/ChatBot/chatbot2.png",
+      "/images/projects/ChatBot/chatbot3.png",
+    ],
   },
 ];
 
@@ -281,7 +271,7 @@ export function ProjectsGrid() {
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-[500] bg-zinc-950/70 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
           <Dialog.Content
-            className="fixed left-1/2 top-1/2 z-[510] w-[94vw] max-w-5xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-zinc-900/60 backdrop-blur-2xl text-zinc-50 shadow-2xl ring-1 ring-white/15 border border-white/10 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95"
+            className="fixed left-1/2 top-1/2 z-[510] w-[94vw] max-w-5xl max-h-[90vh] overflow-y-auto -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-zinc-900/60 backdrop-blur-2xl text-zinc-50 shadow-2xl ring-1 ring-white/15 border border-white/10 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95"
             aria-describedby={undefined}
           >
             <Dialog.Close
