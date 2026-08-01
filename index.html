@@ -32,30 +32,35 @@
       />
     </noscript>
     
-    <title>EKI · Diseño y Desarrollo de Software Premium | Antofagasta, Chile</title>
-    <meta name="description" content="Consultora digital en Antofagasta: unimos diseño de alta gama con ingeniería robusta. Desarrollo web y móvil a medida, cloud, SEO técnico y performance." />
     <meta name="author" content="EKI" />
-    <meta name="keywords" content="consultora de software, desarrollo web premium, diseño web alta gama, desarrollo a medida, aplicaciones móviles, cloud, SEO técnico, Antofagasta, Chile" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://www.ekiproject.cl/" />
 
-    <!-- Open Graph -->
+    <!-- Tags compartidas por todas las rutas -->
     <meta property="og:site_name" content="EKI" />
-    <meta property="og:title" content="EKI · Diseño y Desarrollo de Software Premium" />
-    <meta property="og:description" content="Combinamos diseño de alta gama con ingeniería robusta. Desde Antofagasta hacia el mundo." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.ekiproject.cl/" />
     <meta property="og:locale" content="es_CL" />
     <meta property="og:image" content="https://www.ekiproject.cl/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="EKI · Diseño y Desarrollo de Software Premium" />
-
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://www.ekiproject.cl/og-image.jpg" />
+
+    <!--
+      ROUTE-META — bloque reescrito por ruta en scripts/build-routes.mjs.
+      No renombrar ni borrar los marcadores: el script falla si no los encuentra.
+      Los valores de abajo son los de la home (/).
+    -->
+    <!-- ROUTE-META:START -->
+    <title>EKI · Diseño y Desarrollo de Software Premium | Antofagasta, Chile</title>
+    <meta name="description" content="Consultora digital en Antofagasta: unimos diseño de alta gama con ingeniería robusta. Desarrollo web y móvil a medida, cloud, SEO técnico y performance." />
+    <link rel="canonical" href="https://www.ekiproject.cl/" />
+    <meta property="og:title" content="EKI · Diseño y Desarrollo de Software Premium" />
+    <meta property="og:description" content="Combinamos diseño de alta gama con ingeniería robusta. Desde Antofagasta hacia el mundo." />
+    <meta property="og:url" content="https://www.ekiproject.cl/" />
+    <meta property="og:image:alt" content="EKI · Diseño y Desarrollo de Software Premium" />
     <meta name="twitter:title" content="EKI · Diseño y Desarrollo de Software Premium" />
     <meta name="twitter:description" content="Combinamos diseño de alta gama con ingeniería robusta. Desde Antofagasta hacia el mundo." />
-    <meta name="twitter:image" content="https://www.ekiproject.cl/og-image.jpg" />
+    <!-- ROUTE-META:END -->
 
     <!-- Datos estructurados (JSON-LD) para buscadores -->
     <script type="application/ld+json">
@@ -104,6 +109,7 @@
       que la primera pintura sea una página en blanco.
     -->
     <div id="root">
+      <!-- ROUTE-FALLBACK:START -->
       <div style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;background:#09090b;color:#fafafa;font-family:'Space Grotesk',system-ui,sans-serif;text-align:center">
         <h1 style="margin:0;font-size:clamp(2rem,8vw,4rem);font-weight:800;letter-spacing:-0.04em;text-transform:uppercase">
           EKI · Diseño y Desarrollo de Software Premium
@@ -114,11 +120,12 @@
           técnico y performance.
         </p>
         <nav style="display:flex;flex-wrap:wrap;gap:1.5rem;color:#a1a1aa">
-          <a href="/proyectos" style="color:inherit">Proyectos</a>
-          <a href="/equipo" style="color:inherit">Equipo</a>
-          <a href="/contacto" style="color:inherit">Contacto</a>
+          <a href="/proyectos/" style="color:inherit">Proyectos</a>
+          <a href="/equipo/" style="color:inherit">Equipo</a>
+          <a href="/contacto/" style="color:inherit">Contacto</a>
         </nav>
       </div>
+      <!-- ROUTE-FALLBACK:END -->
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
