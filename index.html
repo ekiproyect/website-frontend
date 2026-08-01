@@ -3,7 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+    <meta name="theme-color" content="#020817" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Iconos -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <!-- Preconnect para fuentes de Google (acelera DNS + TLS) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,7 +33,7 @@
     </noscript>
     
     <title>EKI · Diseño y Desarrollo de Software Premium | Antofagasta, Chile</title>
-    <meta name="description" content="EKI es una consultora digital de Antofagasta que combina diseño de alta gama con ingeniería robusta. Desarrollo web y móvil a medida, cloud, SEO técnico y performance para marcas que quieren convertir y escalar." />
+    <meta name="description" content="Consultora digital en Antofagasta: unimos diseño de alta gama con ingeniería robusta. Desarrollo web y móvil a medida, cloud, SEO técnico y performance." />
     <meta name="author" content="EKI" />
     <meta name="keywords" content="consultora de software, desarrollo web premium, diseño web alta gama, desarrollo a medida, aplicaciones móviles, cloud, SEO técnico, Antofagasta, Chile" />
     <meta name="robots" content="index, follow" />
@@ -88,7 +98,28 @@
       });
     </script>
     
-    <div id="root"></div>
+    <!--
+      Contenido estático de respaldo. React lo reemplaza al montar (createRoot
+      limpia los hijos de #root). Sirve al crawler que no ejecuta JS y evita
+      que la primera pintura sea una página en blanco.
+    -->
+    <div id="root">
+      <div style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;background:#09090b;color:#fafafa;font-family:'Space Grotesk',system-ui,sans-serif;text-align:center">
+        <h1 style="margin:0;font-size:clamp(2rem,8vw,4rem);font-weight:800;letter-spacing:-0.04em;text-transform:uppercase">
+          EKI · Diseño y Desarrollo de Software Premium
+        </h1>
+        <p style="margin:0;max-width:60ch;color:#a1a1aa">
+          Consultora digital en Antofagasta: unimos diseño de alta gama con
+          ingeniería robusta. Desarrollo web y móvil a medida, cloud, SEO
+          técnico y performance.
+        </p>
+        <nav style="display:flex;flex-wrap:wrap;gap:1.5rem;color:#a1a1aa">
+          <a href="/proyectos" style="color:inherit">Proyectos</a>
+          <a href="/equipo" style="color:inherit">Equipo</a>
+          <a href="/contacto" style="color:inherit">Contacto</a>
+        </nav>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
