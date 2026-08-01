@@ -160,7 +160,7 @@ return (
           <p
             ref={subRef}
             // 🔥 ARREGLO 3: Texto un poquito más pequeño en móviles súper chicos para ganar espacio
-            className="text-sm md:text-lg text-zinc-600 leading-relaxed max-w-lg text-left"
+            className="text-sm md:text-lg text-zinc-600 leading-relaxed max-w-lg text-justify [text-wrap:pretty] hyphens-auto"
           >
             Empresa de diseño web con sede en Antofagasta. Combinamos diseño de alta gama,
             desarrollo personalizado y SEO estratégico para dar visibilidad a las marcas y

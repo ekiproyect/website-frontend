@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import { ArrowUpRight } from "lucide-react";
 import { useScrollDarken } from "../hooks/useScrollDarken";
 
 interface FooterProps {
@@ -40,19 +41,30 @@ export function Footer({ startsDark = false }: FooterProps) {
             ¿Tienes un proyecto en mente?
           </p>
           
-          {/* 🔥 ARREGLO 1: Bajamos a 11vw en móvil. 9 letras * 11vw = 99vw (Cabe exacto en la pantalla) 🔥 */}
-          <h2 className="text-[11vw] md:text-[9vw] lg:text-[8rem] xl:text-[10rem] font-black font-heading leading-[0.85] tracking-tighter uppercase cursor-default w-full text-center">
-            Iniciemos
+          {/* Título fluido — cabe siempre en una línea, sin corte ni desborde */}
+          <h2 className="fluid-display font-black font-heading leading-[0.85] tracking-tighter uppercase cursor-default w-full text-center">
+            <span className="fluid-word mx-auto" style={{ ["--display-chars" as string]: 9, ["--display-max" as string]: "10rem" }}>
+              Iniciemos
+            </span>
           </h2>
           
-          {/* 🔥 ARREGLO 2: flex-col en móvil para el correo largo, y texto más pequeño 🔥 */}
-          <a 
-            href="mailto:contacto.eki@gmail.com" 
-            className="group flex flex-col md:flex-row items-center gap-6 md:gap-4 mt-12 md:mt-16 w-full px-4 justify-center"
+          {/* w-full + justify-center centra el bloque del correo; la flecha se ancla
+              al texto (no al <a>), así el correo queda centrado respecto al título. */}
+          <a
+            href="mailto:ekiteam.contacto@gmail.com"
+            className="group flex flex-col md:flex-row items-center gap-6 md:gap-0 mt-12 md:mt-16 w-full px-4 justify-center"
           >
-            {/* break-all salva la vida si alguien abre esto en un celular muy angosto */}
-            <span className="text-lg sm:text-xl md:text-4xl lg:text-5xl font-medium tracking-tight border-b-[2px] md:border-b-[3px] border-transparent group-hover:border-current transition-colors duration-300 text-center break-all md:break-normal">
-              ekiteam.contacto@gmail.com
+            {/* Wrapper relativo: el texto centra el grupo, la flecha cuelga sin empujar */}
+            <span className="relative inline-flex items-center justify-center">
+              {/* break-all salva la vida si alguien abre esto en un celular muy angosto */}
+              <span className="text-lg sm:text-xl md:text-4xl lg:text-5xl font-medium tracking-tight border-b-[2px] md:border-b-[3px] border-transparent group-hover:border-current transition-colors duration-300 text-center break-all md:break-normal">
+                ekiteam.contacto@gmail.com
+              </span>
+
+              {/* Flecha: absoluta a la derecha del texto en desktop, no afecta el centrado */}
+              <span className="w-12 h-12 md:w-20 md:h-20 md:absolute md:left-full md:ml-4 md:top-1/2 md:-translate-y-1/2 rounded-full bg-current flex items-center justify-center text-zinc-950 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                <ArrowUpRight className="w-6 h-6 md:w-10 md:h-10" />
+              </span>
             </span>
           </a>
         </div>
@@ -68,8 +80,8 @@ export function Footer({ startsDark = false }: FooterProps) {
 
           <div className="flex flex-col items-center md:items-end gap-8">
             <div className="flex flex-wrap justify-center md:justify-end gap-6 md:gap-10">
-              <a href="https://www.instagram.com/ekiproject" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">Instagram</a>
-              <a href="https://www.linkedin.com/company/ekiproject" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">LinkedIn</a>
+              <a href="https://www.instagram.com/ekiproject" target="_blank" rel="noopener noreferrer" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">Instagram</a>
+              <a href="https://www.linkedin.com/company/ekiproject" target="_blank" rel="noopener noreferrer" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">LinkedIn</a>
             </div>
             
             <p className="text-xs md:text-sm font-medium opacity-50 text-center md:text-right">
