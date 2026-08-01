@@ -6,6 +6,11 @@ const DIST = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 const ORIGIN = 'https://www.ekiproject.cl';
 const DESCRIPTION_LIMIT = 160;
 
+// Deben coincidir con el fondo que pinta cada página al montar: IntroOverlay y
+// Contact usan bg-zinc-950, AboutIntro y ProjectsIntro usan bg-zinc-50.
+const DARK_SURFACE = { background: '#09090b', text: '#fafafa', muted: '#a1a1aa' };
+const LIGHT_SURFACE = { background: '#fafafa', text: '#18181b', muted: '#52525b' };
+
 const META_START = '<!-- ROUTE-META:START -->';
 const META_END = '<!-- ROUTE-META:END -->';
 const FALLBACK_START = '<!-- ROUTE-FALLBACK:START -->';
@@ -27,6 +32,10 @@ const ROUTES = [
       'Combinamos diseño de alta gama con ingeniería robusta. Desde Antofagasta hacia el mundo.',
     heading: 'EKI · Diseño y Desarrollo de Software Premium',
     navLabel: 'Inicio',
+    backdrop: DARK_SURFACE,
+    // La home parte oscura por el IntroOverlay, pero si el intro ya se vio en
+    // la sesión monta directo el hero, que es claro (HeroScroll: bg-zinc-50).
+    introDoneBackground: LIGHT_SURFACE.background,
   },
   {
     path: '/proyectos/',
@@ -38,6 +47,7 @@ const ROUTES = [
       'Selección de proyectos digitales diseñados y desarrollados en EKI. Cada píxel pensado para convertir, cada línea de código para escalar.',
     heading: 'Trabajo',
     navLabel: 'Proyectos',
+    backdrop: LIGHT_SURFACE,
   },
   {
     path: '/equipo/',
@@ -49,6 +59,7 @@ const ROUTES = [
       'Nacimos en Antofagasta con una visión implacable: llevar el diseño web de alta gama a marcas que no se conforman con lo ordinario.',
     heading: 'Nosotros',
     navLabel: 'Equipo',
+    backdrop: LIGHT_SURFACE,
   },
   {
     path: '/contacto/',
@@ -60,6 +71,7 @@ const ROUTES = [
       'Desde Antofagasta hacia el mundo. Cuéntanos tu visión y nosotros ponemos la ingeniería y el diseño para hacerla dominar el mercado.',
     heading: 'Hablemos',
     navLabel: 'Contacto',
+    backdrop: DARK_SURFACE,
   },
 ];
 
@@ -102,17 +114,24 @@ function fallbackBlock(route) {
     .map((r) => `<a href="${r.path}" style="color:inherit">${r.navLabel}</a>`)
     .join('\n          ');
 
+  const { background, text, muted } = route.backdrop;
+  const introAttr = route.introDoneBackground
+    ? ` data-intro-done-background="${route.introDoneBackground}"`
+    : '';
+
   return `
-      <div style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;background:#09090b;color:#fafafa;font-family:'Space Grotesk',system-ui,sans-serif;text-align:center">
-        <h1 style="margin:0;font-size:clamp(2rem,8vw,4rem);font-weight:800;letter-spacing:-0.04em;text-transform:uppercase">
-          ${route.heading}
-        </h1>
-        <p style="margin:0;max-width:60ch;color:#a1a1aa">
-          ${route.description}
-        </p>
-        <nav style="display:flex;flex-wrap:wrap;gap:1.5rem;color:#a1a1aa">
-          ${links}
-        </nav>
+      <div id="static-fallback"${introAttr} style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;background:${background};color:${text};font-family:'Space Grotesk',system-ui,sans-serif;text-align:center">
+        <div id="static-fallback-text">
+          <h1 style="margin:0;font-size:clamp(2rem,8vw,4rem);font-weight:800;letter-spacing:-0.04em;text-transform:uppercase">
+            ${route.heading}
+          </h1>
+          <p style="margin:1rem 0 0;max-width:60ch;color:${muted}">
+            ${route.description}
+          </p>
+          <nav style="display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-top:1rem;color:${muted}">
+            ${links}
+          </nav>
+        </div>
       </div>
       `;
 }

@@ -110,22 +110,51 @@
     -->
     <div id="root">
       <!-- ROUTE-FALLBACK:START -->
-      <div style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;background:#09090b;color:#fafafa;font-family:'Space Grotesk',system-ui,sans-serif;text-align:center">
-        <h1 style="margin:0;font-size:clamp(2rem,8vw,4rem);font-weight:800;letter-spacing:-0.04em;text-transform:uppercase">
-          EKI · Diseño y Desarrollo de Software Premium
-        </h1>
-        <p style="margin:0;max-width:60ch;color:#a1a1aa">
-          Consultora digital en Antofagasta: unimos diseño de alta gama con
-          ingeniería robusta. Desarrollo web y móvil a medida, cloud, SEO
-          técnico y performance.
-        </p>
-        <nav style="display:flex;flex-wrap:wrap;gap:1.5rem;color:#a1a1aa">
-          <a href="/proyectos/" style="color:inherit">Proyectos</a>
-          <a href="/equipo/" style="color:inherit">Equipo</a>
-          <a href="/contacto/" style="color:inherit">Contacto</a>
-        </nav>
+      <div id="static-fallback" data-intro-done-background="#fafafa" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;background:#09090b;color:#fafafa;font-family:'Space Grotesk',system-ui,sans-serif;text-align:center">
+        <div id="static-fallback-text">
+          <h1 style="margin:0;font-size:clamp(2rem,8vw,4rem);font-weight:800;letter-spacing:-0.04em;text-transform:uppercase">
+            EKI · Diseño y Desarrollo de Software Premium
+          </h1>
+          <p style="margin:1rem 0 0;max-width:60ch;color:#a1a1aa">
+            Consultora digital en Antofagasta: unimos diseño de alta gama con
+            ingeniería robusta. Desarrollo web y móvil a medida, cloud, SEO
+            técnico y performance.
+          </p>
+          <nav style="display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-top:1rem;color:#a1a1aa">
+            <a href="/proyectos/" style="color:inherit">Proyectos</a>
+            <a href="/equipo/" style="color:inherit">Equipo</a>
+            <a href="/contacto/" style="color:inherit">Contacto</a>
+          </nav>
+        </div>
       </div>
       <!-- ROUTE-FALLBACK:END -->
+      <!--
+        Se ejecuta durante el parseo, antes del primer pintado: el texto de
+        respaldo nunca llega a verse si hay JS. El fondo sí se queda, porque
+        coincide con el color de la ruta y evita el flash blanco mientras carga
+        el bundle. Sin JS no corre nada y el texto permanece visible.
+      -->
+      <script>
+        (function () {
+          var fallbackText = document.getElementById('static-fallback-text');
+          if (fallbackText) fallbackText.style.display = 'none';
+
+          // La home salta el IntroOverlay si ya se vio en esta sesión (INTRO_KEY
+          // en src/pages/Home.tsx). Cuando eso pasa el fondo real es claro, no el
+          // negro del overlay, así que el respaldo tiene que seguirlo.
+          var backdrop = document.getElementById('static-fallback');
+          var introDoneBackground = backdrop && backdrop.getAttribute('data-intro-done-background');
+          if (!introDoneBackground) return;
+
+          var introDone = false;
+          try {
+            introDone = sessionStorage.getItem('eki_intro_done') === '1';
+          } catch (error) {
+            introDone = false;
+          }
+          if (introDone) backdrop.style.background = introDoneBackground;
+        })();
+      </script>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
