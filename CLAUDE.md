@@ -53,7 +53,10 @@ GSAP + `@gsap/react` (`useGSAP`) es lo principal para animaciones de página (ve
 ## Build y deploy
 
 - `vite.config.ts` define `manualChunks` para separar vendors grandes (gsap, react, radix ui, icons). Al agregar libs pesadas, considerar agregarlas a un chunk.
-- `postbuild` (en `package.json`) copia `dist/index.html` → `dist/404.html` y crea `.nojekyll`. Esto es el fallback SPA de GitHub Pages — necesario para que el routing client-side funcione en rutas profundas. No borrar.
+- `postbuild` corre `scripts/build-routes.mjs`, que genera un HTML por ruta (`dist/proyectos/index.html`, etc.) con su propio title/description/canonical/OG y un `<h1>` de respaldo. Necesario porque los crawlers sociales (LinkedIn, WhatsApp, X) no ejecutan JS y solo leen el HTML estático. También emite `404.html` (con `noindex`), `sitemap.xml` y `.nojekyll`.
+- **La metadata por ruta vive en el array `ROUTES` de `scripts/build-routes.mjs`** — es la fuente de verdad, junto con `src/App.tsx`. Al agregar una página hay que registrarla en ambos. El sitemap se genera desde ahí (no existe `public/sitemap.xml`).
+- `index.html` tiene marcadores `<!-- ROUTE-META:START/END -->` y `<!-- ROUTE-FALLBACK:START/END -->` que el script reemplaza. Si se renombran o borran, el build falla con un error explícito.
+- Ojo al verificar en local: `npm run preview` reescribe todas las URLs a `index.html` (modo SPA de Vite), así que **no** refleja el comportamiento de GitHub Pages. Para probar las rutas estáticas: `cd dist && python3 -m http.server`.
 - `.github/workflows/pages.yml`: build + deploy a GitHub Pages en push a **master**.
 - `.github/workflows/commits.yml`: corre `prettier --write` y auto-commitea en push a **main** (ojo: branch distinto al de deploy).
 
