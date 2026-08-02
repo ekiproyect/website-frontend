@@ -16,6 +16,7 @@ type Project = {
   id: string;
   client: string;
   category: string;
+  tag?: string; // etiqueta para proyectos referenciados / en colaboración
   description: string;
   detail?: string;
   image: string;
@@ -53,6 +54,16 @@ const PROJECTS_DATA: Project[] = [
       "/images/projects/ChatBot/chatbot2.png",
       "/images/projects/ChatBot/chatbot3.png",
     ],
+  },
+  {
+    id: "03",
+    client: "Cumplify",
+    category: "Plataforma SaaS de Cumplimiento",
+    tag: "Proyecto referenciado",
+    description:
+      "Plataforma multiempresa para gestionar cumplimiento normativo y seguridad laboral: requisitos legales, matrices de riesgo IPER (Probabilidad × Consecuencia), biblioteca documental, unidades organizacionales y métricas, con control de acceso por roles y aislamiento de datos por empresa. Proyecto en el que participa parte del equipo de EKI junto a un equipo externo.",
+    image:
+      "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=1200&auto=format&fit=crop",
   },
 ];
 
@@ -238,8 +249,13 @@ export function ProjectsGrid() {
               {/* Títulos y Categorías */}
               <div className="flex flex-col">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-zinc-500 font-medium text-sm md:text-base tracking-wide">
+                  <span className="flex items-center gap-2 text-zinc-500 font-medium text-sm md:text-base tracking-wide">
                     {project.category}
+                    {project.tag && (
+                      <span className="rounded-full border border-zinc-300 bg-zinc-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">
+                        {project.tag}
+                      </span>
+                    )}
                   </span>
                   <span className="text-zinc-400 font-mono text-xs">
                     {project.id}
