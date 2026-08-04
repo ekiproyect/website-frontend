@@ -145,6 +145,44 @@ All colors MUST be HSL.
   }
 }
 
+/* ==================================================== */
+/* ALTURAS FLUIDAS DE /contacto (la sección no scrollea) */
+/* ==================================================== */
+/*
+  La página de contacto se ve entera de una sola vista: esa es su lógica. El
+  layout era responsive en ancho pero rígido en alto, así que bajo ~1000px de
+  viewport aparecía scroll y el botón de envío quedaba cortado.
+
+  Cada clamp va de un piso legible al valor de diseño original. Sobre ~1100px
+  de alto todos topan en su máximo, o sea que en pantallas grandes NO cambia
+  nada visualmente; solo comprime cuando hace falta. Objetivo: sin scroll en
+  lg+ (≥1024px de ancho) hasta 700px de alto.
+
+  Solo define variables — no aplica estilos por sí sola. Se consume desde
+  src/pages/Contact.tsx con valores arbitrarios de Tailwind.
+*/
+.contact-fit {
+  /* El piso de 5.5rem (88px) despeja el FloatingNav, que es fixed y termina
+     en ~80px. No bajarlo o el título queda debajo de la barra. */
+  --contact-pt: clamp(5.5rem, 13vh, 14rem); /*  88 → 224px */
+  --contact-pb: clamp(2.5rem, 7vh, 6rem); /*  40 →  96px */
+  /* Separación entre los 5 campos: 4 gaps, el rubro que más pesa después
+     del padding superior. */
+  --contact-gap: clamp(1.5rem, 3.4vh, 3rem); /*  24 →  48px */
+  --field-pad: clamp(0.5rem, 1.4vh, 1rem); /*   8 →  16px */
+  /* La etiqueta flotante en reposo se apoya en --field-pad y usa este mismo
+     tamaño que el input, así que los tres valores deben moverse juntos. */
+  --field-size: clamp(1.05rem, 2.4vh, 1.5rem); /*  17 →  24px */
+  --chip-pad: clamp(0.5rem, 1.4vh, 0.75rem); /*   8 →  12px */
+  /* El techo de 8rem reproduce el alto original del textarea (rows=3: 96px de
+     texto + 32px de padding), así que en pantallas altas no se nota el cambio. */
+  --message-h: clamp(3.5rem, 9vh, 8rem); /*  56 → 128px */
+  --submit-pad: clamp(0.75rem, 2vh, 1.25rem); /*  12 →  20px */
+  --stack-gap: clamp(0.75rem, 2vh, 2rem); /*  12 →  32px */
+  --lede-size: clamp(1rem, 2.2vh, 1.5rem); /*  16 →  24px */
+  --contact-title-max: clamp(3rem, 11vh, 7.5rem); /*  48 → 120px */
+}
+
 /* Animaciones personalizadas estilo GTA 6 */
 @keyframes scan {
   0% {

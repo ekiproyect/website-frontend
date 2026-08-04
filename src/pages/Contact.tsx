@@ -150,38 +150,38 @@ export default function Contact() {
   };
 
   return (
-    <main className="relative w-full overflow-x-hidden bg-zinc-950 text-zinc-50 min-h-screen flex flex-col justify-between">
+    <main className="contact-fit relative w-full overflow-x-hidden bg-zinc-950 text-zinc-50 min-h-[100svh] flex flex-col justify-between">
       <FloatingNav introDone={true} />
 
       <section
         ref={containerRef}
-        className="w-full pt-40 md:pt-56 pb-24 px-6 md:px-12 flex-grow flex items-center"
+        className="w-full pt-[var(--contact-pt)] pb-[var(--contact-pb)] px-6 md:px-12 flex-grow flex items-center"
       >
-        <div className="max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 relative">
+        <div className="max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-[clamp(2rem,4vw,6rem)] relative">
           
           {/* COLUMNA IZQUIERDA (Se mantiene igual) */}
           <div ref={leftColRef} className="flex flex-col justify-start">
-            <h1 className="fluid-display font-black font-heading leading-[0.85] tracking-tighter uppercase mb-8 max-w-full">
-              <span className="fluid-word" style={{ ["--display-chars" as string]: 8, ["--display-max" as string]: "7.5rem" }}>
+            <h1 className="fluid-display font-black font-heading leading-[0.85] tracking-tighter uppercase mb-[var(--stack-gap)] max-w-full">
+              <span className="fluid-word" style={{ ["--display-chars" as string]: 8, ["--display-max" as string]: "var(--contact-title-max)" }}>
                 Hablemos
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-zinc-400 font-medium leading-relaxed max-w-lg mb-12 text-justify [text-wrap:pretty] hyphens-auto">
+            <p className="text-[length:var(--lede-size)] text-zinc-400 font-medium leading-relaxed max-w-lg mb-[var(--stack-gap)] text-justify [text-wrap:pretty] hyphens-auto">
               Desde Antofagasta hacia el mundo. Cuéntanos sobre tu visión y
               nosotros pondremos la ingeniería y el diseño para hacerla dominar
               el mercado. Carlos y el equipo revisan personalmente cada
               solicitud.
             </p>
 
-            <div className="flex flex-col gap-8 mt-auto pt-8 border-t border-zinc-800">
+            <div className="flex flex-col gap-[var(--stack-gap)] mt-auto pt-[var(--stack-gap)] border-t border-zinc-800">
               <div>
                 <span className="block text-sm font-bold tracking-[0.2em] text-zinc-500 uppercase mb-2">
                   Email Directo
                 </span>
                 <a
                   href="mailto:ekiteam.contacto@gmail.com"
-                  className="text-2xl md:text-3xl font-medium hover:text-zinc-300 transition-colors"
+                  className="text-[length:clamp(1.25rem,2.8vh,1.875rem)] font-medium hover:text-zinc-300 transition-colors"
                 >
                   ekiteam.contacto@gmail.com
                 </a>
@@ -191,32 +191,32 @@ export default function Contact() {
                 <span className="block text-sm font-bold tracking-[0.2em] text-zinc-500 uppercase mb-2">
                   Sede Central
                 </span>
-                <p className="text-xl text-zinc-300">Antofagasta, Chile</p>
+                <p className="text-[length:clamp(1rem,2.2vh,1.25rem)] text-zinc-300">Antofagasta, Chile</p>
               </div>
             </div>
           </div>
 
           {/* COLUMNA DERECHA: EL ESCENARIO */}
-          <div className="relative flex flex-col justify-center lg:pl-10 min-h-[500px]">
-            
+          <div className="relative flex flex-col justify-center lg:pl-10 min-h-[min(500px,60svh)]">
+
             {/* EL FORMULARIO (Se oculta al enviar) */}
             <div ref={formWrapperRef} className="w-full">
               {/* 🔥 Añadimos noValidate para apagar las alertas feas del navegador 🔥 */}
-              <form className="flex flex-col gap-12" onSubmit={handleSubmit} noValidate>
+              <form className="flex flex-col gap-[var(--contact-gap)]" onSubmit={handleSubmit} noValidate>
                 <input type="text" name="company_website" tabIndex={-1} autoComplete="off" className="hidden" />
 
                 {/* Campo: Nombre */}
                 <div className="form-item relative">
-                  <input 
-                    name="name" 
-                    type="text" 
-                    id="name" 
-                    placeholder=" " 
-                    className={`peer w-full bg-transparent border-b py-4 text-xl md:text-2xl text-zinc-100 placeholder-transparent focus:outline-none transition-colors duration-300 ${
+                  <input
+                    name="name"
+                    type="text"
+                    id="name"
+                    placeholder=" "
+                    className={`peer w-full bg-transparent border-b py-[var(--field-pad)] text-[length:var(--field-size)] text-zinc-100 placeholder-transparent focus:outline-none transition-colors duration-300 ${
                       formErrors.name ? "border-red-500/50 focus:border-red-400" : "border-zinc-700 focus:border-zinc-100"
-                    }`} 
+                    }`}
                   />
-                  <label htmlFor="name" className={`absolute left-0 cursor-text transition-all duration-300 -top-6 text-sm peer-placeholder-shown:top-4 peer-placeholder-shown:text-xl md:peer-placeholder-shown:text-2xl peer-focus:-top-6 peer-focus:text-sm ${
+                  <label htmlFor="name" className={`absolute left-0 cursor-text transition-all duration-300 -top-6 text-sm peer-placeholder-shown:top-[var(--field-pad)] peer-placeholder-shown:text-[length:var(--field-size)] peer-focus:-top-6 peer-focus:text-sm ${
                     formErrors.name ? "text-red-400 peer-placeholder-shown:text-red-500/50 peer-focus:text-red-400" : "text-zinc-300 peer-placeholder-shown:text-zinc-500 peer-focus:text-zinc-300"
                   }`}>
                     ¿Cómo te llamas?
@@ -225,16 +225,16 @@ export default function Contact() {
 
                 {/* Campo: Email */}
                 <div className="form-item relative">
-                  <input 
-                    name="email" 
-                    type="email" 
-                    id="email" 
-                    placeholder=" " 
-                    className={`peer w-full bg-transparent border-b py-4 text-xl md:text-2xl text-zinc-100 placeholder-transparent focus:outline-none transition-colors duration-300 ${
+                  <input
+                    name="email"
+                    type="email"
+                    id="email"
+                    placeholder=" "
+                    className={`peer w-full bg-transparent border-b py-[var(--field-pad)] text-[length:var(--field-size)] text-zinc-100 placeholder-transparent focus:outline-none transition-colors duration-300 ${
                       formErrors.email ? "border-red-500/50 focus:border-red-400" : "border-zinc-700 focus:border-zinc-100"
-                    }`} 
+                    }`}
                   />
-                  <label htmlFor="email" className={`absolute left-0 cursor-text transition-all duration-300 -top-6 text-sm peer-placeholder-shown:top-4 peer-placeholder-shown:text-xl md:peer-placeholder-shown:text-2xl peer-focus:-top-6 peer-focus:text-sm ${
+                  <label htmlFor="email" className={`absolute left-0 cursor-text transition-all duration-300 -top-6 text-sm peer-placeholder-shown:top-[var(--field-pad)] peer-placeholder-shown:text-[length:var(--field-size)] peer-focus:-top-6 peer-focus:text-sm ${
                     formErrors.email ? "text-red-400 peer-placeholder-shown:text-red-500/50 peer-focus:text-red-400" : "text-zinc-300 peer-placeholder-shown:text-zinc-500 peer-focus:text-zinc-300"
                   }`}>
                     Tu correo electrónico
@@ -243,8 +243,8 @@ export default function Contact() {
 
                 {/* Selección de Servicios (Mantenemos igual) */}
                 <div className="form-item">
-                  <span className="block text-sm font-bold tracking-[0.2em] text-zinc-500 uppercase mb-4">¿En qué podemos ayudarte?</span>
-                  <div className="flex flex-wrap gap-3">
+                  <span className="block text-sm font-bold tracking-[0.2em] text-zinc-500 uppercase mb-[var(--chip-pad)]">¿En qué podemos ayudarte?</span>
+                  <div className="flex flex-wrap gap-[var(--chip-pad)]">
                     {SERVICES_OPTIONS.map((service) => (
                       <Tooltip key={service.label}>
                         <TooltipTrigger asChild>
@@ -252,7 +252,7 @@ export default function Contact() {
                             type="button"
                             onClick={() => setSelectedService(service.label)}
                             aria-label={`${service.label}: ${service.info}`}
-                            className={`px-5 py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 border ${
+                            className={`px-5 py-[var(--chip-pad)] rounded-full text-sm md:text-base font-medium transition-all duration-300 border ${
                               selectedService === service.label
                                 ? "bg-zinc-100 text-zinc-950 border-zinc-100"
                                 : "bg-transparent text-zinc-400 border-zinc-700 hover:border-zinc-400 hover:text-zinc-200"
@@ -275,27 +275,27 @@ export default function Contact() {
 
                 {/* Campo: Mensaje */}
                 <div className="form-item relative">
-                  <textarea 
-                    name="message" 
-                    id="message" 
-                    rows={3} 
-                    placeholder=" " 
-                    className={`peer w-full bg-transparent border-b py-4 text-xl md:text-2xl text-zinc-100 placeholder-transparent focus:outline-none transition-colors resize-none duration-300 ${
+                  <textarea
+                    name="message"
+                    id="message"
+                    rows={2}
+                    placeholder=" "
+                    className={`peer w-full h-[var(--message-h)] bg-transparent border-b py-[var(--field-pad)] text-[length:var(--field-size)] text-zinc-100 placeholder-transparent focus:outline-none transition-colors resize-none duration-300 ${
                       formErrors.message ? "border-red-500/50 focus:border-red-400" : "border-zinc-700 focus:border-zinc-100"
-                    }`} 
+                    }`}
                   />
-                  <label htmlFor="message" className={`absolute left-0 cursor-text transition-all duration-300 -top-6 text-sm peer-placeholder-shown:top-4 peer-placeholder-shown:text-xl md:peer-placeholder-shown:text-2xl peer-focus:-top-6 peer-focus:text-sm ${
+                  <label htmlFor="message" className={`absolute left-0 cursor-text transition-all duration-300 -top-6 text-sm peer-placeholder-shown:top-[var(--field-pad)] peer-placeholder-shown:text-[length:var(--field-size)] peer-focus:-top-6 peer-focus:text-sm ${
                     formErrors.message ? "text-red-400 peer-placeholder-shown:text-red-500/50 peer-focus:text-red-400" : "text-zinc-300 peer-placeholder-shown:text-zinc-500 peer-focus:text-zinc-300"
                   }`}>
                     Cuéntanos sobre el proyecto...
                   </label>
                 </div>
 
-                <div className="form-item mt-4">
+                <div className="form-item">
                   <button
                     type="submit"
                     disabled={status === "sending"}
-                    className="group flex items-center justify-between w-full md:w-auto bg-zinc-100 text-zinc-950 px-8 py-5 rounded-full font-bold text-lg md:text-xl hover:bg-zinc-300 transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="group flex items-center justify-between w-full md:w-auto bg-zinc-100 text-zinc-950 px-8 py-[var(--submit-pad)] rounded-full font-bold text-lg md:text-xl hover:bg-zinc-300 transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <span>{status === "sending" ? "Procesando..." : "Enviar Solicitud"}</span>
                     <ArrowUpRight className={`w-6 h-6 ml-4 transition-transform duration-300 ${status === 'sending' ? 'animate-pulse' : 'group-hover:rotate-45'}`} />
@@ -317,16 +317,16 @@ export default function Contact() {
               ref={successMessageRef} 
               className="absolute inset-0 flex-col justify-center items-start hidden"
             >
-              <div className="w-20 h-20 rounded-full bg-zinc-800/50 border border-zinc-700 flex items-center justify-center mb-8">
-                <CheckCircle2 className="w-10 h-10 text-zinc-100" strokeWidth={1.5} />
+              <div className="w-[clamp(3rem,7vh,5rem)] h-[clamp(3rem,7vh,5rem)] shrink-0 rounded-full bg-zinc-800/50 border border-zinc-700 flex items-center justify-center mb-[var(--stack-gap)]">
+                <CheckCircle2 className="w-1/2 h-1/2 text-zinc-100" strokeWidth={1.5} />
               </div>
-              
-              <h3 className="text-4xl md:text-5xl lg:text-6xl font-black font-heading leading-tight tracking-tighter mb-6">
+
+              <h3 className="text-[length:clamp(1.75rem,5.5vh,3.75rem)] font-black font-heading leading-tight tracking-tighter mb-[var(--stack-gap)]">
                 Solicitud <br/>
                 <span className="text-zinc-500">recibida.</span>
               </h3>
-              
-              <p className="text-xl md:text-2xl text-zinc-400 leading-relaxed max-w-md">
+
+              <p className="text-[length:var(--lede-size)] text-zinc-400 leading-relaxed max-w-md">
                 Gracias por elegir a EKI. Hemos recibido tu información correctamente. Algun miembro de nuestro equipo se pondrá en contacto contigo muy pronto para agendar una reunión.
               </p>
             </div>
