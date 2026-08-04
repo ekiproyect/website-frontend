@@ -197,6 +197,22 @@ All colors MUST be HSL.
   --contact-title-max: clamp(3rem, 11vh, 7.5rem); /*  48 → 120px */
 }
 
+/* ==================================================== */
+/* MODAL DE PROYECTOS — movimiento reducido              */
+/* ==================================================== */
+/*
+  Solo se anula la animación. NO tocar `transform`: el panel se centra con
+  -translate-x-1/2 -translate-y-1/2, y al quitar la animación esas utilidades
+  vuelven a mandar. Un `transform: none` lo descentraría.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-panel,
+  .modal-stagger {
+    animation: none !important;
+  }
+}
+
 /* Animaciones personalizadas estilo GTA 6 */
 @keyframes scan {
   0% {
@@ -233,9 +249,13 @@ All colors MUST be HSL.
 /* ==================================================== */
 /* CONFIGURACIÓN DE LENIS (SMOOTH SCROLL)               */
 /* ==================================================== */
+/* `width: 100%`, NO `100vw`: 100vw incluye el ancho de la barra de scroll, así
+   que en cualquier página que scrollee el documento quedaba ~10px más ancho que
+   el área visible y aparecía scroll horizontal. Lenis solo necesita el
+   `height: auto`. */
 html.lenis, html.lenis body {
   height: auto;
-  width: 100vw;
+  width: 100%;
   overflow-x: hidden;
 }
 

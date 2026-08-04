@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { FloatingNav } from "../components/navegation/FloatingNav";
 import { Footer } from "../components/Footer";
-import { ProjectsIntro } from "../components/ProjectsIntro";
-import { ProjectsGrid } from "../components/ProjectsGrid";
+import { ProjectsShowcase } from "../components/projects/ProjectsShowcase";
 
 const Projects = () => {
   // Asegura que la página inicie arriba
@@ -11,19 +10,14 @@ const Projects = () => {
   }, []);
 
   return (
-    <main className="relative w-full overflow-x-hidden bg-zinc-50 text-zinc-900 min-h-screen">
-      
+    <main className="relative w-full overflow-x-hidden bg-zinc-50 text-zinc-900">
       <FloatingNav introDone={true} />
 
-      {/* 1. BLANCO: Texto gigante y contexto */}
-      <ProjectsIntro />
+      {/* Ocupa la pantalla completa: el carrusel se ve al entrar, sin scroll */}
+      <ProjectsShowcase />
 
-      {/* 2. BLANCO CONTINUO: La galería asimétrica */}
-      <ProjectsGrid />
-
-      {/* 3. APAGÓN: Al terminar los proyectos, el fondo blanco hace un fade out hacia negro en el footer */}
+      {/* El footer queda debajo; se llega scrolleando */}
       <Footer startsDark={false} />
-      
     </main>
   );
 };

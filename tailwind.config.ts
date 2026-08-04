@@ -92,11 +92,49 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				// Modal de proyectos. Los keyframes que sí animan transform
+				// llevan el translate(-50%,-50%) completo, porque el panel se
+				// centra por transform y animarlo lo pisaría.
+				'overlay-in': {
+					from: { opacity: '0' },
+					to: { opacity: '1' }
+				},
+				'overlay-out': {
+					from: { opacity: '1' },
+					to: { opacity: '0' }
+				},
+				'panel-in': {
+					from: { opacity: '0', transform: 'translate(-50%, calc(-50% + 24px))' },
+					to: { opacity: '1', transform: 'translate(-50%, -50%)' }
+				},
+				'panel-out': {
+					from: { opacity: '1', transform: 'translate(-50%, -50%)' },
+					to: { opacity: '0', transform: 'translate(-50%, calc(-50% + 12px))' }
+				},
+				// Entrada escalonada del contenido del modal.
+				rise: {
+					from: { opacity: '0', transform: 'translateY(14px)' },
+					to: { opacity: '1', transform: 'translateY(0)' }
+				},
+				// Relevo al cambiar de proyecto o de slide, donde no hay Flip.
+				fade: {
+					from: { opacity: '0' },
+					to: { opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				// Mismo easing que el menú móvil (FloatingNav). `both` es
+				// necesario: sin él los elementos escalonados se ven antes de
+				// que arranque su animation-delay.
+				'overlay-in': 'overlay-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both',
+				'overlay-out': 'overlay-out 200ms cubic-bezier(0.22, 1, 0.36, 1) both',
+				'panel-in': 'panel-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both',
+				'panel-out': 'panel-out 220ms cubic-bezier(0.22, 1, 0.36, 1) both',
+				rise: 'rise 500ms cubic-bezier(0.22, 1, 0.36, 1) both',
+				fade: 'fade 300ms cubic-bezier(0.22, 1, 0.36, 1) both'
 			}
 		}
 	},

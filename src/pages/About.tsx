@@ -1,10 +1,7 @@
 import { useEffect } from "react";
 import { FloatingNav } from "../components/navegation/FloatingNav";
 import { Footer } from "../components/Footer";
-
-// Tus 2 nuevos componentes minimalistas:
-import { AboutIntro } from "../components/AboutIntro";
-import { MinimalTeam } from "../components/MinimalTeam";
+import { TeamShowcase } from "../components/team/TeamShowcase";
 
 const About = () => {
   useEffect(() => {
@@ -12,21 +9,15 @@ const About = () => {
   }, []);
 
   return (
-    // La página inicia en blanco (zinc-50) para que el nav no choque con el fondo
-    <main className="relative w-full overflow-x-hidden bg-zinc-50 text-zinc-900 min-h-screen">
-      
+    <main className="relative w-full overflow-x-hidden bg-zinc-50 text-zinc-900">
       <FloatingNav introDone={true} />
 
-      {/* 1. BLANCO: Texto gigante y la historia */}
-      <AboutIntro />
+      {/* Ocupa la pantalla completa: el equipo se ve al entrar, sin scroll */}
+      <TeamShowcase />
 
-      {/* 2. NEGRO: El grid del equipo al estilo Edge Studio */}
-      <MinimalTeam />
-
-      {/* 3. APAGÓN: El Footer oscuro (si usas la versión que hicimos antes, 
-          ajusta su fondo inicial a bg-zinc-950 para que no haya línea de corte con el equipo) */}
-      <Footer startsDark={true}/>
-      
+      {/* startsDark={false} como en /proyectos: el apagón lo dispara el footer
+          sobre la sección anterior, en vez de que la sección lo haga por su cuenta */}
+      <Footer startsDark={false} />
     </main>
   );
 };
