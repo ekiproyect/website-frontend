@@ -148,9 +148,7 @@ return (
                     aria-hidden
                     className="col-start-1 row-start-1 text-zinc-900 pb-[0.2em]"
                     style={{ willChange: 'transform, opacity, filter' }}
-                  >
-                    .
-                  </span>
+                  />
                 )}
               </span>
 

@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ArrowUpRight, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
 if (typeof window !== "undefined") {
@@ -16,9 +17,10 @@ type Project = {
   id: string;
   client: string;
   category: string;
+  tag?: string; // etiqueta para proyectos referenciados / en colaboración
   description: string;
   detail?: string;
-  image: string;
+  image?: string; // los referenciados no llevan imagen: se listan como índice
   url?: string;
   gallery?: string[];
 };
@@ -26,14 +28,14 @@ type Project = {
 const PROJECTS_DATA: Project[] = [
   {
     id: "01",
-    client: "SmartPack",
+    client: "Kreatracker",
     category: "Plataforma Web + App Móvil",
     description:
       "Suite de gestión logística para operaciones de bodega: cajas, áreas, proyectos, productos y proveedores, con control de acceso por roles. Reemplaza planillas y papel por una fuente de verdad única, consultable en el escritorio o desde el celular en terreno.",
     detail:
       "Dos formas de trabajar conectadas a la misma información: un panel web para gestionar todo con calma desde el escritorio y una app de celular para el equipo en bodega, que solo escanea un código y listo. Cada persona ve únicamente lo que le corresponde según su rol, y cada movimiento queda registrado. El estado de cada activo se entiende de un vistazo gracias al color: verde si está disponible, rojo si está dañado.",
     image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1200&auto=format&fit=crop",
-    url: "https://assettracker.cl/login",
+    url: "https://kreatracker.cl/",
     gallery: [
       "/images/projects/AssetTracker/assettracker1.webp",
       "/images/projects/AssetTracker/assettracker2.webp",
@@ -53,6 +55,45 @@ const PROJECTS_DATA: Project[] = [
       "/images/projects/ChatBot/chatbot2.png",
       "/images/projects/ChatBot/chatbot3.png",
     ],
+  },
+];
+
+// Proyectos en los que participa parte del equipo de EKI junto a equipos externos.
+const REFERENCED_DATA: Project[] = [
+  {
+    id: "01",
+    client: "Cumplify",
+    category: "Plataforma SaaS de cumplimiento",
+    tag: "Desarrollo EKI",
+    description:
+      "Cumplimiento ambiental y de seguridad para operaciones constructoras: obligaciones legales, matriz de riesgo IPER, catálogo de peligros y biblioteca documental, en una plataforma multiempresa.",
+    image: "/images/projects/Cumplify/cumplify.jpeg",
+    detail:
+      "Cumplir la normativa ambiental y de seguridad suele significar planillas dispersas, carpetas con documentos vencidos y una matriz de riesgos que nadie actualiza. Cumplify reúne todo eso en un solo lugar: las obligaciones legales que aplican a cada empresa, un catálogo de peligros y riesgos por familia, la biblioteca documental con sus vigencias y la estructura de unidades organizacionales.\n\nEl corazón es la matriz IPER: identificar el peligro, evaluar el riesgo y hacerle seguimiento a la medida preventiva. La plataforma cruza probabilidad y consecuencia para entregar un valor de riesgo con color propio, de verde a rojo, y guía la identificación en un flujo único: unidad de control, tarea, peligro y riesgo.\n\nAl ser multiempresa, cada organización trabaja sobre sus propios datos sin ver los de las demás, y cada persona accede solo a lo que su rol permite.\n\nEl proyecto nació con un equipo externo y EKI entró aportando un integrante. Cuando el desarrollador original dejó el proyecto, se sumó un segundo: hoy el desarrollo lo lleva íntegramente el equipo de EKI.",
+    gallery: [
+      "/images/projects/Cumplify/cumplify.jpeg",
+      "/images/projects/Cumplify/cumplify1.jpeg",
+      "/images/projects/Cumplify/cumplify3.jpeg",
+      "/images/projects/Cumplify/cumplify2.jpeg",
+    ],
+  },
+  {
+    id: "02",
+    client: "CILOG, Corredor Bioceánico Capricornio",
+    category: "Plataforma de datos e integración logística",
+    tag: "Desarrollo EKI",
+    description:
+      "Iniciativa financiada por el Gobierno Regional de Antofagasta, con recursos del Fondo Regional para la Productividad y el Desarrollo, F.R.P.D., Línea Hub Bioceánico, año 2025, aprobados por el Consejo Regional de Antofagasta.",
+    image: "/images/projects/Corredor/cilog1.jpeg",
+    url: "https://cilog.cl/",
+    gallery: [
+      "/images/projects/Corredor/cilog1.jpeg",
+      "/images/projects/Corredor/cilog4.jpeg",
+      "/images/projects/Corredor/cilog2.jpeg",
+      "/images/projects/Corredor/cilog3.jpeg",
+    ],
+    detail:
+      "Son ~2.500 km de rutas que cruzan Brasil, Paraguay, Argentina y Chile para conectar el Atlántico con el Pacífico. Saber si un paso fronterizo está abierto, qué exige cada país o cuánto demora un tramo obligaba a rastrear organismos, planillas y PDFs. CILOG lo centraliza en una sola fuente de verdad multinacional.\n\nLa portada muestra el estado en vivo de cada complejo fronterizo, con clima y tipo de vehículo habilitado, y la capa GIS lo lleva a un mapa con rutas, pasos, puertos y centros logísticos filtrables por país. El observatorio reúne indicadores oficiales de comercio, competitividad y conectividad, cada uno con su fuente declarada y la cifra tal como la publica el organismo. Disponible en español, inglés y portugués.\n\nEl proyecto es de un tercero, pero todo su desarrollo lo ejecuta el equipo de EKI.",
   },
 ];
 
@@ -79,13 +120,13 @@ function GalleryCarousel({ images, alt }: { images: string[]; alt: string }) {
 
   return (
     <div className="relative">
-      <div className="overflow-hidden rounded-xl border border-white/10" ref={emblaRef}>
+      <div className="relative overflow-hidden rounded-xl border border-white/10" ref={emblaRef}>
         <div className="flex">
           {images.map((src, i) => (
             <div key={src} className="min-w-0 flex-[0_0_100%]">
               <img
                 src={src}
-                alt={`${alt} — captura ${i + 1}`}
+                alt={`${alt}, captura ${i + 1}`}
                 loading="lazy"
                 onClick={() => setZoomed(i)}
                 className="w-full block select-none cursor-zoom-in"
@@ -94,10 +135,17 @@ function GalleryCarousel({ images, alt }: { images: string[]; alt: string }) {
             </div>
           ))}
         </div>
+
+        {/* Pista de que la imagen se puede ampliar (visible siempre: en táctil no hay hover) */}
+        <span className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-zinc-950/70 backdrop-blur px-3 py-1.5 text-[11px] font-medium text-zinc-50">
+          <ZoomIn className="w-3.5 h-3.5" />
+          Clic para ampliar
+        </span>
       </div>
 
-      {/* Lightbox: imagen ampliada a pantalla completa */}
-      {zoomed !== null && (
+      {/* Lightbox: va al body con portal — dentro del modal, que tiene transform,
+          un `fixed` se posiciona contra el modal y recorta la imagen. */}
+      {zoomed !== null && createPortal(
         <div
           className="fixed inset-0 z-[600] flex items-center justify-center bg-zinc-950/90 backdrop-blur-md p-4 cursor-zoom-out animate-in fade-in-0"
           onClick={() => setZoomed(null)}
@@ -115,11 +163,12 @@ function GalleryCarousel({ images, alt }: { images: string[]; alt: string }) {
           </button>
           <img
             src={images[zoomed]}
-            alt={`${alt} — captura ${zoomed + 1}`}
+            alt={`${alt}, captura ${zoomed + 1}`}
             onClick={(e) => e.stopPropagation()}
-            className="max-w-[95vw] max-h-[90vh] w-auto h-auto rounded-lg shadow-2xl cursor-default"
+            className="max-w-[95vw] max-h-[90vh] w-auto h-auto object-contain rounded-lg shadow-2xl cursor-default"
           />
-        </div>
+        </div>,
+        document.body
       )}
 
       {images.length > 1 && (
@@ -184,6 +233,18 @@ export function ProjectsGrid() {
         }
       );
     });
+
+    // Índice de referenciados: entrada escalonada, solo si el usuario no pidió menos movimiento
+    gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.from(".ref-row", {
+        y: 24,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out",
+        stagger: 0.08,
+        scrollTrigger: { trigger: ".referenced-index", start: "top 80%" },
+      });
+    });
   }, { scope: containerRef });
 
   return (
@@ -194,7 +255,8 @@ export function ProjectsGrid() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 lg:gap-x-16 gap-y-16 md:gap-y-0">
           
           {PROJECTS_DATA.map((project, index) => {
-            const hasGallery = !!project.gallery?.length;
+            // Abre modal si hay algo que mostrar: galería y/o texto extendido
+            const hasGallery = !!(project.gallery?.length || project.detail);
             return (
             <div
               key={project.id}
@@ -209,6 +271,8 @@ export function ProjectsGrid() {
               onKeyDown={
                 hasGallery
                   ? (e) => {
+                      // Ignora las teclas que vienen del enlace interno
+                      if (e.target !== e.currentTarget) return;
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
                         setActive(project);
@@ -238,8 +302,13 @@ export function ProjectsGrid() {
               {/* Títulos y Categorías */}
               <div className="flex flex-col">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-zinc-500 font-medium text-sm md:text-base tracking-wide">
+                  <span className="flex items-center gap-2 text-zinc-500 font-medium text-sm md:text-base tracking-wide">
                     {project.category}
+                    {project.tag && (
+                      <span className="rounded-full border border-zinc-300 bg-zinc-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">
+                        {project.tag}
+                      </span>
+                    )}
                   </span>
                   <span className="text-zinc-400 font-mono text-xs">
                     {project.id}
@@ -254,6 +323,20 @@ export function ProjectsGrid() {
                   {project.description}
                 </p>
 
+                {/* Acceso directo al sitio, sin pasar por el modal */}
+                {project.url && (
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="mt-6 inline-flex items-center gap-2 self-start rounded-full border border-zinc-300 px-5 py-2.5 text-sm font-semibold text-zinc-900 transition-colors hover:bg-zinc-900 hover:text-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50"
+                  >
+                    Ver web del proyecto
+                    <ArrowUpRight className="w-4 h-4" />
+                  </a>
+                )}
+
                 {/* Línea que aparece en hover */}
                 <div className="h-[2px] w-0 bg-zinc-900 mt-6 group-hover:w-full transition-all duration-500 ease-out" />
               </div>
@@ -264,6 +347,84 @@ export function ProjectsGrid() {
 
         </div>
 
+        {/* ÍNDICE DE PROYECTOS REFERENCIADOS
+            Tratamiento de índice (sin imágenes) para leerse como capítulo aparte
+            del portafolio propio, no como tarjetas de segunda categoría. */}
+        <div className="referenced-index mt-28 md:mt-44 border-t border-zinc-300 pt-10 md:pt-14">
+
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8 md:mb-12">
+            <h2 className="text-3xl md:text-5xl font-heading font-bold tracking-tight text-zinc-900">
+              Proyectos referenciados
+            </h2>
+            <p className="text-base md:text-lg text-zinc-500 leading-relaxed max-w-xl md:text-right text-balance">
+              Proyectos de terceros de los que nos hacemos cargo: el 100% del desarrollo lo lleva EKI.
+            </p>
+          </div>
+
+          <ul className="border-t border-zinc-200">
+            {REFERENCED_DATA.map((project) => (
+              <li key={project.id} className="border-b border-zinc-200">
+                {/* La fila no es un <button> porque puede contener un enlace: el botón
+                    es una capa invisible que cubre la fila y el enlace va por encima. */}
+                <div className="ref-row group/row relative grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-3 py-7 md:py-9 transition-colors duration-300 hover:bg-zinc-100/70 md:px-4 md:-mx-4">
+                  <button
+                    type="button"
+                    onClick={() => setActive(project)}
+                    aria-label={`Ver detalle de ${project.client}`}
+                    className="absolute inset-0 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50"
+                  />
+
+                  {/* Miniatura de referencia */}
+                  <div className="md:col-span-3 overflow-hidden rounded-lg bg-zinc-200">
+                    <img
+                      src={project.image}
+                      alt={`Vista previa de ${project.client}`}
+                      loading="lazy"
+                      className="w-full aspect-[16/10] object-cover transition-transform duration-700 ease-out group-hover/row:scale-105"
+                    />
+                  </div>
+
+                  <div className="md:col-span-4 flex flex-col gap-2">
+                    <span className="font-mono text-xs text-zinc-400">{project.id}</span>
+                    <h3 className="text-3xl md:text-4xl font-heading font-bold tracking-tight text-zinc-900">
+                      {project.client}
+                    </h3>
+                    <span className="text-sm md:text-base text-zinc-500">{project.category}</span>
+                    {project.tag && (
+                      <span className="self-start rounded-full border border-zinc-300 bg-zinc-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">
+                        {project.tag}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="md:col-span-4 flex flex-col items-start gap-4 md:pt-1">
+                    <p className="text-base md:text-lg text-zinc-600 leading-relaxed [text-wrap:pretty]">
+                      {project.description}
+                    </p>
+                    {project.url && (
+                      <a
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="relative z-10 inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-zinc-50 px-4 py-2 text-sm font-semibold text-zinc-900 transition-colors hover:bg-zinc-900 hover:text-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50"
+                      >
+                        Ver web del proyecto
+                        <ArrowUpRight className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+
+                  <span className="md:col-span-1 flex items-center gap-1.5 text-sm font-medium text-zinc-900 md:justify-end md:pt-2">
+                    <span className="md:sr-only">Ver detalle</span>
+                    <ArrowUpRight className="w-5 h-5 transition-transform duration-300 group-hover/row:translate-x-1 group-hover/row:-translate-y-1" />
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+        </div>
+
       </div>
 
       {/* MODAL DE GALERÍA */}
@@ -271,7 +432,9 @@ export function ProjectsGrid() {
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-[500] bg-zinc-950/70 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
           <Dialog.Content
-            className="fixed left-1/2 top-1/2 z-[510] w-[94vw] max-w-5xl max-h-[90vh] overflow-y-auto -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-zinc-900/60 backdrop-blur-2xl text-zinc-50 shadow-2xl ring-1 ring-white/15 border border-white/10 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95"
+            className={`fixed left-1/2 top-1/2 z-[510] w-[94vw] ${
+              active?.gallery?.length ? "max-w-6xl" : "max-w-2xl"
+            } max-h-[90vh] overflow-y-auto -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-zinc-900/60 backdrop-blur-2xl text-zinc-50 shadow-2xl ring-1 ring-white/15 border border-white/10 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95`}
             aria-describedby={undefined}
           >
             <Dialog.Close
@@ -282,7 +445,12 @@ export function ProjectsGrid() {
             </Dialog.Close>
 
             {/* Cuerpo: texto a la izquierda, carousel a la derecha (apilado en móvil) */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 p-6 md:p-8 lg:p-10 items-center">
+            <div
+              className={`grid grid-cols-1 gap-8 lg:gap-10 p-6 md:p-8 lg:p-10 items-center ${
+                // Las capturas son apaisadas: se les da más ancho que al texto
+                active?.gallery?.length ? "lg:grid-cols-[minmax(0,1fr)_1.35fr]" : ""
+              }`}
+            >
 
               {/* Columna izquierda: info */}
               <div className="flex flex-col">
@@ -293,7 +461,7 @@ export function ProjectsGrid() {
                   {active?.client}
                 </Dialog.Title>
 
-                <p className="text-base text-zinc-300 leading-relaxed mb-7 text-justify [text-wrap:pretty] hyphens-auto">
+                <p className="text-base text-zinc-300 leading-relaxed mb-7 text-justify [text-wrap:pretty] hyphens-auto whitespace-pre-line">
                   {active?.detail ?? active?.description}
                 </p>
 
@@ -304,7 +472,7 @@ export function ProjectsGrid() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 self-start rounded-full bg-zinc-50 text-zinc-950 px-5 py-3 text-sm font-semibold hover:bg-zinc-300 transition-colors"
                   >
-                    Visitar el proyecto en vivo
+                    Ver web del proyecto
                     <ArrowUpRight className="w-4 h-4" />
                   </a>
                 )}
