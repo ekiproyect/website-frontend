@@ -39,11 +39,17 @@
     <meta property="og:site_name" content="EKI" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_CL" />
-    <meta property="og:image" content="https://www.ekiproject.cl/og-image.jpg" />
+    <!--
+      El nombre lleva versión a propósito: Facebook, LinkedIn y WhatsApp
+      cachean la tarjeta por URL durante semanas. Al reemplazar la imagen hay
+      que subir el sufijo (-v3, -v4…) o las redes siguen mostrando la anterior.
+    -->
+    <meta property="og:image" content="https://www.ekiproject.cl/og-image-v2.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://www.ekiproject.cl/og-image.jpg" />
+    <meta name="twitter:image" content="https://www.ekiproject.cl/og-image-v2.jpg" />
 
     <!--
       ROUTE-META — bloque reescrito por ruta en scripts/build-routes.mjs.
@@ -69,7 +75,7 @@
         "@type": "Organization",
         "name": "EKI",
         "url": "https://www.ekiproject.cl/",
-        "logo": "https://www.ekiproject.cl/og-image.jpg",
+        "logo": "https://www.ekiproject.cl/icon-512.png",
         "description": "Consultora digital de desarrollo de software y diseño web premium.",
         "address": {
           "@type": "PostalAddress",
