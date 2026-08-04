@@ -33,6 +33,16 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
         []
     );
 
+    // Ancho, en em, del label más largo del menú. Los 4 items comparten este
+    // valor para que rendericen todos al mismo tamaño y ninguno se desborde.
+    // 0.91 em/char es el peor caso medido en Syne 800 para Title Case
+    // ("Contacto" = 0.907), con tracking-tighter ya descontado. Se calcula
+    // desde menuItems para que agregar un item no lo deje desactualizado.
+    const navDisplayEm = useMemo(
+        () => Math.max(...menuItems.map((item) => item.label.length)) * 0.91,
+        [menuItems]
+    );
+
    // Single scoped effect: GSAP maneja la entrada sin playedRefs
     useLayoutEffect(() => {
         const pill  = pillRef.current;
@@ -66,6 +76,26 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
+
+    // Con el menú abierto: se bloquea el scroll del fondo y Escape cierra.
+    // El bloqueo usa el mismo mecanismo que IntroOverlay — Lenis corre en modo
+    // root (scroll de window), así que overflow hidden en body lo detiene.
+    useEffect(() => {
+        if (!isMobileMenuOpen) return;
+
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setIsMobileMenuOpen(false);
+        };
+        window.addEventListener("keydown", onKeyDown);
+
+        return () => {
+            document.body.style.overflow = prevOverflow;
+            window.removeEventListener("keydown", onKeyDown);
+        };
+    }, [isMobileMenuOpen]);
 
     const performScroll = (sectionId: string) => {
         const el = document.getElementById(sectionId);
@@ -143,6 +173,8 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
                     <div className="md:hidden flex items-center">
                         <button
                             onClick={() => setIsMobileMenuOpen(true)}
+                            aria-expanded={isMobileMenuOpen}
+                            aria-controls="mobile-menu"
                             className="px-4 py-2 rounded-xl text-sm font-bold text-zinc-900 bg-black/5 hover:bg-black/10 transition-colors"
                         >
                             Menú
@@ -152,27 +184,41 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
             </div>
 
             {/* 🔥 EL OVERLAY DEL MENÚ MÓVIL A PANTALLA COMPLETA 🔥 */}
-            <div 
-                className={`fixed inset-0 bg-zinc-950 text-white z-[400] flex flex-col justify-center px-8 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                    isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
+            {/*
+              Cerrado, el overlay sigue en el DOM (solo desplazado fuera de
+              pantalla), así que sin `invisible` sus botones quedan enfocables
+              con Tab sin verse. La transición incluye visibility: al cerrar
+              conmuta de forma discreta recién al final, sin cortar la animación.
+            */}
+            <div
+                id="mobile-menu"
+                aria-hidden={!isMobileMenuOpen}
+                className={`fixed inset-0 bg-zinc-950 text-white z-[400] flex flex-col justify-center px-6 sm:px-8 transition-[transform,visibility] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    isMobileMenuOpen ? "translate-y-0 visible" : "-translate-y-full invisible"
                 }`}
             >
                 {/* Botón Cerrar */}
-                <button 
+                <button
                     onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="Cerrar menú"
                     className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center font-medium text-lg"
                 >
                     ✕
                 </button>
 
-                <nav className="flex flex-col gap-6">
+                {/* fluid-display establece el contexto de contenedor: los cqi de
+                    abajo miden el ancho del nav, que ya excluye el padding. */}
+                <nav className="fluid-display flex flex-col gap-6">
                     <span className="text-sm font-bold tracking-[0.2em] text-zinc-500 uppercase mb-4">Navegación</span>
                     {menuItems.map((item) => (
                         <button
                             key={item.path}
                             onClick={() => goToItem(item)}
-                            // 🔥 ARREGLO: Usamos text-[13vw] en móvil para que nunca se desborde 🔥
-                            className="text-[13vw] md:text-5xl font-black font-heading text-left tracking-tighter"
+                            className="fluid-word font-black font-heading text-left tracking-tighter"
+                            style={{
+                                ["--display-em" as string]: navDisplayEm,
+                                ["--display-max" as string]: "3rem",
+                            }}
                         >
                             {item.label}
                         </button>
