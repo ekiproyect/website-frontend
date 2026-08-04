@@ -50,6 +50,8 @@ GSAP + `@gsap/react` (`useGSAP`) es lo principal para animaciones de página (ve
 ### Formulario de contacto
 `src/pages/Contact.tsx` postea directo a Formspree (`FORMSPREE_ENDPOINT`). No hay API backend. La transición form → mensaje de éxito se anima con GSAP según el estado.
 
+**Invariante: `/contacto` no scrollea en desktop.** La sección debe caber entera en el viewport en `lg+` (≥1024px de ancho) hasta 700px de alto. Para lograrlo, todo el espaciado vertical de la página es fluido: sale de las variables de la utilidad `.contact-fit` en `src/index.css`, que las ata a `vh` con `clamp()`. Al agregar o agrandar cualquier elemento de esa página hay que rehacer el presupuesto vertical — el que manda es la columna derecha (el formulario), no la izquierda. El caso más apretado es 1024x700, donde los 4 chips de servicio envuelven en 3 filas. A propósito **no** se usa `overflow-hidden`: si alguien tiene zoom o fuente grande del sistema, el scroll es preferible a cortar contenido.
+
 ## Build y deploy
 
 - `vite.config.ts` define `manualChunks` para separar vendors grandes (gsap, react, radix ui, icons). Al agregar libs pesadas, considerar agregarlas a un chunk.
