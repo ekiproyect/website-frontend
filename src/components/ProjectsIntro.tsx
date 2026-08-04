@@ -36,11 +36,17 @@ export function ProjectsIntro() {
     <section ref={containerRef} className="w-full bg-zinc-50 text-zinc-900 pt-40 md:pt-56 pb-16 md:pb-24 px-6 md:px-12">
       <div className="max-w-[1400px] mx-auto flex flex-col items-center text-center">
         
-        <h1 
-          ref={titleRef} 
-          className="text-[12vw] md:text-[8vw] lg:text-[7rem] xl:text-[8.5rem] font-black font-heading leading-[0.9] tracking-tighter uppercase mb-12 md:mb-20"
+        {/* Título Monumental — fluido, nunca se corta ni desborda */}
+        <h1
+          ref={titleRef}
+          className="fluid-display font-black font-heading leading-[0.9] tracking-tighter uppercase mb-12 md:mb-20 w-full"
         >
-          Trabajo.
+          {/* --display-em medido: "TRABAJO." son 8.08 em (8.5 deja margen).
+              El estimador por caracteres asume 1.18 em/char y aquí lo achicaría
+              un 17%: la J y el punto son angostos. Recalcular si cambia el texto. */}
+          <span className="fluid-word mx-auto" style={{ ["--display-em" as string]: 8.5, ["--display-max" as string]: "8.5rem" }}>
+            Trabajo.
+          </span>
         </h1>
 
         <div className="w-full max-w-4xl h-[1px] bg-zinc-300 origin-center mb-12 md:mb-16" ref={lineRef} />

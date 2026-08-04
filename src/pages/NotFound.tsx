@@ -51,11 +51,15 @@ export default function NotFound() {
       <div className="relative z-10 flex flex-col items-center text-center">
         
         {/* El 404 Monumental */}
-        <h1 
+        <h1
           ref={titleRef}
-          className="text-[35vw] md:text-[20rem] leading-[0.85] font-black font-heading tracking-tighter text-zinc-100 select-none"
+          className="fluid-display leading-[0.85] font-black font-heading tracking-tighter text-zinc-100 select-none w-full"
         >
-          404<span className="text-zinc-800">.</span>
+          {/* --display-em medido: "404." son 3.408 em. El estimador por
+              caracteres asume MAYÚSCULAS y aquí lo achicaría un 38% de más. */}
+          <span className="fluid-word mx-auto" style={{ ["--display-em" as string]: 3.6, ["--display-max" as string]: "20rem" }}>
+            404<span className="text-zinc-800">.</span>
+          </span>
         </h1>
 
         {/* Copy Editorial */}

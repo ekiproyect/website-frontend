@@ -43,7 +43,10 @@ export function Footer({ startsDark = false }: FooterProps) {
           
           {/* Título fluido — cabe siempre en una línea, sin corte ni desborde */}
           <h2 className="fluid-display font-black font-heading leading-[0.85] tracking-tighter uppercase cursor-default w-full text-center">
-            <span className="fluid-word mx-auto" style={{ ["--display-chars" as string]: 9, ["--display-max" as string]: "10rem" }}>
+            {/* --display-em medido: "INICIEMOS" son 8.53 em (9 deja margen).
+                El estimador por caracteres asume 1.18 em/char y aquí lo achicaría
+                un 24%: las cuatro I son muy angostas. Recalcular si cambia el texto. */}
+            <span className="fluid-word mx-auto" style={{ ["--display-em" as string]: 9, ["--display-max" as string]: "10rem" }}>
               Iniciemos
             </span>
           </h2>

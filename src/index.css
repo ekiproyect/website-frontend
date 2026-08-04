@@ -126,22 +126,36 @@ All colors MUST be HSL.
 .fluid-word {
   --display-chars: 8;
   --display-max: 9rem;
+  /*
+    Ancho estimado del texto, en em. Por defecto nLetras × 1.18, la cota medida
+    para MAYÚSCULAS (verificado con fontTools sobre Syne 800: "NOSOTROS" da
+    1.167 em/char incluyendo tracking-tighter, así que 1.18 apenas la cubre).
+
+    Como 1.18 es un PROMEDIO por carácter, castiga a las palabras con letras
+    angostas. Sobrescribir --display-em con el ancho real:
+      · OBLIGATORIO en Title Case y dígitos — ahí el modelo está equivocado,
+        no solo conservador ("404." mide 3.41 em, no 4 × 1.18 = 4.72).
+      · OPCIONAL, por precisión, en mayúsculas con muchas I/J/L/T o puntos:
+        "INICIEMOS" mide 0.95 em/char y el estimador la achica un 24%.
+    Palabras de letras redondas (NOSOTROS, HABLEMOS) ya usan casi todo el
+    presupuesto: ahí el genérico es correcto y sobrescribir no aporta nada.
+
+    Medir con: sum(advanceWidth)/unitsPerEm − 0.05 × nChars  (el −0.05 es
+    tracking-tighter). Dejar ~5% de margen por si Syne no alcanza a cargar y
+    entra el fallback de sistema. Ojo: el valor queda atado al texto exacto,
+    así que documentar la palabra medida junto a cada override.
+  */
+  --display-em: calc(var(--display-chars) * 1.18);
   display: block;
   width: fit-content;
   max-width: 100%;
   white-space: nowrap;
-  font-size: min(
-    var(--display-max),
-    calc(96cqi / (var(--display-chars) * 1.18))
-  );
+  font-size: min(var(--display-max), calc(96cqi / var(--display-em)));
 }
 /* Fallback si el contenedor no establece container-type (cqi -> vw) */
 @supports not (width: 1cqi) {
   .fluid-word {
-    font-size: min(
-      var(--display-max),
-      calc(92vw / (var(--display-chars) * 1.18))
-    );
+    font-size: min(var(--display-max), calc(92vw / var(--display-em)));
   }
 }
 
