@@ -53,7 +53,7 @@ Dos cosas de la grilla que salieron de medir, y que se rompen si se tocan a ojo:
 
 Lo que comparten las dos:
 
-1. **La cabecera tiene dos fases** (`intro` centrada y monumental → `compact` a la izquierda) animadas con GSAP Flip. Cuatro trampas, todas resueltas y todas fáciles de reintroducir:
+1. **La cabecera tiene dos fases** (`intro` centrada y monumental → `compact` a la izquierda) animadas con GSAP Flip. El título **entra** antes (fundido subiendo, `ENTER_S`) y solo después viaja: `HOLD_MS` se calcula desde `ENTER_S` para dejar un respiro entre las dos cosas, porque encadenarlas hacía que el título pareciera no llegar a posarse. Esa entrada va en `useLayoutEffect` (en un `useEffect` se ve el título en su sitio un fotograma antes de saltar al estado inicial) y acaba en `clearProps`, para no dejarle al span un transform propio justo antes de que Flip lo mida. Cuatro trampas más, todas resueltas y todas fáciles de reintroducir:
    - El Flip va sobre el `<span>`, **no** sobre el `<h1>`: el h1 cambia de proporción entre fases y el título se estiraba (scaleX 3.56 contra scaleY 2.55).
    - `leading` y `tracking` van **en el span**. En el h1 fallaban: en intro el h1 mide 16px, así que `tracking-tighter` valía -0.8px en vez de -6.8px; y en compacto `text-5xl` trae su propio `line-height: 1` que pisaba al `leading-[0.9]`.
    - En compacto **no** se puede usar `fluid-display`/`fluid-word`: aplica `container-type: inline-size` y con `w-auto` dentro de un flex el h1 colapsa a 0, y con él los `96cqi`.
