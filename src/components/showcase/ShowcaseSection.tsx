@@ -15,8 +15,15 @@ const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/** Reposo antes de compactar la cabecera. */
-const HOLD_MS = 700;
+/** Cuánto tarda el título en terminar de entrar. */
+const ENTER_S = 0.8;
+
+/**
+ * Cuándo arranca el viaje a compacto, contado desde el montaje. Tiene que dejar
+ * un respiro DESPUÉS de que el título acabe de entrar: encadenar las dos cosas
+ * hace que el título parezca no llegar a posarse nunca.
+ */
+const HOLD_MS = ENTER_S * 1000 + 250;
 
 interface ShowcaseSectionProps<T> {
   /** Texto del título monumental. Una sola palabra: se anima como bloque. */
@@ -142,6 +149,31 @@ export function ShowcaseSection<T>({
       window.removeEventListener("wheel", skip);
     };
   }, [canSkip, skip]);
+
+  // ENTRADA DEL TÍTULO. Sin esto aparecía ya pintado y a los 700 ms se ponía a
+  // viajar: se leía como un salto, no como una presentación.
+  //
+  // Va en `useLayoutEffect` porque corre antes del primer pintado; en un
+  // `useEffect` se alcanza a ver el título en su sitio un fotograma antes de
+  // saltar al estado inicial. Y termina con `clearProps` para no dejarle un
+  // transform propio al span, que es justo el nodo que Flip mide después.
+  useLayoutEffect(() => {
+    if (phase !== "intro" || !headerRef.current) return;
+    const tween = gsap.fromTo(
+      headerRef.current.querySelectorAll("[data-flip-part]"),
+      { autoAlpha: 0, y: 34 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: ENTER_S,
+        ease: "power3.out",
+        clearProps: "opacity,visibility,transform",
+      }
+    );
+    // Al saltarse la presentación el tween se completa en vez de matarse a
+    // medias: si no, el título se queda con la opacidad que tuviera.
+    return () => { tween.progress(1).kill(); };
+  }, [phase]);
 
   // Arranca el paso a compacto tras el reposo. La intro es solo el título: el
   // subtítulo no existe hasta la fase compacta, donde entra con un fundido.
