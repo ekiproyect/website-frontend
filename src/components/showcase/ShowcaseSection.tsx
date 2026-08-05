@@ -341,9 +341,19 @@ export function ShowcaseSection<T>({
           <div className="flex-1 min-h-0 overflow-hidden mr-[calc(50%-50vw)]" ref={emblaRef}>
             <div className="flex h-full gap-5 md:gap-8">
               {items.map((item, index) => (
+                // `max-w-[84vw]` es el TECHO que hace responsive al carrusel.
+                // Dimensionar por altura funciona mientras la pantalla sea más
+                // ancha que alta; en un móvil se daba la vuelta y la tarjeta
+                // salía más ancha que el viewport (635px en un 390, 806 en un
+                // iPad de 768), así que solo se veía media tarjeta cortada por
+                // el borde. Con el techo, la tarjeta entera cabe siempre y queda
+                // un asomo de la siguiente que delata que hay más.
+                //
+                // Solo muerde en pantallas altas y estrechas: desde 1024x700 el
+                // alto ya manda y el techo no llega a aplicarse.
                 <div
                   key={itemKey(item, index)}
-                  className="group h-full flex-[0_0_auto] flex flex-col"
+                  className="group h-full max-w-[84vw] flex-[0_0_auto] flex flex-col"
                   style={{ aspectRatio: cardAspect }}
                 >
                   {renderCard(item, index)}

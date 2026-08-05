@@ -24,7 +24,14 @@ export function ProjectsShowcase() {
         itemNoun="proyecto"
         renderCard={(project, index) => (
           <article
-            className="h-full w-full flex flex-col cursor-pointer"
+            // `justify-center` y no el estirado por defecto: cuando el techo de
+            // ancho muerde (móvil y tablet), la tarjeta sigue midiendo todo el
+            // alto de la pista pero su contenido ya no lo llena, y el sobrante
+            // se repartía entero debajo del texto — 290px de vacío dentro de la
+            // tarjeta en un 390x844. Centrado, el hueco queda arriba y abajo por
+            // igual. En escritorio no hace nada: ahí imagen y ficha suman el
+            // alto exacto.
+            className="h-full w-full flex flex-col justify-center cursor-pointer"
             onClick={() => dialog.openProject(index)}
             role="button"
             tabIndex={0}
@@ -73,7 +80,7 @@ export function ProjectsShowcase() {
                 El estado oculto va tras `@media (hover: hover)`: sin esa guarda, en
                 móvil el nombre del proyecto no se vería nunca. También se revela al
                 enfocar con teclado, porque el article es tabbable. */}
-            <div className="min-h-0 flex-1 pt-4">
+            <div className="shrink-0 pt-4">
               <div className="overflow-hidden">
                 <div className="transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] [@media(hover:hover)]:translate-y-full group-hover:translate-y-0 group-focus-visible:translate-y-0 motion-reduce:translate-y-0 motion-reduce:transition-none">
                   <div className="flex items-baseline gap-3">
