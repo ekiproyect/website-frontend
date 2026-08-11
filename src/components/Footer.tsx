@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import { Link } from "react-router-dom";
 import { useScrollDarken } from "../hooks/useScrollDarken";
 
 interface FooterProps {
@@ -80,9 +81,18 @@ export function Footer({ startsDark = false }: FooterProps) {
               <a href="https://www.linkedin.com/company/ekiproject" target="_blank" rel="noopener noreferrer" className="text-sm md:text-lg font-medium hover:opacity-50 transition-opacity">LinkedIn</a>
             </div>
             
-            <p className="text-xs md:text-sm font-medium opacity-50 text-center md:text-right">
-              © 2026 EKI. Todos los derechos reservados.
-            </p>
+            <div className="flex flex-col items-center md:items-end gap-2">
+              {/* Enlace legal: tiene que ser alcanzable desde cualquier página */}
+              <Link
+                to="/privacidad"
+                className="text-xs md:text-sm font-medium opacity-50 hover:opacity-100 transition-opacity underline-offset-4 hover:underline"
+              >
+                Políticas y Privacidad
+              </Link>
+              <p className="text-xs md:text-sm font-medium opacity-50 text-center md:text-right">
+                © 2026 EKI. Todos los derechos reservados.
+              </p>
+            </div>
           </div>
           
         </div>

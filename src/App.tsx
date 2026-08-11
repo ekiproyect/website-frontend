@@ -12,6 +12,7 @@ const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
 const Projects = lazy(() => import("./pages/Projects"));
 const Contact = lazy(() => import("./pages/Contact"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
                 <Route path="/equipo" element={<About />} />
                 <Route path="/proyectos" element={<Projects />} />
                 <Route path="/contacto" element={<Contact />} />
+                <Route path="/privacidad" element={<Privacy />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

@@ -104,21 +104,20 @@ export const REFERENCED_DATA: Project[] = [
   },
 ];
 
-const [KREATRACKER, CHATBOT] = PROJECTS_DATA;
-
 /**
- * Orden del carrusel y de las flechas del modal.
+ * Orden de las flechas del modal y origen del número visible.
  *
- * ChatBot va al final por ahora: sus capturas son paneles de chat verticales y
- * dejan mucho aire en el hueco 16:10 de la tarjeta, así que pesa menos al final
- * que en segunda posición. Cuando tenga una captura apaisada puede volver.
+ * Va en el MISMO orden en que la página los pinta —primero los propios, después
+ * los referenciados— para que la numeración se lea correlativa al bajar: 01, 02
+ * arriba y 03, 04 en el índice. Antes iban intercalados para equilibrar el peso
+ * visual del carrusel, y con la grilla eso dejaba a la vista un 01 junto a un 04.
  *
  * La navegación va SIEMPRE por índice en esta lista, nunca por `id`: los `id`
  * de ambos arrays chocan (los dos numeran "01" y "02"). Y el número que se
- * MUESTRA se deriva de la posición aquí, no del `id`, o la secuencia del
- * carrusel se leería 01, 01, 02, 02.
+ * MUESTRA se deriva de la posición aquí, no del `id`, o la secuencia se leería
+ * 01, 02, 01, 02.
  */
-export const ALL_PROJECTS: Project[] = [KREATRACKER, ...REFERENCED_DATA, CHATBOT];
+export const ALL_PROJECTS: Project[] = [...PROJECTS_DATA, ...REFERENCED_DATA];
 
-/** Número visible de un proyecto: su posición en el carrusel, no su `id`. */
+/** Número visible de un proyecto: su posición en la lista global, no su `id`. */
 export const projectNumber = (index: number) => String(index + 1).padStart(2, "0");

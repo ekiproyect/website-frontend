@@ -48,8 +48,18 @@ interface ShowcaseSectionProps<T> {
    *   ser `flex-1 min-h-0` y recortar con `object-cover`. Es lo que garantiza
    *   que quepa sin scroll en cualquier viewport, a costa de que la proporción
    *   de la foto varíe con la pantalla.
+   * - `editorial`: grilla asimétrica de dos columnas desfasadas, pensada para
+   *   pocas piezas grandes. ES EL ÚNICO QUE SCROLLEA: la sección solo reserva
+   *   `min-h-[100svh]` para que la cabecera monumental siga entrando a pantalla
+   *   completa, y a partir de ahí crece con el contenido. Aquí `cardAspect` no
+   *   aplica: la tarjeta la dimensiona el ancho de su columna.
+   *
+   *   OJO al ponerlo justo encima del Footer: `useScrollDarken` funde a negro el
+   *   fondo de la sección anterior, y como esta crece con el contenido, lo que
+   *   quede al final se vuelve ilegible. Debe haber algo entre medio que pueda
+   *   oscurecerse sin perder texto.
    */
-  layout?: "carousel" | "grid";
+  layout?: "carousel" | "grid" | "editorial";
   /**
    * Solo en `carousel`. Proporción de la tarjeta: EL ANCHO SALE DEL ALTO, así
    * que este valor determina cuántas caben. Se calcula desde el medio visual:
@@ -82,6 +92,10 @@ export function ShowcaseSection<T>({
   itemNoun,
 }: ShowcaseSectionProps<T>) {
   const isGrid = layout === "grid";
+  const isEditorial = layout === "editorial";
+  // Los dos layouts sin pista comparten la entrada vertical y la ausencia de
+  // Embla; solo el carrusel se desplaza.
+  const isCarousel = !isGrid && !isEditorial;
 
   // "intro": título monumental centrado, como las demás secciones.
   // "compact": cabecera reducida a la izquierda y carrusel a la vista.
@@ -102,7 +116,7 @@ export function ShowcaseSection<T>({
   //
   // Memoizado: recrear el array en cada render reinicia Embla y corta el gesto
   // a media inercia.
-  const plugins = useMemo(() => (isGrid ? [] : [WheelGesturesPlugin()]), [isGrid]);
+  const plugins = useMemo(() => (isCarousel ? [WheelGesturesPlugin()] : []), [isCarousel]);
   const [emblaRef, embla] = useEmblaCarousel({ align: "start", containScroll: "trimSnaps" }, plugins);
   const [selected, setSelected] = useState(0);
   // Cuántas posiciones de scroll hay. Si es 1, todo cabe y los controles
@@ -216,15 +230,15 @@ export function ShowcaseSection<T>({
     // verdad lo hay.
     tl.fromTo(
       "[data-items]",
-      isGrid ? { autoAlpha: 0, y: 28 } : { autoAlpha: 0, x: 60 },
-      isGrid
-        ? { autoAlpha: 1, y: 0, duration: 0.65, ease: "power3.out" }
-        : { autoAlpha: 1, x: 0, duration: 0.65, ease: "power3.out" },
+      isCarousel ? { autoAlpha: 0, x: 60 } : { autoAlpha: 0, y: 28 },
+      isCarousel
+        ? { autoAlpha: 1, x: 0, duration: 0.65, ease: "power3.out" }
+        : { autoAlpha: 1, y: 0, duration: 0.65, ease: "power3.out" },
       0.5
     );
     timelineRef.current = tl;
     return () => { tl.kill(); timelineRef.current = null; };
-  }, [phase, isGrid]);
+  }, [phase, isCarousel]);
 
   const isIntro = phase === "intro";
   const showControls = snaps > 1;
@@ -238,10 +252,12 @@ export function ShowcaseSection<T>({
     // 4 tarjetas en dos filas dentro de un móvil, forzar 100svh dejaba las fotos
     // apaisadas (165x146 en un 390x844, y 165x68 en un 390x667). Ahí es
     // preferible que la página scrolle un poco y que las caras se vean.
+    // `editorial` NUNCA se clava: solo reserva la pantalla para que la cabecera
+    // entre a tamaño completo, y de ahí en adelante crece con el contenido.
     <section
       data-showcase
       className={`relative w-full flex flex-col bg-zinc-50 text-zinc-900 px-5 md:px-8 pt-[max(5.5rem,12vh)] pb-[max(2rem,5vh)] overflow-hidden ${
-        isGrid ? "min-h-[100svh] lg:h-[100svh]" : "h-[100svh]"
+        isEditorial ? "min-h-[100svh]" : isGrid ? "min-h-[100svh] lg:h-[100svh]" : "h-[100svh]"
       }`}
     >
       <div
@@ -326,11 +342,33 @@ export function ShowcaseSection<T>({
         </div>
       )}
 
+      {/* EDITORIAL — grilla asimétrica: la columna derecha baja y la izquierda
+          sube, para que las piezas no se lean como una tabla. El desfase solo
+          existe desde `md`, donde hay dos columnas; apilado no significa nada y
+          dejaría huecos enormes. `items-start` evita que las dos celdas de una
+          fila se estiren al alto de la más alta. */}
+      {!isIntro && isEditorial && (
+        <div data-items className="w-full max-w-[1600px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-x-8 lg:gap-x-16 gap-y-16 md:gap-y-0">
+            {items.map((item, index) => (
+              <div
+                key={itemKey(item, index)}
+                className={`group flex flex-col ${
+                  index % 2 !== 0 ? "md:mt-24 lg:mt-40" : "md:mb-24 lg:mb-40"
+                }`}
+              >
+                {renderCard(item, index)}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* CARRUSEL — toma toda la altura sobrante. Las tarjetas son `h-full` con
           un aspect fijo, así que EL ANCHO SALE DEL ALTO: la sección cabe sin
           scroll en cualquier pantalla, y en las bajas simplemente se ven menos
           tarjetas a la vez. */}
-      {!isIntro && !isGrid && (
+      {!isIntro && isCarousel && (
         <div data-items className="flex-1 min-h-0 w-full max-w-[1600px] mx-auto flex flex-col">
           {/* Sangra hasta el borde de la pantalla: `calc(50% - 50vw)` es la
               distancia del borde derecho del contenedor centrado al del

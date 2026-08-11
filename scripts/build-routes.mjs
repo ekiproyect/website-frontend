@@ -73,6 +73,18 @@ const ROUTES = [
     navLabel: 'Contacto',
     backdrop: DARK_SURFACE,
   },
+  {
+    path: '/privacidad/',
+    title: 'Políticas y Privacidad | EKI',
+    description:
+      'Cómo tratamos tus datos en EKI: sin cookies, sin analítica y sin venta de datos. Solo lo que nos escribes en el formulario de contacto.',
+    socialTitle: 'Políticas y Privacidad · EKI',
+    socialDescription:
+      'Sin cookies, sin analítica y sin venta de datos. Solo lo que nos escribes en el formulario de contacto.',
+    heading: 'Políticas y Privacidad',
+    navLabel: 'Privacidad',
+    backdrop: LIGHT_SURFACE,
+  },
 ];
 
 const escapeAttr = (value) =>

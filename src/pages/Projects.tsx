@@ -13,11 +13,16 @@ const Projects = () => {
     <main className="relative w-full overflow-x-hidden bg-zinc-50 text-zinc-900">
       <FloatingNav introDone={true} />
 
-      {/* Ocupa la pantalla completa: el carrusel se ve al entrar, sin scroll */}
+      {/* Grilla editorial en claro y, debajo, el índice de referenciados en
+          oscuro. La página scrollea: solo la cabecera monumental ocupa la
+          pantalla al entrar. */}
       <ProjectsShowcase />
 
-      {/* El footer queda debajo; se llega scrolleando */}
-      <Footer startsDark={false} />
+      {/* startsDark porque el índice de referenciados ya entrega la página en
+          negro. Con startsDark={false} el footer nacería claro bajo una sección
+          oscura y el apagón, además, intentaría teñir un fondo que ya está en
+          su color de destino. */}
+      <Footer startsDark={true} />
     </main>
   );
 };
