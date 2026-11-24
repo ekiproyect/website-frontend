@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 
 type Item =
-    | { path: string; label: string; type: "route" }
+    | { path: string; label: string; type: "route"; badge?: string }
     | { path: `#${string}`; label: string; type: "scroll" };
 
 interface FloatingNavProps {
@@ -27,6 +27,7 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
         () => [
             { path: "/", label: "Inicio", type: "route" },
             { path: "/proyectos", label: "Proyectos", type: "route" },
+            { path: "/ekiclub", label: "EKI Club", type: "route", badge: "Nuevo" },
             { path: "/equipo", label: "Equipo", type: "route" },
             { path: "/contacto", label: "Contacto", type: "route" },
         ],
@@ -159,12 +160,18 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
                                 onClick={() => goToItem(item)}
                                 className={[
                                     "px-4 py-2 rounded-xl text-sm font-semibold transition-colors",
+                                    "inline-flex items-center gap-2",
                                     isActive(item)
                                         ? "text-zinc-900 bg-black/8"
                                         : "text-zinc-600 hover:text-zinc-900 hover:bg-black/5",
                                 ].join(" ")}
                             >
                                 {item.label}
+                                {item.type === "route" && item.badge && (
+                                    <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                                        {item.badge}
+                                    </span>
+                                )}
                             </button>
                         ))}
                     </nav>
@@ -214,13 +221,22 @@ export const FloatingNav = ({ introDone = false }: FloatingNavProps) => {
                         <button
                             key={item.path}
                             onClick={() => goToItem(item)}
-                            className="fluid-word font-black font-heading text-left tracking-tighter"
+                            className="fluid-word relative font-black font-heading text-left tracking-tighter"
                             style={{
                                 ["--display-em" as string]: navDisplayEm,
                                 ["--display-max" as string]: "3rem",
                             }}
                         >
                             {item.label}
+                            {/* Absoluto y en px fijos: no suma al ancho medido
+                                por --display-em ni hereda el tamaño fluido.
+                                "EKI Club" no llena el presupuesto de 8 letras,
+                                así que el hueco a su derecha lo aloja. */}
+                            {item.type === "route" && item.badge && (
+                                <span className="absolute left-full top-1 ml-2 rounded-full bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-zinc-950">
+                                    {item.badge}
+                                </span>
+                            )}
                         </button>
                     ))}
                 </nav>

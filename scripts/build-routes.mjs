@@ -50,6 +50,18 @@ const ROUTES = [
     backdrop: LIGHT_SURFACE,
   },
   {
+    path: '/ekiclub/',
+    title: 'EKI Club · Tarjeta de sellos digital | EKI',
+    description:
+      'EKI Club es el producto propio de EKI: la tarjeta de sellos de los comercios locales, ahora en el celular de sus clientes. Sin app.',
+    socialTitle: 'EKI Club · Un producto de EKI',
+    socialDescription:
+      'La tarjeta de sellos de los comercios locales, ahora en el celular de sus clientes. Diseñado y desarrollado por EKI en Antofagasta.',
+    heading: 'EKI Club',
+    navLabel: 'EKI Club',
+    backdrop: DARK_SURFACE,
+  },
+  {
     path: '/equipo/',
     title: 'Nosotros · Equipo y Filosofía | EKI',
     description:

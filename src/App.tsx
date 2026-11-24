@@ -13,6 +13,7 @@ const About = lazy(() => import("./pages/About"));
 const Projects = lazy(() => import("./pages/Projects"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
+const EkiClub = lazy(() => import("./pages/EkiClub"));
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
             >
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/ekiclub" element={<EkiClub />} />
                 <Route path="/equipo" element={<About />} />
                 <Route path="/proyectos" element={<Projects />} />
                 <Route path="/contacto" element={<Contact />} />
