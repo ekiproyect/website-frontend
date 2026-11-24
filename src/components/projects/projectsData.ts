@@ -11,6 +11,11 @@
  *            (`w-full` con alto automático), así que NO necesitan relleno:
  *            rellenarlas les añadiría bandas donde hoy no hay ninguna.
  *   image    fondo ambiente detrás de las capturas del modal.
+ *   before   versión anterior de cada captura, en PARALELO a gallery:
+ *            before[i] es el antes de gallery[i]. Cada par debe medir
+ *            exactamente lo mismo en píxeles (mismo viewport, zoom y scroll) o
+ *            el deslizador del modal unirá vistas desalineadas. Puede ser más
+ *            corto que gallery: sin antes, la vista no ofrece "Ver antes".
  */
 export type Project = {
   id: string;
@@ -23,6 +28,7 @@ export type Project = {
   preview?: string;
   url?: string;
   gallery?: string[];
+  before?: string[];
 };
 
 export const PROJECTS_DATA: Project[] = [
@@ -59,6 +65,30 @@ export const PROJECTS_DATA: Project[] = [
       // origen de la preview del carrusel.
       "/images/projects/ChatBot/chatbot3.png",
       "/images/projects/ChatBot/chatbot2.png",
+    ],
+  },
+  {
+    id: "03",
+    client: "Aromas del Norte",
+    preview: "/images/projects/AromasDelNorte/preview.webp",
+    category: "E-commerce + Coffee break para empresas",
+    description:
+      "Tienda en línea y canal de coffee break para una cafetería de especialidad de Antofagasta: vende café, accesorios y tablas con despacho o retiro, y recibe cotizaciones de empresas sin intermediarios.",
+    detail:
+      "Una cafetería que vende café de especialidad, accesorios y tablas, y que además atiende eventos de empresas, necesita que cada pedido llegue completo: la molienda correcta, una fecha de entrega que pueda cumplir y los datos que pide el repartidor.\n\nEl sitio ofrece cada café en grano o molido según el método de preparación del cliente. Al pagar, solo muestra fechas de despacho o retiro posibles: respeta los días hábiles, la hora de corte y la anticipación que necesitan las tablas. El derecho a retracto aparece junto al precio de cada producto, como exige la ley.\n\nPara empresas, la sección de coffee break muestra paquetes que la propia cafetería edita desde su panel. Al cotizar, el cliente recibe de inmediato el menú del paquete elegido.\n\nCada día, la cafetería genera el listado de despachos y un mensaje listo para enviar al repartidor. El equipo de EKI diseñó y desarrolló el sitio, y entregó videos para que la cafetería administre sola productos, paquetes y pedidos.",
+    image: "/images/projects/AromasDelNorte/fondo.webp",
+    // Sin `url` hasta que el sitio nuevo esté en producción.
+    gallery: [
+      "/images/projects/AromasDelNorte/aromas1.webp",
+      "/images/projects/AromasDelNorte/aromas2.webp",
+      "/images/projects/AromasDelNorte/aromas3.webp",
+      "/images/projects/AromasDelNorte/aromas4.webp",
+    ],
+    // aromas4 (ficha de café) no tiene antes: el sitio anterior no tenía fichas.
+    before: [
+      "/images/projects/AromasDelNorte/aromas1-antes.webp",
+      "/images/projects/AromasDelNorte/aromas2-antes.webp",
+      "/images/projects/AromasDelNorte/aromas3-antes.webp",
     ],
   },
 ];

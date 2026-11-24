@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, ArrowUpRight, ArrowLeft, ArrowRight } from "lucide-react";
+import { X, ArrowUpRight, ArrowLeft, ArrowRight, ChevronsLeftRight } from "lucide-react";
 import { projectNumber } from "./projectsData";
 import { useProjectDialog } from "./useProjectDialog";
 
@@ -14,33 +14,51 @@ function GalleryCarousel({
   images,
   alt,
   backdrop,
+  before,
 }: {
   images: string[];
   alt: string;
   /** Imagen ambiente detrás de las capturas. */
   backdrop?: string;
+  /** Versión anterior de cada captura, en paralelo a `images`. */
+  before?: string[];
 }) {
   const [zoomed, setZoomed] = useState<number | null>(null);
   const [index, setIndex] = useState(0);
+  const [comparing, setComparing] = useState(false);
+  const [split, setSplit] = useState(50);
+  const currentBefore = before?.[index];
 
   // Las capturas se relevan solas, sin pista que desplazar: al fundirse una con
   // otra no hay nada que arrastrar ni posición a la que saltar, así que aquí no
   // hay Embla — solo un índice. El de /proyectos sí lo usa: allí el carrusel se
   // desplaza de verdad.
   //
-  // Se apaga en tres casos: con una sola captura, donde no hay adónde ir; con
+  // Se apaga en cuatro casos: con una sola captura, donde no hay adónde ir; con
   // `prefers-reduced-motion`, porque es contenido que se mueve solo sin haberlo
-  // pedido; y con el visor ampliado abierto, o al cerrarlo te encontrarías una
-  // captura distinta de la que estabas mirando.
+  // pedido; con el visor ampliado abierto, o al cerrarlo te encontrarías una
+  // captura distinta de la que estabas mirando; y mientras se compara con el
+  // antes, que es justamente detenerse a mirar una vista.
   React.useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (images.length < 2 || reduce || zoomed !== null) return;
+    if (images.length < 2 || reduce || zoomed !== null || comparing) return;
     const t = window.setInterval(
       () => setIndex((i) => (i + 1) % images.length),
       AUTOPLAY_MS
     );
     return () => window.clearInterval(t);
-  }, [images.length, zoomed]);
+  }, [images.length, zoomed, comparing]);
+
+  const splitFromPointer = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = ((e.clientX - rect.left) / rect.width) * 100;
+    setSplit(Math.round(Math.min(100, Math.max(0, pct))));
+  };
+
+  const toggleComparing = () => {
+    setSplit(50);
+    setComparing((c) => !c);
+  };
 
   // Cerrar lightbox con Escape
   React.useEffect(() => {
@@ -94,9 +112,91 @@ function GalleryCarousel({
               draggable={false}
             />
           ))}
+
+          {/* ANTES — misma celda, recortado por la izquierda hasta el divisor:
+              a la izquierda queda el después, a la derecha el antes. Funciona
+              solo porque cada par mide exactamente lo mismo en píxeles (mismo
+              viewport, zoom y scroll); con tamaños distintos el divisor uniría
+              cosas desalineadas. Montadas siempre, ocultas con `invisible`,
+              para que ya estén cargadas al pulsar "Ver antes". */}
+          {before?.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt={`${alt}, versión anterior de la captura ${i + 1}`}
+              aria-hidden={!(comparing && i === index)}
+              style={{ clipPath: `inset(0 0 0 ${split}%)` }}
+              className={`[grid-area:1/1] w-full block select-none pointer-events-none ${
+                comparing && i === index ? "visible" : "invisible"
+              }`}
+              draggable={false}
+            />
+          ))}
+
+          {comparing && currentBefore && (
+            // Arrastre por puntero sobre TODA la captura: en iOS Safari un
+            // range solo se arrastra desde su thumb, y aquí el thumb es
+            // invisible. El range de abajo queda para teclado y lector.
+            <div
+              className="[grid-area:1/1] relative"
+              onPointerDown={(e) => {
+                e.currentTarget.setPointerCapture(e.pointerId);
+                splitFromPointer(e);
+              }}
+              onPointerMove={(e) => {
+                if (e.currentTarget.hasPointerCapture(e.pointerId)) splitFromPointer(e);
+              }}
+            >
+              <span className="pointer-events-none absolute top-3 left-3 rounded-full bg-zinc-950/75 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-50 backdrop-blur">
+                Después
+              </span>
+              <span className="pointer-events-none absolute top-3 right-3 rounded-full bg-zinc-950/75 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-50 backdrop-blur">
+                Antes
+              </span>
+
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-white shadow-[0_0_12px_rgba(0,0,0,0.35)]"
+                style={{ left: `${split}%` }}
+              >
+                <span className="absolute top-1/2 left-1/2 grid h-10 w-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-zinc-900 shadow-lg">
+                  <ChevronsLeftRight className="h-5 w-5" />
+                </span>
+              </div>
+
+              {/* Range nativo, invisible y estirado sobre toda la captura: da
+                  teclado (flechas, Inicio/Fin) y lector de pantalla gratis.
+                  `touch-action: pan-y` deja pasar el scroll vertical del modal
+                  en móvil; el arrastre horizontal lo toma el contenedor. */}
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={split}
+                onChange={(e) => setSplit(Number(e.target.value))}
+                aria-label="Comparar la versión anterior con la actual"
+                aria-valuetext={`${split}% versión actual`}
+                className="peer absolute inset-0 h-full w-full cursor-ew-resize opacity-0 [touch-action:pan-y]"
+              />
+              <div className="pointer-events-none absolute inset-0 ring-2 ring-inset ring-white/0 peer-focus-visible:ring-white/80" />
+            </div>
+          )}
         </div>
 
       </div>
+
+      {/* Solo aparece si la captura activa tiene su antes: un proyecto puede
+          tener antes para unas vistas y no para otras. */}
+      {currentBefore && (
+        <button
+          type="button"
+          onClick={toggleComparing}
+          aria-pressed={comparing}
+          className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full bg-zinc-50/90 px-5 py-2 text-sm font-semibold text-zinc-900 shadow-lg backdrop-blur transition-colors hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+        >
+          {comparing ? "Volver" : "Ver antes"}
+        </button>
+      )}
 
       {/* Lightbox: va al body con portal — dentro del modal, que tiene transform,
           un `fixed` se posiciona contra el modal y recorta la imagen. */}
@@ -126,8 +226,9 @@ function GalleryCarousel({
         document.body
       )}
 
-      {/* Sin controles: ni flechas, ni chip, ni puntos. La captura se releva
-          sola y sigue abriendo el visor al hacer clic. */}
+      {/* Sin flechas, chip ni puntos: la captura se releva sola y abre el
+          visor al hacer clic. El único control es "Ver antes", y solo en
+          proyectos que traen `before`. */}
     </div>
   );
 }
@@ -174,6 +275,7 @@ export function ProjectDialog({
                     images={active.gallery}
                     alt={active.client}
                     backdrop={active.image}
+                    before={active.before}
                   />
                 </div>
               )}
@@ -198,9 +300,14 @@ export function ProjectDialog({
                   </span>
                 )}
 
+                {/* scrollbar-gutter + pr: la barra vive en su propio canal. Sin
+                    ellos se dibujaba encima del texto justificado, que llega
+                    hasta el borde (y con barras overlay ni siquiera resta
+                    ancho). El gutter se reserva aunque no haga falta scrollear,
+                    así que el texto no salta al cambiar de proyecto. */}
                 <div
                   data-lenis-prevent
-                  className="modal-stagger animate-rise [animation-delay:180ms] mt-6 border-t border-zinc-200 pt-6 lg:min-h-0 lg:overflow-y-auto"
+                  className="modal-stagger animate-rise [animation-delay:180ms] mt-6 border-t border-zinc-200 pt-6 lg:min-h-0 lg:overflow-y-auto lg:pr-4 lg:[scrollbar-gutter:stable]"
                 >
                   <p className="text-base text-zinc-600 leading-relaxed text-justify [text-wrap:pretty] hyphens-auto whitespace-pre-line">
                     {active?.detail ?? active?.description}
