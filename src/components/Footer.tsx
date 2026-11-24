@@ -56,12 +56,12 @@ export function Footer({ startsDark = false }: FooterProps) {
               descentrar el texto. El subrayado en hover es la única señal de que
               es un enlace, y basta. */}
           <a
-            href="mailto:ekiteam.contacto@gmail.com"
+            href="mailto:eki@ekiproject.cl"
             className="group flex justify-center mt-12 md:mt-16 w-full px-4"
           >
             {/* break-all salva la vida si alguien abre esto en un celular muy angosto */}
             <span className="text-lg sm:text-xl md:text-4xl lg:text-5xl font-medium tracking-tight border-b-[2px] md:border-b-[3px] border-transparent group-hover:border-current transition-colors duration-300 text-center break-all md:break-normal">
-              ekiteam.contacto@gmail.com
+              eki@ekiproject.cl
             </span>
           </a>
         </div>

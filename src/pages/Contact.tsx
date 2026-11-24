@@ -180,10 +180,10 @@ export default function Contact() {
                   Email Directo
                 </span>
                 <a
-                  href="mailto:ekiteam.contacto@gmail.com"
+                  href="mailto:eki@ekiproject.cl"
                   className="text-[length:clamp(1.25rem,2.8vh,1.875rem)] font-medium hover:text-zinc-300 transition-colors"
                 >
-                  ekiteam.contacto@gmail.com
+                  eki@ekiproject.cl
                 </a>
               </div>
 

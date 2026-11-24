@@ -152,10 +152,10 @@ export class ErrorBoundary extends Component<Props, State> {
                 <p className="text-gray-500 text-sm">
                   Si el problema persiste, contáctanos en{' '}
                   <a
-                    href="mailto:ekiteam.contacto@gmail.com"
+                    href="mailto:eki@ekiproject.cl"
                     className="text-purple-400 hover:text-purple-300 underline"
                   >
-                    ekiteam.contacto@gmail.com
+                    eki@ekiproject.cl
                   </a>
                 </p>
               </div>

@@ -10,9 +10,9 @@ import { Footer } from "../components/Footer";
  * Última revisión del contenido legal. Se muestra en la página y hay que
  * actualizarla al tocar el texto: una política sin fecha no dice nada.
  */
-const UPDATED_AT = "3 de agosto de 2026";
+const UPDATED_AT = "24 de noviembre de 2026";
 
-const CONTACT_EMAIL = "ekiteam.contacto@gmail.com";
+const CONTACT_EMAIL = "eki@ekiproject.cl";
 
 /**
  * El contenido describe cómo funciona este sitio de verdad: no hay backend
